@@ -1,21 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
+using PuyoPuyo.screen;
 
 namespace PuyoPuyo
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class MainGame : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        ScreenGameComponent screenGameComponent;
 
-        public Game1()
+        public MainGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            Components.Add(screenGameComponent = new ScreenGameComponent(this));
+
+            screenGameComponent.Register(new MainMenuScreen(this.Services, this));
+            screenGameComponent.Register(new GameScreen(this.Services, this));
+
         }
 
         /// <summary>

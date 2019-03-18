@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
+using PuyoPuyo.screen;
 
 namespace PuyoPuyo
 {
@@ -13,11 +15,16 @@ namespace PuyoPuyo
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        ScreenGameComponent screenGameComponent;
 
         public Main()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            Components.Add(screenGameComponent = new ScreenGameComponent(this));
+
+            screenGameComponent.Register(new MainMenuScreen(this.Services, this));
+            screenGameComponent.Register(new GameScreen(this.Services, this));
         }
 
         /// <summary>

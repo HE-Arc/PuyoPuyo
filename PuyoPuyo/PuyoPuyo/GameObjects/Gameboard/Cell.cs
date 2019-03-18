@@ -1,4 +1,5 @@
-﻿using PuyoPuyo.GameObjects.Puyos;
+﻿using Microsoft.Xna.Framework;
+using PuyoPuyo.GameObjects.Puyos;
 
 namespace PuyoPuyo.GameObjects.Gameboard
 {
@@ -18,6 +19,16 @@ namespace PuyoPuyo.GameObjects.Gameboard
             Y = row;
             IsUsed = false;
             Puyo = null;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
+        }
+
+        public void Draw(GameTime gameTime)
+        {
+
         }
     }
 }

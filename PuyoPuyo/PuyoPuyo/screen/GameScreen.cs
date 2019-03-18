@@ -31,10 +31,9 @@ namespace PuyoPuyo.screen
 
         public override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
 
-            position = new Vector2(_game.graphics.GraphicsDevice.Viewport.Width / 2,
-                _game.graphics.GraphicsDevice.Viewport.Height / 2);
+            position = new Vector2(_game.GraphicsDevice.Viewport.Width / 2,
+                _game.GraphicsDevice.Viewport.Height / 2);
             origin = new Vector2(128, 128);
             texture = _game.Content.Load<Texture2D>("textures/puyos/R");
         }

@@ -10,9 +10,17 @@ namespace PuyoPuyo.GameObjects.Puyos
         public IPuyoData Data { get; private set; }
         public bool IsLinked { get; private set; } = false;
 
+        // Animation
+        private int nextX = 0;
+        private int nextY = 0;
+        private DateTime nextMove;
+        private double animationMS;
+
         // Physics
-        public Vector2 Position { get; private set; } = Vector2.Zero;
-        public Vector2 Speed { get; private set; } = Vector2.Zero;
+        public int X { get; private set; } = 0;
+        public int Y { get; private set; } = 0;
+        public Point Position => new Point(X, Y);
+        public double Lerp { get; private set; } = 0;
 
         // Internal
         public bool Enabled { get; set; }
@@ -27,23 +35,51 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// </summary>
         /// <param name="data"></param>
         /// <param name="position"></param>
-        public Puyo(IPuyoData data, Vector2 position)
+        public Puyo(IPuyoData data, Point position)
         {
             Data = data;
-            Position = position;
+            X = nextX = position.X;
+            Y = nextY = position.Y;
         }
 
         public event EventHandler<EventArgs> EnabledChanged;
         public event EventHandler<EventArgs> UpdateOrderChanged;
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
-           
+
+        // Mouve Puyo
+        public void Left(double ms) { nextX--; Animate(ms); }
+        public void Right(double ms) { nextX++; Animate(ms); }
+        public void Top(double ms) { nextY--; Animate(ms); }
+        public void Down(double ms) { nextY++; Animate(ms); }
+
+        private void Animate(double ms)
+        {
+            // Prevent an animation if one is already started
+            if (animationMS > 0)
+                return;
+
+            animationMS = ms;
+            nextMove = DateTime.Now;
+        }
+
+        private void UpdateAnimation()
+        {
+            // Lerp (used in drawing)
+            Lerp = (DateTime.Now - nextMove).TotalMilliseconds / animationMS;
+
+            // Move to next cell
+            if (Lerp >= 1)
+            {
+                X = nextX;
+                Y = nextY;
+                animationMS = 0;
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
-            float __seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Vector2 __nextPosition = new Vector2(Position.X + Speed.X * __seconds, Position.Y + Speed.Y * __seconds);
-
-
+            UpdateAnimation();
 
             throw new NotImplementedException();
         }

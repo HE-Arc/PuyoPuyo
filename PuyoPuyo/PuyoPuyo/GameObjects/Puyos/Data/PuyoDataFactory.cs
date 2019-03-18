@@ -50,35 +50,30 @@ namespace PuyoPuyo.GameObjects.Puyos.Data
     internal class PuyoData_Purple : IPuyoData
     {
         public Color Color => Color.Purple;
-
-        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("res/textures/puyos/PuyoPurple");
+        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("textures/puyos/PuyoPurple");
     }
 
     internal class PuyoData_Yellow : IPuyoData
     {
         public Color Color => Color.Yellow;
-
-        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("res/textures/puyos/PuyoYellow");
+        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("textures/puyos/PuyoYellow");
     }
 
     internal class PuyoData_Red : IPuyoData
     {
         public Color Color => Color.Red;
-
-        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("res/textures/puyos/PuyoRed");
+        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("textures/puyos/PuyoRed");
     }
 
     internal class PuyoData_Green : IPuyoData
     {
         public Color Color => Color.Green;
-
-        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("res/textures/puyos/PuyoGreen");
+        public Texture2D Texture => Main.ContentManager.Load<Texture2D>("textures/puyos/PuyoGreen");
     }
 
     internal class PuyoData_Blue : IPuyoData
     {
         public Color Color => Color.Blue;
-
         public Texture2D Texture => Main.ContentManager.Load<Texture2D>("res/textures/puyos/PuyoBlue");
     }
 }

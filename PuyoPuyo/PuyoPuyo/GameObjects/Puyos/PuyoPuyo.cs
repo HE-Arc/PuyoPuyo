@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using PuyoPuyo.GameObjects.Puyos.Data;
 using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,56 @@ namespace PuyoPuyo.GameObjects.Puyos
         public bool Enabled => throw new NotImplementedException();
         public int UpdateOrder => throw new NotImplementedException();
 
+        private Vector2 GetSlavePositionFromMaster(Puyo master, Orientation orientation)
+        {
+            switch (Orientation)
+            {
+                case Orientation.Left:
+                    return master.Position - Vector2.UnitX;
+                case Orientation.Right:
+                    return master.Position + Vector2.UnitX;
+                case Orientation.Top:
+                    return master.Position - Vector2.UnitY;
+                case Orientation.Down:
+                    return master.Position + Vector2.UnitX;
+            }
+
+            return Vector2.Zero;
+        }
+
+        /// <summary>
+        /// Instantiate a new puyopuyo
+        /// <para/>Should be use to generate a new puyopuyo for the gameboard
+        /// </summary>
+        /// <param name="color">PuyoPuyo's color</param>
+        /// <param name="position">PuyoPuyo's position</param>
+        /// <param name="orientation">PuyoPuyo's orientation</param>
+        public PuyoPuyo(Color color, Point position, Orientation orientation)
+        {
+            IPuyoData data = PuyoDataFactory.Instance.Get(color);
+
+            // Init master
+            Vector2 position_master = position.ToVector2();
+            Master = new Puyo(data, position_master);
+
+            // Init slave
+            Vector2 position_slave = GetSlavePositionFromMaster(Master, orientation);
+            Slave = new Puyo(data, position_slave);
+        }
+
+        /// <summary>
+        /// Instantiate a new puyopuyo
+        /// <para/>Should be used to reunite two puyos
+        /// </summary>
+        /// <param name="master"></param>
+        /// <param name="slave"></param>
         public PuyoPuyo(Puyo master, Puyo slave)
         {
+            if (!master.Data.Color.Equals(slave.Data.Color))
+                throw new ArgumentException("Puyos must be of same color");
+
+            // TODO: Verifiy that they are neighbors
+
             this.Master = master;
             this.Slave = slave;
         }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using PuyoPuyo.GameObjects.Puyos.Data;
 using System;
-using System.Collections.Generic;
 
 namespace PuyoPuyo.GameObjects.Puyos
 {

@@ -7,12 +7,14 @@ namespace PuyoPuyo
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Main : Game
     {
+        public static Microsoft.Xna.Framework.Content.ContentManager ContentManager;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public Game1()
+        public Main()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -29,6 +31,9 @@ namespace PuyoPuyo
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            // Publish manager
+            ContentManager = this.Content;
         }
 
         /// <summary>

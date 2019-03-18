@@ -41,11 +41,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="GameObjects\Gameboard\Cell.cs" />
     <Compile Include="GameObjects\Gameboard\Gameboard.cs" />
     <Compile Include="GameObjects\Puyos\Data\IPuyoData.cs" />
-    <Compile Include="GameObjects\Puyos\Data\PuyoDataManager.cs" />
+    <Compile Include="GameObjects\Puyos\Data\PuyoDataFactory.cs" />
     <Compile Include="GameObjects\Puyos\Puyo.cs" />
     <Compile Include="GameObjects\Puyos\PuyoPuyo.cs" />
     <Compile Include="Program.cs" />

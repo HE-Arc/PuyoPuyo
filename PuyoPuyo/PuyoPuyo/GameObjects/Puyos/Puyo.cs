@@ -4,7 +4,7 @@ using System;
 
 namespace PuyoPuyo.GameObjects.Puyos
 {
-    public class Puyo : IUpdateable, IDrawable
+    public sealed class Puyo : IUpdateable, IDrawable
     {
         // Data
         public IPuyoData Data { get; private set; }
@@ -48,10 +48,10 @@ namespace PuyoPuyo.GameObjects.Puyos
         public event EventHandler<EventArgs> VisibleChanged;
 
         // Mouve Puyo
-        public void Left(double ms) { nextX--; Animate(ms); }
-        public void Right(double ms) { nextX++; Animate(ms); }
-        public void Top(double ms) { nextY--; Animate(ms); }
-        public void Down(double ms) { nextY++; Animate(ms); }
+        public int Left(double ms) { nextX--; Animate(ms); return nextX; }
+        public int Right(double ms) { nextX++; Animate(ms); return nextX; }
+        public int Top(double ms) { nextY--; Animate(ms); return nextY; }
+        public int Down(double ms) { nextY++; Animate(ms); return nextY; }
 
         private void Animate(double ms)
         {
@@ -77,11 +77,13 @@ namespace PuyoPuyo.GameObjects.Puyos
             }
         }
 
+        /// <summary>
+        /// Update animation step
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             UpdateAnimation();
-
-            throw new NotImplementedException();
         }
 
         public void Draw(GameTime gameTime)

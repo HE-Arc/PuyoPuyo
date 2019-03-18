@@ -3,7 +3,7 @@ using PuyoPuyo.GameObjects.Puyos;
 
 namespace PuyoPuyo.GameObjects.Gameboard
 {
-    public class Cell
+    public sealed class Cell
     {
         public static int SIZE = Properties.PuyoPuyo.Default.CELL_SIZE;
 

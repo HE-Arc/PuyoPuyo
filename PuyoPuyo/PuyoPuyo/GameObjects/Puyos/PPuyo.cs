@@ -5,7 +5,7 @@ using System;
 
 namespace PuyoPuyo.GameObjects.Puyos
 {
-    public class PPuyo : IUpdateable, IDrawable
+    public sealed class PPuyo : IUpdateable, IDrawable
     {
         public Puyo Master { get; private set; }
         public Puyo Slave { get; private set; }
@@ -84,6 +84,11 @@ namespace PuyoPuyo.GameObjects.Puyos
             Orientation = OrientationHandler.NewOrientation(Orientation, rotation == Rotation.Clockwise ? 1 : -1);
         }
 
+        public int Left(double ms) { Master.Left(ms); Slave.Left(ms); return Master.X; }
+        public int Right(double ms) { Master.Right(ms); Slave.Right(ms); return Master.X; }
+        public int Top(double ms) { Master.Top(ms); Slave.Top(ms); return Master.Y; }
+        public int Down(double ms) { Master.Down(ms); Slave.Down(ms); return Master.Y; }
+
         /// <summary>
         /// Dissolve this PuyoPuyo
         /// </summary>
@@ -105,21 +110,21 @@ namespace PuyoPuyo.GameObjects.Puyos
             Orientation = OrientationHandler.GetMirrorOrientation(Orientation);
         }
 
+        /// <summary>
+        /// Update puyos
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime)
+        {
+            // Update childs
+            Master.Update(gameTime);
+            Slave.Update(gameTime);
+        }
+
         public void Draw(GameTime gameTime)
         {
             Master.Draw(gameTime);
             Slave.Draw(gameTime);
         }
-
-        public void Update(GameTime gameTime)
-        {
-            // If can't move down, dissolve
-
-            // Update childs
-            Master.Update(gameTime);
-            Slave.Update(gameTime);
-        }
     }
-
-
 }

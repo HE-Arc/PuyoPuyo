@@ -58,18 +58,18 @@ namespace PuyoPuyo.Toolbox
             return contentManager.Load<T>(directory + subPath + assetName);
         }
 
-        public void Initialize(Game game)
+        public void Initialize(ContentManager cm)
         {
-            contentManager = game.Content;
+            contentManager = cm;
         }
 
         public void LoadContent()
         {
-            textures.Add("PuyoRed", Load<Texture2D>("PuyoRed", "puyos/"));
-            textures.Add("PuyoGreen", Load<Texture2D>("PuyoGreen", "puyos/"));
-            textures.Add("PuyoBlue", Load<Texture2D>("PuyoBlue", "puyos/"));
-            textures.Add("PuyoYellow", Load<Texture2D>("PuyoYellow", "puyos/"));
-            textures.Add("PuyoPurple", Load<Texture2D>("PuyoPurple", "puyos/"));
+            textures.Add("PuyoRed", Load<Texture2D>("R", "puyos/"));
+            textures.Add("PuyoGreen", Load<Texture2D>("G", "puyos/"));
+            textures.Add("PuyoBlue", Load<Texture2D>("B", "puyos/"));
+            textures.Add("PuyoYellow", Load<Texture2D>("Y", "puyos/"));
+            textures.Add("PuyoPurple", Load<Texture2D>("P", "puyos/"));
         }
 
         public T TryGet<T>(string textureName)

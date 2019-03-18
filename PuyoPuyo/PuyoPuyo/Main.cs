@@ -13,12 +13,12 @@ namespace PuyoPuyo
     public class Main : Game
     {
         public static Microsoft.Xna.Framework.Content.ContentManager ContentManager;
-     
+        public static GraphicsDeviceManager GraphicsDeviceManager;
 
-        public GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        ScreenGameComponent screenGameComponent;
-        TextureManager textureManager = TextureManager.Instance;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private ScreenGameComponent screenGameComponent;
+        private TextureManager textureManager = TextureManager.Instance;
 
         public Main()
         {
@@ -28,28 +28,14 @@ namespace PuyoPuyo
 
             screenGameComponent.Register(new MainMenuScreen(this.Services, this));
             screenGameComponent.Register(new GameScreen(this.Services, this));
-        }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
-        protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
-            base.Initialize();
-
-            // Publish manager
+            // Publish services
             ContentManager = this.Content;
+            GraphicsDeviceManager = this.graphics;
 
             // Init texture manager
-            textureManager.Initialize(this);
-
-            
+            textureManager.Initialize(Content);
         }
-
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -64,6 +50,19 @@ namespace PuyoPuyo
             textureManager.LoadContent();
 
             // TODO: use this.Content to load your game content here
+        }
+
+        /// <summary>
+        /// Allows the game to perform any initialization it needs to before starting to run.
+        /// This is where it can query for any required services and load any non-graphic
+        /// related content.  Calling base.Initialize will enumerate through any components
+        /// and initialize them as well.
+        /// </summary>
+        protected override void Initialize()
+        {
+            // TODO: Add your initialization logic here
+            base.Initialize();
+
         }
 
         /// <summary>

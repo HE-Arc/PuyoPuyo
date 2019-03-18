@@ -4,13 +4,13 @@ namespace PuyoPuyo.screen
 {
     public class MainMenuScreen : MenuScreen
     {
-        private readonly Main _game;
+        private readonly Main _main;
 
-        public MainMenuScreen(IServiceProvider serviceProvider, Main game)
-            : base(serviceProvider)
+        public MainMenuScreen(IServiceProvider serviceProvider, Main main)
+            : base(serviceProvider, main)
         {
-            _game = game;
-            game.IsMouseVisible = true;
+            main.IsMouseVisible = true;
+            _main = main;
         }
 
         public override void LoadContent()
@@ -18,9 +18,9 @@ namespace PuyoPuyo.screen
             base.LoadContent();
 
             AddMenuItem("New Game", Show<GameScreen>);
-            //AddMenuItem("Load Game", Show<LoadGameScreen>);
+            AddMenuItem("Tutorial", Show<TutorialScreen>);
             //AddMenuItem("Options", Show<OptionsScreen>);
-            AddMenuItem("Exit", _game.Exit);
+            AddMenuItem("Exit", _main.Exit);
         }
     }
 }

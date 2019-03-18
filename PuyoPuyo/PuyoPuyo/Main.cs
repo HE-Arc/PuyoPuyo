@@ -25,6 +25,7 @@ namespace PuyoPuyo
 
             screenGameComponent.Register(new MainMenuScreen(this.Services, this));
             screenGameComponent.Register(new GameScreen(this.Services, this));
+            screenGameComponent.Register(new TutorialScreen(this.Services, this));
         }
 
         /// <summary>

@@ -12,18 +12,26 @@ namespace PuyoPuyo.screen
 {
     public abstract class MenuScreen : Screen
     {
+        private readonly Main _main;
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
-
-        protected MenuScreen(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            MenuItems = new List<MenuItem>();
-        }
-
+        private MouseState _previousMouseState;
+        private KeyboardState _previousKeyboardState;
+        private MenuItem cursor;
+        private MenuItem selectedItem;
+        private int indexMenu;
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
         protected ContentManager Content { get; private set; }
+        
+
+        protected MenuScreen(IServiceProvider serviceProvider, Main main)
+        {
+            _serviceProvider = serviceProvider;
+            _main = main;
+            MenuItems = new List<MenuItem>();
+            indexMenu = 0;
+        }
 
         protected void AddMenuItem(string text, Action action)
         {
@@ -32,6 +40,17 @@ namespace PuyoPuyo.screen
                 Position = new Vector2(300, 200 + 32 * MenuItems.Count),
                 Action = action
             };
+
+            if (MenuItems.Count == 0)
+            {
+                selectedItem = menuItem;
+                menuItem.Color = Color.Yellow;
+                cursor = new MenuItem(Font, ">")
+                {
+                    Position = new Vector2(290, 200 + 32 * MenuItems.Count),
+                    Color = Color.Yellow
+                };
+            }
 
             MenuItems.Add(menuItem);
         }
@@ -68,29 +87,48 @@ namespace PuyoPuyo.screen
             base.UnloadContent();
         }
 
-        private MouseState _previousState;
+       
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             var mouseState = Mouse.GetState();
-            var isPressed = mouseState.LeftButton == ButtonState.Released && _previousState.LeftButton == ButtonState.Pressed;
+            var isPressed = mouseState.LeftButton == ButtonState.Released && _previousMouseState.LeftButton == ButtonState.Pressed;
 
             foreach (var menuItem in MenuItems)
             {
                 var isHovered = menuItem.BoundingRectangle.Contains(new Point2(mouseState.X, mouseState.Y));
 
-                menuItem.Color = isHovered ? Color.Yellow : Color.White;
-
-                if (isHovered && isPressed)
+                if (isHovered)
                 {
-                    menuItem.Action?.Invoke();
-                    break;
+                    indexMenu = MenuItems.IndexOf(menuItem);
+                    UpdateSelection();
+
+                    if (isPressed)
+                    {
+                        menuItem.Action?.Invoke();
+                        break;
+                    }
                 }
             }
 
-            _previousState = mouseState;
+            _previousMouseState = mouseState;
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            // If they hit esc, exit
+            if (keyboardState.IsKeyDown(Keys.Escape))
+                _main.Exit();
+            else if (keyboardState.IsKeyDown(Keys.Enter))
+                selectedItem.Action?.Invoke();
+            else if ((keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.Right)) && _previousKeyboardState != keyboardState)
+                SelectNext();
+            else if ((keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.Left)) && _previousKeyboardState != keyboardState)
+                SelectPrevious();
+
+            _previousKeyboardState = keyboardState;
+
+            Console.WriteLine(gameTime.ElapsedGameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -102,7 +140,35 @@ namespace PuyoPuyo.screen
             foreach (var menuItem in MenuItems)
                 menuItem.Draw(_spriteBatch);
 
+            cursor.Draw(_spriteBatch);
+
             _spriteBatch.End();
+        }
+
+        private void SelectPrevious()
+        {
+            --indexMenu;
+            if (indexMenu < 0)
+                indexMenu = MenuItems.Count - 1;
+
+            UpdateSelection();
+        }
+
+        private void SelectNext()
+        {
+            ++indexMenu;
+            if (indexMenu > MenuItems.Count - 1)
+                indexMenu = 0;
+
+            UpdateSelection();
+        }
+
+        private void UpdateSelection()
+        {
+            selectedItem.Color = Color.White;
+            selectedItem = MenuItems[indexMenu];
+            selectedItem.Color = Color.Yellow;
+            cursor.Position = new Vector2(selectedItem.Position.X - 10, selectedItem.Position.Y);
         }
     }
 }

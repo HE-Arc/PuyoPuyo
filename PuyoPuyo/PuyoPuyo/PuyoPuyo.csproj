@@ -63,6 +63,7 @@
       <DependentUpon>PuyoPuyo.settings</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="screen\TutorialScreen.cs" />
     <Compile Include="Toolbox\Enums.cs" />
     <Compile Include="Toolbox\OrientationHandler.cs" />
   </ItemGroup>

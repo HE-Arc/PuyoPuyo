@@ -9,13 +9,15 @@ namespace PuyoPuyo
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class MainGame : Game
+    public class Main : Game
     {
+        public static Microsoft.Xna.Framework.Content.ContentManager ContentManager;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         ScreenGameComponent screenGameComponent;
 
-        public MainGame()
+        public Main()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -23,7 +25,6 @@ namespace PuyoPuyo
 
             screenGameComponent.Register(new MainMenuScreen(this.Services, this));
             screenGameComponent.Register(new GameScreen(this.Services, this));
-
         }
 
         /// <summary>
@@ -37,6 +38,9 @@ namespace PuyoPuyo
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            // Publish manager
+            ContentManager = this.Content;
         }
 
         /// <summary>

@@ -14,9 +14,9 @@ namespace PuyoPuyo.screen
     {
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
-        private readonly MainGame _game;
+        private readonly Main _game;
 
-        public GameScreen(IServiceProvider serviceProvider, MainGame game)
+        public GameScreen(IServiceProvider serviceProvider, Main game)
         {
             _serviceProvider = serviceProvider;
             _game = game;

@@ -4,9 +4,9 @@ namespace PuyoPuyo.screen
 {
     public class MainMenuScreen : MenuScreen
     {
-        private readonly MainGame _game;
+        private readonly Main _game;
 
-        public MainMenuScreen(IServiceProvider serviceProvider, MainGame game)
+        public MainMenuScreen(IServiceProvider serviceProvider, Main game)
             : base(serviceProvider)
         {
             _game = game;

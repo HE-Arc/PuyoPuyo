@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
+using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace PuyoPuyo.screen
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
         private readonly Main _game;
+        private InputManager inputManager;
 
         // TEST
         Texture2D texture;
@@ -27,10 +29,12 @@ namespace PuyoPuyo.screen
 
             _serviceProvider = serviceProvider;
             _game = game;
+            inputManager = new InputManager();
         }
 
         public override void LoadContent()
         {
+            _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
 
             position = new Vector2(_game.GraphicsDevice.Viewport.Width / 2,
                 _game.GraphicsDevice.Viewport.Height / 2);
@@ -50,26 +54,7 @@ namespace PuyoPuyo.screen
 
         private void UpdateTest()
         {
-            KeyboardState kState = Keyboard.GetState();
-            //var gamePadState = GamePad.GetState(PlayerIndex.One);
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (var key in kState.GetPressedKeys())
-                sb.Append("Keys: ").Append(key).Append(" pressed");
-
-            if (sb.Length > 0)
-                System.Diagnostics.Debug.WriteLine(sb.ToString());
-            else
-                System.Diagnostics.Debug.WriteLine("No Keys pressed");
-
-            if (kState.IsKeyDown(Keys.Right))
-                position.X += 10;
-            if (kState.IsKeyDown(Keys.Left))
-                position.X -= 10;
-            if (kState.IsKeyDown(Keys.Up))
-                position.Y -= 10;
-            if (kState.IsKeyDown(Keys.Down))
-                position.Y += 10;
+            inputManager.Update(ref position);
         }
 
         public override void Draw(GameTime gameTime)

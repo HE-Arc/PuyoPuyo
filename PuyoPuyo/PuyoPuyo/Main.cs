@@ -13,8 +13,9 @@ namespace PuyoPuyo
     public class Main : Game
     {
         public static Microsoft.Xna.Framework.Content.ContentManager ContentManager;
+     
 
-        GraphicsDeviceManager graphics;
+        public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         ScreenGameComponent screenGameComponent;
         TextureManager textureManager = TextureManager.Instance;
@@ -48,6 +49,7 @@ namespace PuyoPuyo
 
             
         }
+
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load

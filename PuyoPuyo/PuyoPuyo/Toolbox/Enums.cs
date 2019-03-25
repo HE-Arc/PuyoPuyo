@@ -19,4 +19,13 @@ namespace PuyoPuyo.Toolbox
         Right = 2,
         Down = 3
     }
+
+    public enum PuyoColor
+    {
+        Green,
+        Red,
+        Blue,
+        Yellow,
+        Purple
+    }
 }

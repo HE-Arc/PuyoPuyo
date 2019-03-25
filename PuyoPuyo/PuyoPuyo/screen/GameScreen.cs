@@ -29,7 +29,7 @@ namespace PuyoPuyo.screen
 
             _serviceProvider = serviceProvider;
             _game = game;
-            inputManager = new InputManager();
+            inputManager = new InputManager(false);
         }
 
         public override void LoadContent()
@@ -54,7 +54,7 @@ namespace PuyoPuyo.screen
 
         private void UpdateTest()
         {
-            inputManager.Perform(false);
+            inputManager.Perform();
         }
 
         public override void Draw(GameTime gameTime)

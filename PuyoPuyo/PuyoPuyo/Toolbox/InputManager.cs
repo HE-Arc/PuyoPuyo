@@ -14,15 +14,16 @@ namespace PuyoPuyo.Toolbox
         private KeyboardState kState;
         private GamePadState gState;
         private List<Input> inputs = new List<Input>();
+        private List<Input> returnedInputs = new List<Input>();
 
         public float DeadzoneSticks = 0.25f;
 
-        public InputManager()
+        public InputManager(bool controlIndex)
         {
             //kState = new KeyboardState();
         }
 
-        public Input Perform(bool controlIndex)
+        public List<Input> Perform()
         {
             kState = Keyboard.GetState();
             gState = GamePad.GetState(PlayerIndex.One);
@@ -158,73 +159,91 @@ namespace PuyoPuyo.Toolbox
             }
 
             Console.WriteLine(inputs.Count);
+
             foreach (Input i in inputs)
             {
                 switch (i)
                 {
                     case Input.Left:
-                    case Input.LeftStickLeft:
-                        if (gState.ThumbSticks.Left.X < -DeadzoneSticks || kState.IsKeyDown(Keys.Left))
+                        if (kState.IsKeyUp(Keys.Left))
                         {
-                            //Console.WriteLine("Left returned");
-                            inputs.Remove(Input.Left);
-                            inputs.Remove(Input.LeftStickLeft);
-                            return Input.Left;
+                            returnedInputs.Add(Input.Left);
+                        }
+                        break;
+
+                    case Input.LeftStickLeft:
+                        if (gState.ThumbSticks.Left.X < -DeadzoneSticks)
+                        {
+                            returnedInputs.Add(Input.LeftStickLeft);
                         }
                         break;
 
                     case Input.Up:
-                    case Input.LeftStickUp:
-                        if (gState.ThumbSticks.Left.Y > DeadzoneSticks || kState.IsKeyDown(Keys.Up))
+                        if(kState.IsKeyUp(Keys.Up))
                         {
-                            inputs.Remove(Input.Up);
-                            inputs.Remove(Input.LeftStickUp);
-                            return Input.Up;
+                            returnedInputs.Add(Input.Up);
+                        }
+                        break;
+
+                    case Input.LeftStickUp:
+                        if (gState.ThumbSticks.Left.Y > DeadzoneSticks)
+                        {
+                            returnedInputs.Add(Input.LeftStickUp);
                         }
                         break;
 
                     case Input.Right:
-                    case Input.LeftStickRight:
-                        if (gState.ThumbSticks.Left.X > DeadzoneSticks || kState.IsKeyDown(Keys.Right))
+                        if(kState.IsKeyUp(Keys.Right))
                         {
-                            inputs.Remove(Input.Right);
-                            inputs.Remove(Input.LeftStickRight);
-                            return Input.Right;
+                            returnedInputs.Add(Input.Right);
+                        }
+                        break;
+
+                    case Input.LeftStickRight:
+                        if (gState.ThumbSticks.Left.X > DeadzoneSticks)
+                        {
+                            returnedInputs.Add(Input.LeftStickRight);
                         }
                         break;
 
                     case Input.Down:
-                    case Input.LeftStickDown:
-                        if (gState.ThumbSticks.Left.Y < -DeadzoneSticks || kState.IsKeyDown(Keys.Down))
+                        if(kState.IsKeyUp(Keys.Down))
                         {
-                            inputs.Remove(Input.Down);
-                            inputs.Remove(Input.LeftStickDown);
-                            return Input.Down;
+                            returnedInputs.Add(Input.Down);
+                        }
+                        break;
+
+                    case Input.LeftStickDown:
+                        if (gState.ThumbSticks.Left.Y < -DeadzoneSticks)
+                        {
+                            returnedInputs.Add(Input.LeftStickDown);
                         }
                         break;
 
                     case Input.Enter:
                     case Input.A:
-                        if (gState.IsButtonDown(Buttons.A))
+                        if (gState.IsButtonUp(Buttons.A))
                         {
                             //Console.WriteLine("A returned");
                             inputs.Remove(Input.A);
-                            return Input.A;
+                            //return Input.A;
                         }
                         break;
 
                     case Input.B:
-                        if(gState.IsButtonDown(Buttons.B))
+                        if(gState.IsButtonUp(Buttons.B))
                         {
                             //Console.WriteLine("B returned");
                             inputs.Remove(Input.B);
-                            return Input.B;
+                            //return Input.B;
                         }
                         break;
+                   
                 }
             }
 
-            return Input.None;
+            inputs = returnedInputs;
+            return inputs;
         }
     }
 }

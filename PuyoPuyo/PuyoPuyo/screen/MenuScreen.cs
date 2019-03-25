@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Screens;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ namespace PuyoPuyo.screen
             indexMenu = 0;
         }
 
-        protected void AddMenuItem(string text, Action action)
+        protected void AddMenuItem(string text, Action action = null)
         {
             var menuItem = new MenuItem(Font, text)
             {
@@ -116,7 +115,6 @@ namespace PuyoPuyo.screen
             _previousMouseState = mouseState;
             KeyboardState keyboardState = Keyboard.GetState();
 
-            // If they hit esc, exit
             if (keyboardState.IsKeyDown(Keys.Escape))
                 _main.Exit();
             else if (keyboardState.IsKeyDown(Keys.Enter))
@@ -127,8 +125,6 @@ namespace PuyoPuyo.screen
                 SelectPrevious();
 
             _previousKeyboardState = keyboardState;
-
-            Console.WriteLine(gameTime.ElapsedGameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -140,7 +136,8 @@ namespace PuyoPuyo.screen
             foreach (var menuItem in MenuItems)
                 menuItem.Draw(_spriteBatch);
 
-            cursor.Draw(_spriteBatch);
+            if (cursor != null)
+                cursor.Draw(_spriteBatch);
 
             _spriteBatch.End();
         }

@@ -21,11 +21,7 @@ namespace PuyoPuyo
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            Components.Add(screenGameComponent = new ScreenGameComponent(this));
-
-            screenGameComponent.Register(new MainMenuScreen(this.Services, this));
-            screenGameComponent.Register(new GameScreen(this.Services, this));
-            screenGameComponent.Register(new TutorialScreen(this.Services, this));
+            SetScreenManagement();
         }
 
         /// <summary>
@@ -91,6 +87,15 @@ namespace PuyoPuyo
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+        }
+
+        private void SetScreenManagement()
+        {
+            Components.Add(screenGameComponent = new ScreenGameComponent(this));
+
+            screenGameComponent.Register(new MainMenuScreen(this.Services, this));
+            screenGameComponent.Register(new GameScreen(this.Services, this));
+            screenGameComponent.Register(new TutorialScreen(this.Services, this));
         }
     }
 }

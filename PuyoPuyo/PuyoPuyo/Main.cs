@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
 using PuyoPuyo.screen;
+using PuyoPuyo.Toolbox;
 
 namespace PuyoPuyo
 {
@@ -12,16 +13,28 @@ namespace PuyoPuyo
     public class Main : Game
     {
         public static Microsoft.Xna.Framework.Content.ContentManager ContentManager;
+        public static GraphicsDeviceManager GraphicsDeviceManager;
 
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        ScreenGameComponent screenGameComponent;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private ScreenGameComponent screenGameComponent;
+        private TextureManager textureManager = TextureManager.Instance;
 
         public Main()
         {
+            
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            // Init screen management
             SetScreenManagement();
+
+            // Publish services
+            ContentManager = this.Content;
+            GraphicsDeviceManager = this.graphics;
+
+            // Init texture manager
+            textureManager.Initialize(Content);
         }
 
         /// <summary>
@@ -32,12 +45,7 @@ namespace PuyoPuyo
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
-
-            // Publish manager
-            ContentManager = this.Content;
         }
 
         /// <summary>
@@ -48,6 +56,9 @@ namespace PuyoPuyo
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // Load assets
+            textureManager.LoadContent();
 
             // TODO: use this.Content to load your game content here
         }

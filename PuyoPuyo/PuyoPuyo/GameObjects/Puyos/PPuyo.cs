@@ -2,14 +2,10 @@
 using PuyoPuyo.GameObjects.Puyos.Data;
 using PuyoPuyo.Toolbox;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PuyoPuyo.GameObjects.Puyos
 {
-    public class PuyoPuyo : IUpdateable, IDrawable
+    public sealed class PPuyo : IUpdateable, IDrawable
     {
         public Puyo Master { get; private set; }
         public Puyo Slave { get; private set; }
@@ -21,21 +17,21 @@ namespace PuyoPuyo.GameObjects.Puyos
         public bool Enabled => throw new NotImplementedException();
         public int UpdateOrder => throw new NotImplementedException();
 
-        private Vector2 GetSlavePositionFromMaster(Puyo master, Orientation orientation)
+        private Point GetSlavePositionFromMaster(Puyo master, Orientation orientation)
         {
             switch (Orientation)
             {
                 case Orientation.Left:
-                    return master.Position - Vector2.UnitX;
+                    return new Point(master.X - 1, master.Y);
                 case Orientation.Right:
-                    return master.Position + Vector2.UnitX;
+                    return new Point(master.X + 1, master.Y);
                 case Orientation.Top:
-                    return master.Position - Vector2.UnitY;
+                    return new Point(master.X, master.Y - 1);
                 case Orientation.Down:
-                    return master.Position + Vector2.UnitX;
+                    return new Point(master.X, master.Y + 1);
             }
 
-            return Vector2.Zero;
+            return Point.Zero;
         }
 
         /// <summary>
@@ -45,16 +41,15 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// <param name="color">PuyoPuyo's color</param>
         /// <param name="position">PuyoPuyo's position</param>
         /// <param name="orientation">PuyoPuyo's orientation</param>
-        public PuyoPuyo(Color color, Point position, Orientation orientation)
+        public PPuyo(Color color, Point position, Orientation orientation)
         {
             IPuyoData data = PuyoDataFactory.Instance.Get(color);
 
             // Init master
-            Vector2 position_master = position.ToVector2();
-            Master = new Puyo(data, position_master);
+            Master = new Puyo(data, position);
 
             // Init slave
-            Vector2 position_slave = GetSlavePositionFromMaster(Master, orientation);
+            Point position_slave = GetSlavePositionFromMaster(Master, orientation);
             Slave = new Puyo(data, position_slave);
         }
 
@@ -64,7 +59,7 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// </summary>
         /// <param name="master"></param>
         /// <param name="slave"></param>
-        public PuyoPuyo(Puyo master, Puyo slave)
+        public PPuyo(Puyo master, Puyo slave)
         {
             if (!master.Data.Color.Equals(slave.Data.Color))
                 throw new ArgumentException("Puyos must be of same color");
@@ -89,6 +84,11 @@ namespace PuyoPuyo.GameObjects.Puyos
             Orientation = OrientationHandler.NewOrientation(Orientation, rotation == Rotation.Clockwise ? 1 : -1);
         }
 
+        public int Left(double ms) { Master.Left(ms); Slave.Left(ms); return Master.X; }
+        public int Right(double ms) { Master.Right(ms); Slave.Right(ms); return Master.X; }
+        public int Top(double ms) { Master.Top(ms); Slave.Top(ms); return Master.Y; }
+        public int Down(double ms) { Master.Down(ms); Slave.Down(ms); return Master.Y; }
+
         /// <summary>
         /// Dissolve this PuyoPuyo
         /// </summary>
@@ -110,21 +110,21 @@ namespace PuyoPuyo.GameObjects.Puyos
             Orientation = OrientationHandler.GetMirrorOrientation(Orientation);
         }
 
+        /// <summary>
+        /// Update puyos
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime)
+        {
+            // Update childs
+            Master.Update(gameTime);
+            Slave.Update(gameTime);
+        }
+
         public void Draw(GameTime gameTime)
         {
             Master.Draw(gameTime);
             Slave.Draw(gameTime);
         }
-
-        public void Update(GameTime gameTime)
-        {
-            // If can't move down, dissolve
-
-            // Update childs
-            Master.Update(gameTime);
-            Slave.Update(gameTime);
-        }
     }
-
-
 }

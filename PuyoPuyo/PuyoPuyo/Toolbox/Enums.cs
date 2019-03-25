@@ -19,4 +19,45 @@ namespace PuyoPuyo.Toolbox
         Right = 2,
         Down = 3
     }
+
+    public enum Input
+    {
+        None,
+        // Center
+        Home,
+        Start,
+        Back,
+        // D-Pad
+        Up,
+        Left,
+        Down,
+        Right,
+        // Face buttons
+        Y,
+        X,
+        A,
+        B,
+        // Shoulder buttons
+        LeftShoulder,
+        RightShoulder,
+        // Triggers
+        LeftTrigger,
+        RightTrigger,
+        // Left Stick
+        LeftStick,
+        LeftStickUp,
+        LeftStickLeft,
+        LeftStickDown,
+        LeftStickRight,
+        // Right Stick
+        RightStick,
+        RightStickUp,
+        RightStickLeft,
+        RightStickDown,
+        RightStickRight,
+
+        // Control
+        Enter,
+        Escape
+    }
 }

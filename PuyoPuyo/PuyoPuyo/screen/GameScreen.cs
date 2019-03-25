@@ -46,7 +46,7 @@ namespace PuyoPuyo.screen
         {
 
         }
-
+       
         public override void Update(GameTime gameTime)
         {
             UpdateTest();
@@ -54,7 +54,7 @@ namespace PuyoPuyo.screen
 
         private void UpdateTest()
         {
-            inputManager.Update(ref position);
+            inputManager.Perform(false);
         }
 
         public override void Draw(GameTime gameTime)

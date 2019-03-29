@@ -66,6 +66,7 @@
     <Compile Include="screen\TutorialScreen.cs" />
     <Compile Include="Toolbox\Enums.cs" />
     <Compile Include="Toolbox\InputManager.cs" />
+    <Compile Include="Toolbox\InputTimer.cs" />
     <Compile Include="Toolbox\OrientationHandler.cs" />
     <Compile Include="Toolbox\TextureManager.cs" />
   </ItemGroup>

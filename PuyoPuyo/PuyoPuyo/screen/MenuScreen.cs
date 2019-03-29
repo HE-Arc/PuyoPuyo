@@ -20,6 +20,7 @@ namespace PuyoPuyo.screen
         private MenuItem cursor;
         private MenuItem selectedItem;
         private int indexMenu;
+        private InputManager im = new InputManager(false);
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
         protected ContentManager Content { get; private set; }
@@ -115,7 +116,7 @@ namespace PuyoPuyo.screen
 
             //_previousMouseState = mouseState;
             //KeyboardState keyboardState = Keyboard.GetState();
-            InputManager im = new InputManager(false);
+
             List<Input> inputs = im.Perform();
 
             foreach (Input i in inputs)

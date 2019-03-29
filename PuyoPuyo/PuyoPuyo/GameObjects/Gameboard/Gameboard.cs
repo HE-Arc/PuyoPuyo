@@ -4,6 +4,8 @@ using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.Text;
 
 namespace PuyoPuyo.GameObjects.Gameboard
 {
@@ -17,8 +19,8 @@ namespace PuyoPuyo.GameObjects.Gameboard
 
         // Grid
         public Puyo[,] Cells { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int Columns { get; private set; }
+        public int Rows { get; private set; }
 
         // Interface
         public bool Enabled { get; set; }
@@ -30,18 +32,20 @@ namespace PuyoPuyo.GameObjects.Gameboard
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="width">width of the grid</param>
-        /// <param name="height">height of the grid</param>
-        public Gameboard(int width, int height)
+        /// <param name="columns">columns of the grid</param>
+        /// <param name="rows">rows of the grid</param>
+        public Gameboard(int columns, int rows)
         {
-            Width = width > 0 ? width : throw new ArgumentException("Invalid width");
-            Height = height > 0 ? height : throw new ArgumentException("Invalid height");
+            Columns = columns > 0 ? columns : throw new ArgumentException("Invalid width");
+            Rows = rows > 0 ? rows : throw new ArgumentException("Invalid height");
 
-            for (int col = 0; col < width; col++)
+            Cells = new Puyo[Rows, Columns];
+
+            for (int col = 0; col < Columns; col++)
             {
-                for(int row = 0; row < height; row++)
+                for(int row = 0; row < Rows; row++)
                 {
-                    Cells[col, row] = Puyo.Undefined;
+                    Cells[row, col] = Puyo.Undefined;
                 }
             }
         }
@@ -77,18 +81,18 @@ namespace PuyoPuyo.GameObjects.Gameboard
         /// Spawn a puyopuyo
         /// </summary>
         /// <param name="color"></param>
-        public void Spawn(Color color, int x, int y)
+        public void Spawn(Color color, int row, int column)
         {
             if (_playerAlive)
                 throw new Exception("Can't spawn a new player until the previous one stopped moving");
 
             // Check that no puyo is in the cell
-            if (GetPuyo(x, y, out Puyo puyo) && puyo == Puyo.Undefined)
+            if (GetPuyo(row, column, out Puyo puyo) && puyo == Puyo.Undefined)
             {
                 // Create a new puyopuyo
                 _playerOrientation = Orientation.Top;
-                _playerX = x;
-                _playerY = y;
+                _playerX = row;
+                _playerY = column;
 
                 // Set the player alive
                 _playerAlive = true;
@@ -142,14 +146,14 @@ namespace PuyoPuyo.GameObjects.Gameboard
                     {
                         // Slave
                         case Orientation.Left:
-                            return nextIndexSX < Width && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
+                            return nextIndexSX < Columns && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
                         // Both
                         case Orientation.Down:
                         case Orientation.Top:
-                            return nextIndexMX < Width && nextIndexSX < Width && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
+                            return nextIndexMX < Columns && nextIndexSX < Columns && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
                         // Master
                         case Orientation.Right:
-                            return nextIndexMX < Width && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined;
+                            return nextIndexMX < Columns && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined;
                         default:
                             throw new Exception("Invalid direction provided");
                     }
@@ -184,12 +188,12 @@ namespace PuyoPuyo.GameObjects.Gameboard
                     {
                         case Orientation.Left:
                         case Orientation.Right:
-                            return nextIndexMY < Height && nextIndexSY < Height && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
+                            return nextIndexMY < Rows && nextIndexSY < Rows && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
                         case Orientation.Top:
-                            return nextIndexSY < Height && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
+                            return nextIndexSY < Rows && Cells[nextIndexSX, nextIndexSY] == Puyo.Undefined;
                         // Master
                         case Orientation.Down:
-                            return nextIndexMY < Height && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined;
+                            return nextIndexMY < Rows && Cells[nextIndexMX, nextIndexMY] == Puyo.Undefined;
                         default:
                             throw new Exception("Invalid direction provided");
                     }
@@ -206,70 +210,141 @@ namespace PuyoPuyo.GameObjects.Gameboard
         /// <summary>
         /// Get the color of a puyo at given coordinates
         /// </summary>
-        /// <param name="x">column</param>
-        /// <param name="y">row</param>
+        /// <param name="column">column</param>
+        /// <param name="row">row</param>
         /// <param name="puyo">out : color of the puyo</param>
         /// <returns>False if x,y are invalid</returns>
-        private bool GetPuyo(int x, int y, out Puyo puyo)
+        private bool GetPuyo(int row, int column, out Puyo puyo)
         {
-            if (x < 0 || y < 0 || x >= Width || y >= Height)
+            if (column < 0 || row < 0 || column >= Columns || row >= Rows)
             {
                 puyo = Puyo.Undefined;
                 return false;
             }
             else
             {
-                puyo = Cells[x, y];
+                puyo = Cells[row, column];
                 return true;
             }
         }
 
-        private ISet<Point> BuildChain(int x, int y)
-        {
-            HashSet<Point> chain = new HashSet<Point>();
-            return GetNeighbors(x, y, chain);
-        }
-
-        private ISet<Point> GetNeighbors(int x, int y, ISet<Point> set)
+        /// <summary>
+        /// Get the neighbors of a puyo at given coordinates
+        /// </summary>
+        /// <param name="column">column</param>
+        /// <param name="row">row</param>
+        /// <param name="puyo">out : color of the puyo</param>
+        /// <returns>Every puyo of the same color in V4</returns>
+        private List<Point> GetNeighbors(int row, int column)
         {
             // Get neighbors
             List<Point> neighbors = new List<Point>(4);
 
-            if (GetPuyo(x, y, out Puyo puyoType))
+            if (GetPuyo(row, column, out Puyo puyoType))
             {
                 if(!(puyoType == Puyo.Undefined))
                 {
-                    for(int col = 0; col < 2; col++)
+                    Point[] lrud = new Point[4]
                     {
-                        for (int row = 0; row < 2; row++)
+                        new Point(row, column - 1),
+                        new Point(row, column + 1),
+                        new Point(row - 1, column),
+                        new Point(row + 1, column)
+                    };
+
+                    foreach(Point p in lrud)
+                    {
+                        if (GetPuyo(p.X, p.Y, out Puyo neighbor))
                         {
-                            Point newPoint = new Point(x + col, y + row);
-                            if (GetPuyo(newPoint.X, newPoint.Y, out Puyo neighbor))
+                            if (!(neighbor == Puyo.Undefined) && neighbor == puyoType)
                             {
-                                if (!(neighbor == Puyo.Undefined) && neighbor == puyoType && !set.Contains(newPoint))
-                                {
-                                    neighbors.Add(newPoint);
-                                }
+                                neighbors.Add(p);
                             }
                         }
-                    }
-
-                    // return if no new puyos
-                    if (neighbors.Count == 0)
-                        return set;
-
-                    // Add new puyos to the set
-                    set.UnionWith(neighbors);
-
-                    // Search from children
-                    foreach(Point puyo in neighbors)
-                    {
-                        GetNeighbors(puyo.X, puyo.Y, set);
                     }
                 }
             }
 
-            return set;
+            return neighbors;
+        }
+
+        public Dictionary<Puyo, Dictionary<int, List<Point>>> GetChains(out int[,] indexes)
+        {
+            Dictionary<Puyo, Dictionary<int, List<Point>>> pieces = new Dictionary<Puyo, Dictionary<int, List<Point>>>();
+            foreach (Puyo puyo in Enum.GetValues(typeof(Puyo)))
+            {
+                pieces.Add(puyo, new Dictionary<int, List<Point>>());
+            }
+
+            int newIndex = 1;
+
+            // Will contains indexes
+            indexes = new int[Rows, Columns];
+
+            for (int row = Rows; row >= 0 ; row--)
+            {
+                for (int col = 0; col < Columns; col++)
+                {
+                    if (GetPuyo(row, col, out Puyo puyoColor))
+                    {
+                        List<Point> neighbors = GetNeighbors(row, col);
+
+                        // Not connected
+                        if (neighbors.Count == 0)
+                        {
+                            // Add it as a new piece
+                            pieces[puyoColor].Add(newIndex, new List<Point>()
+                            {
+                                new Point(row, col)
+                            });
+
+                            // Add it to the map
+                            indexes[row, col] = newIndex;
+
+                            // Increment piece index
+                            newIndex++;
+                        }
+                        else
+                        {
+                            int minIndex = Int32.MaxValue;
+                            int puyoIndex = indexes[row, col];
+
+                            if (puyoIndex <= 0)
+                            {
+                                puyoIndex = newIndex;
+                            }
+
+                            // Search pieces
+                            foreach (Point neighbor in neighbors)
+                            {
+                                int neighborIndex = indexes[neighbor.X, neighbor.Y];
+                                if (neighborIndex > 0 && neighborIndex < minIndex)
+                                    minIndex = indexes[neighbor.X, neighbor.Y];
+                            }
+
+                            // Replace puyoindex
+                            if (minIndex < puyoIndex)
+                            {
+                                puyoIndex = minIndex;
+                            }
+
+
+                            // Insert the new puyo to the matching pieces
+                            if (!pieces[puyoColor].ContainsKey(puyoIndex))
+                            {
+                                pieces[puyoColor].Add(puyoIndex, new List<Point>());
+                                newIndex++;
+                            }
+                            pieces[puyoColor][puyoIndex].Add(new Point(row, col));
+
+                            // Adapt index on the map
+                            indexes[row, col] = puyoIndex;
+                        }
+                    }
+                }
+            }
+
+            return pieces;
         }
 
         public void Update(GameTime gameTime)
@@ -278,6 +353,58 @@ namespace PuyoPuyo.GameObjects.Gameboard
             //FIXME: Take in account speed increase with Space for animation too
 
             throw new NotImplementedException();
+        }
+
+        public static bool Test()
+        {
+            Gameboard gb = new Gameboard(10, 20);
+
+            Random r = new Random();
+
+            // Fill tab
+            for (int row = 0; row < gb.Rows; row++)
+            {
+                for (int col = 0; col < gb.Columns; col++)
+                {
+                    gb.Cells[row, col] = (Puyo)r.Next(0, 5);
+                }
+            }
+
+            PrintArray(gb.Cells, gb.Rows, gb.Columns);
+
+            var foo = gb.GetChains(out int[,] indexes);
+
+            PrintArray(indexes, gb.Rows, gb.Columns);
+
+            return true;
+        }
+
+        public static void PrintArray(Puyo[,] array, int rows, int columns)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    sb.Append(String.Format("| {0,-10} ", array[row, col].ToString()));
+                }
+                sb.Append("\r\n");
+            }
+            Console.WriteLine(sb.ToString());
+        }
+
+        public static void PrintArray(int[,] array, int rows, int columns)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < columns; col++)
+                {
+                    sb.Append(String.Format("| {0,-10} ", array[row, col].ToString()));
+                }
+                sb.Append("\r\n");
+            }
+            Console.WriteLine(sb.ToString());
         }
     }
 }

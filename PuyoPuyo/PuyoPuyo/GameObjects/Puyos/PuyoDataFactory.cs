@@ -4,7 +4,7 @@ using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
 
-namespace PuyoPuyo.GameObjects.Puyos.Data
+namespace PuyoPuyo.GameObjects.Puyos
 {
     public class PuyoDataFactory
     {

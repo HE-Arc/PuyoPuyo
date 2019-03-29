@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
-using PuyoPuyo.GameObjects.Gameboard;
 using PuyoPuyo.screen;
+using PuyoPuyo.Tests;
 using PuyoPuyo.Toolbox;
 
 namespace PuyoPuyo
@@ -37,7 +37,7 @@ namespace PuyoPuyo
             // Init texture manager
             textureManager.Initialize(Content);
 
-            Gameboard.Test();
+            GameboardTesting.Test();
         }
 
         /// <summary>

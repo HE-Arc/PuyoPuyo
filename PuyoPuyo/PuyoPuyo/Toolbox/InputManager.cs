@@ -158,8 +158,6 @@ namespace PuyoPuyo.Toolbox
                 }
             }
 
-            Console.WriteLine(inputs.Count);
-
             foreach (Input i in inputs)
             {
                 switch (i)

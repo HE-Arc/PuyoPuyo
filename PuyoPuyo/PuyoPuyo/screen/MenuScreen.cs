@@ -7,6 +7,7 @@ using MonoGame.Extended.Screens;
 using System;
 using System.Collections.Generic;
 using PuyoPuyo.Toolbox;
+using System.Linq;
 
 namespace PuyoPuyo.screen
 {
@@ -16,7 +17,7 @@ namespace PuyoPuyo.screen
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
         private MouseState _previousMouseState;
-        private KeyboardState _previousKeyboardState;
+        private Dictionary<Keys, bool> _previousKeys = new Dictionary<Keys, bool>();
         private MenuItem cursor;
         private MenuItem selectedItem;
         private int indexMenu;
@@ -60,6 +61,12 @@ namespace PuyoPuyo.screen
             base.Initialize();
 
             Content = new ContentManager(_serviceProvider, "Content");
+
+            // Initialize keys
+            foreach(Keys k in Enum.GetValues(typeof(Keys)))
+            {
+                _previousKeys.Add(k, false);
+            }
         }
 
         public override void Dispose()
@@ -93,58 +100,29 @@ namespace PuyoPuyo.screen
         {
             base.Update(gameTime);
 
-            //var mouseState = Mouse.GetState();
-            //var isPressed = mouseState.LeftButton == ButtonState.Released && _previousMouseState.LeftButton == ButtonState.Pressed;
+            // TODO: InputManager
+            Dictionary<Keys, bool> pressedKeys = Keyboard.GetState().GetPressedKeys().ToDictionary(k => k, k => true);
 
-            //foreach (var menuItem in MenuItems)
-            //{
-            //    var isHovered = menuItem.BoundingRectangle.Contains(new Point2(mouseState.X, mouseState.Y));
-
-            //    if (isHovered)
-            //    {
-            //        indexMenu = MenuItems.IndexOf(menuItem);
-            //        UpdateSelection();
-
-            //        if (isPressed)
-            //        {
-            //            menuItem.Action?.Invoke();
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //_previousMouseState = mouseState;
-            //KeyboardState keyboardState = Keyboard.GetState();
-            InputManager im = new InputManager(false);
-            List<Input> inputs = im.Perform();
-
-            foreach (Input i in inputs)
+            if(pressedKeys.ContainsKey(Keys.Up))
             {
-                switch (i)
+                if (_previousKeys.TryGetValue(Keys.Up, out bool previouslyPressed))
                 {
-                    case Input.Down:
-                    case Input.Right:
-                        SelectNext();
-                        break;
-                    case Input.Up:
-                    case Input Left:
-                        SelectPrevious();
-                        break;
-                    default:
-                        break;
+                    if (previouslyPressed) return;
                 }
+                SelectPrevious();
             }
 
-            //if (keyboardState.IsKeyDown(Keys.Escape))
-            //    _main.Exit();
-            //else if (keyboardState.IsKeyDown(Keys.Enter))
-            //    selectedItem.Action?.Invoke();
-            //else if ((keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.Right)) && _previousKeyboardState != keyboardState)
-            //    SelectNext();
-            //else if ((keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.Left)) && _previousKeyboardState != keyboardState)
-            //    SelectPrevious();
+            if (pressedKeys.ContainsKey(Keys.Down))
+            {
+                if (_previousKeys.TryGetValue(Keys.Down, out bool previouslyPressed))
+                {
+                    if (previouslyPressed) return;
+                }
+                SelectNext();
+            }
 
-            //_previousKeyboardState = keyboardState;
+            // replace old keys
+            _previousKeys = pressedKeys;
         }
 
         public override void Draw(GameTime gameTime)

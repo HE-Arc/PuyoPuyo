@@ -57,7 +57,8 @@
         // Control
         Enter,
         Escape
-      }
+    }
+
     public enum Puyo
     {
         Undefined = -1,

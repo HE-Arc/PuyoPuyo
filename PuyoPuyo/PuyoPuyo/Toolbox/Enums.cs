@@ -49,7 +49,11 @@
         RightStickLeft,
         RightStickDown,
         RightStickRight,
-
+        //Pad
+        PadUp,
+        PadLeft,
+        PadDown,
+        PadRight,
         // Control
         Enter,
         Escape

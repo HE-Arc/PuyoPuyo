@@ -21,6 +21,7 @@ namespace PuyoPuyo.screen
         private MenuItem cursor;
         private MenuItem selectedItem;
         private int indexMenu;
+        private InputManager im = new InputManager();
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
         protected ContentManager Content { get; private set; }
@@ -100,29 +101,88 @@ namespace PuyoPuyo.screen
         {
             base.Update(gameTime);
 
-            // TODO: InputManager
-            Dictionary<Keys, bool> pressedKeys = Keyboard.GetState().GetPressedKeys().ToDictionary(k => k, k => true);
+            List<Input> inputs = im.Perform();
 
-            if(pressedKeys.ContainsKey(Keys.Up))
+            foreach (Input input in inputs)
             {
-                if (_previousKeys.TryGetValue(Keys.Up, out bool previouslyPressed))
+                switch (input)
                 {
-                    if (previouslyPressed) return;
+                    case Input.None:
+                        break;
+                    case Input.Home:
+                        break;
+                    case Input.Start:
+                        break;
+                    case Input.Back:
+                        break;
+                    case Input.Up:
+                        SelectPrevious();
+                        break;
+                    case Input.Left:
+                        break;
+                    case Input.Down:
+                        SelectNext();
+                        break;
+                    case Input.Right:
+                        break;
+                    case Input.Y:
+                        break;
+                    case Input.X:
+                        break;
+                    case Input.A:
+                        selectedItem.Action?.Invoke();
+                        break;
+                    case Input.B:
+                        break;
+                    case Input.LeftShoulder:
+                        break;
+                    case Input.RightShoulder:
+                        break;
+                    case Input.LeftTrigger:
+                        break;
+                    case Input.RightTrigger:
+                        break;
+                    case Input.LeftStick:
+                        break;
+                    case Input.LeftStickUp:
+                        SelectPrevious();
+                        break;
+                    case Input.LeftStickLeft:
+                        break;
+                    case Input.LeftStickDown:
+                        SelectNext();
+                        break;
+                    case Input.LeftStickRight:
+                        break;
+                    case Input.RightStick:
+                        break;
+                    case Input.RightStickUp:
+                        break;
+                    case Input.RightStickLeft:
+                        break;
+                    case Input.RightStickDown:
+                        break;
+                    case Input.RightStickRight:
+                        break;
+                    case Input.PadUp:
+                        SelectPrevious();
+                        break;
+                    case Input.PadLeft:
+                        break;
+                    case Input.PadDown:
+                        SelectNext();
+                        break;
+                    case Input.PadRight:
+                        break;
+                    case Input.Enter:
+                        selectedItem.Action?.Invoke();
+                        break;
+                    case Input.Escape:
+                        break;
+                    default:
+                        break;
                 }
-                SelectPrevious();
             }
-
-            if (pressedKeys.ContainsKey(Keys.Down))
-            {
-                if (_previousKeys.TryGetValue(Keys.Down, out bool previouslyPressed))
-                {
-                    if (previouslyPressed) return;
-                }
-                SelectNext();
-            }
-
-            // replace old keys
-            _previousKeys = pressedKeys;
         }
 
         public override void Draw(GameTime gameTime)

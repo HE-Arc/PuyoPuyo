@@ -12,17 +12,40 @@ namespace PuyoPuyo.GameObjects
     {
         private static Random random = new Random();
 
-        public bool Alive { get; set; } 
-        public Orientation Orientation { get; set; }
-        public Color Color { get; private set; }
-        public Point Master { get; set; }
-        public Point Slave { get; set; }
+        private Point posMaster;
+        private Orientation orientation;
 
-        public Player(Gameboard gameboard, Color color)
+        public bool Alive { get; set; } 
+        public Orientation Orientation { get
+            {
+                return orientation;
+            }
+            set
+            {
+                orientation = value;
+                Slave = GetSlavePositionFromMaster();
+            }
+        }
+        public Puyo Color { get; private set; }
+        public Point Master
+        {
+            get
+            {
+                return posMaster;
+            }
+            set
+            {
+                posMaster = value;
+                Slave = GetSlavePositionFromMaster();
+            }
+        }
+        public Point Slave { get; private set; }
+
+        public Player(Gameboard gameboard, Puyo color)
         {
             Alive = true;
             Orientation = Orientation.Up;
-            Color = color;
+            Color = color != Puyo.Undefined ? color : throw new ArgumentException("Invalid puyo (color) given");
 
             // Create new random spawn point
             Point p = new Point(0, random.Next(0, gameboard.Columns));
@@ -38,8 +61,6 @@ namespace PuyoPuyo.GameObjects
                 throw new ArgumentException("[x, y] already in use");
             }
         }
-
-        
 
         /// <summary>
         /// Returns the location of the slave

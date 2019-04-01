@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuyoPuyo", "PuyoPuyo\PuyoPuyo.csproj", "{E5B13A00-E43B-4201-B04A-317C0F48D052}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,14 @@ Global
 		{E5B13A00-E43B-4201-B04A-317C0F48D052}.Release|Any CPU.ActiveCfg = Release|x86
 		{E5B13A00-E43B-4201-B04A-317C0F48D052}.Release|x86.ActiveCfg = Release|x86
 		{E5B13A00-E43B-4201-B04A-317C0F48D052}.Release|x86.Build.0 = Release|x86
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5EA28FC-3521-4A83-9D8E-8F3F452219CC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

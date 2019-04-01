@@ -68,4 +68,10 @@
         Yellow = 3,
         Purple = 4
     }
+
+    public enum GameboardState
+    {
+        PAUSED, 
+        RUNNING,
+    }
 }

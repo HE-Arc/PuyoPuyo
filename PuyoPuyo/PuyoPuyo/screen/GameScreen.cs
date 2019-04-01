@@ -45,11 +45,12 @@ namespace PuyoPuyo.screen
             origin = new Vector2(128, 128);
             texture = _game.Content.Load<Texture2D>("textures/puyos/R");
 
-            gb.Cells[0, 0] = Puyo.Red;
-            gb.Cells[0, 1] = Puyo.Blue;
-            gb.Cells[1, 2] = Puyo.Green;
-            gb.Cells[1, 3] = Puyo.Purple;
-            gb.Cells[2, 0] = Puyo.Yellow;
+            //gb.Cells[0, 0] = Puyo.Red;
+            //gb.Cells[0, 1] = Puyo.Blue;
+            //gb.Cells[1, 2] = Puyo.Green;
+            //gb.Cells[1, 3] = Puyo.Purple;
+            //gb.Cells[2, 0] = Puyo.Yellow;
+            gb.Spawn(Puyo.Yellow);
         }
 
         public override void UnloadContent()

@@ -10,8 +10,6 @@ namespace PuyoPuyo.GameObjects
 {
     public class Player
     {
-        private static Random random = new Random();
-
         private Point posMaster;
         private Orientation orientation;
 
@@ -48,13 +46,15 @@ namespace PuyoPuyo.GameObjects
             Color = color != Puyo.Undefined ? color : throw new ArgumentException("Invalid puyo (color) given");
 
             // Create new random spawn point
-            Point p = new Point(0, random.Next(0, gameboard.Columns));
+            Point p = new Point(1, gameboard.Columns / 2); //FIXME: DONT FORGET TO HIDE 2 FIRST LINES
 
             // Check that no puyo is in the cell
             if (gameboard.GetPuyo(p.X, p.Y, out Puyo puyo) && puyo == Puyo.Undefined)
             {
                 Master = p;
                 Slave = GetSlavePositionFromMaster();
+                gameboard.Cells[Master.X, Master.Y] = Color;
+                gameboard.Cells[Slave.X, Slave.Y] = Color;
             }
             else
             {

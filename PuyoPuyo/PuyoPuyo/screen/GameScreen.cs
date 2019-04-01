@@ -80,16 +80,16 @@ namespace PuyoPuyo.screen
                     case Input.Back:
                         break;
                     case Input.Up:
-                        position.Y -= 10;
+                        gb.Up();
                         break;
                     case Input.Left:
-                        position.X -= 10;
+                        gb.Left();
                         break;
                     case Input.Down:
-                        position.Y += 10;
+                        gb.Down();
                         break;
                     case Input.Right:
-                        position.X += 10;
+                        gb.Right();
                         break;
                     case Input.Y:
                         break;

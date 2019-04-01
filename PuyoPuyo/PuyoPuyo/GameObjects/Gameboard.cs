@@ -18,8 +18,8 @@ namespace PuyoPuyo.GameObjects
         private readonly int puyoCount = Enum.GetValues(typeof(Puyo)).Length;
 
         public static readonly int DELAY_SPAWN = 500;
-        public static readonly int DELAY_FALL = 200;
-        public static readonly int DELAY_FALL_FAST = 50;
+        public static readonly int DELAY_FALL = 350;
+        public static readonly int DELAY_FALL_FAST = 150;
 
         private readonly Stopwatch stopwatch = new Stopwatch();
         private GameboardState gameboardState = GameboardState.PAUSED;
@@ -96,6 +96,7 @@ namespace PuyoPuyo.GameObjects
         public void Resume()
         {
             gameboardState = GameboardState.RUNNING;
+            stopwatch.Restart();
         }
 
         /// <summary>
@@ -108,6 +109,7 @@ namespace PuyoPuyo.GameObjects
             {
                 Player = new Player(this, color);
                 isPlayerBroken = false;
+                isSpawnRequested = false;
             }
             else throw new PlayerException(PlayerException.OfType.SpawnError);
         }
@@ -119,7 +121,7 @@ namespace PuyoPuyo.GameObjects
         private void Move(Orientation direction)
         {
             if (Player is null)
-                throw new PlayerException(PlayerException.OfType.NotCreated);
+                return;
 
             if (Player.Alive && !isPlayerBroken)
             {
@@ -134,19 +136,19 @@ namespace PuyoPuyo.GameObjects
                     // Player going left
                     case Orientation.Left:
 
-                        nextIndexMR = nextIndexMR - 1;
-                        nextIndexSR = nextIndexSR - 1;
+                        nextIndexMC = nextIndexMC - 1;
+                        nextIndexSC = nextIndexSC - 1;
 
                         switch (Player.Orientation)
                         {
                             // Slave
                             case Orientation.Left:
-                                if (nextIndexSR >= 0)
+                                if (nextIndexSC >= 0)
                                 {
                                     if (Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -157,12 +159,12 @@ namespace PuyoPuyo.GameObjects
                             // Both
                             case Orientation.Down:
                             case Orientation.Up:
-                                if (nextIndexMR >= 0 && nextIndexSR >= 0)
+                                if (nextIndexMC >= 0 && nextIndexSC >= 0)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined && Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -172,12 +174,12 @@ namespace PuyoPuyo.GameObjects
                                 break;
                             // Master
                             case Orientation.Right:
-                                if (nextIndexMR >= 0)
+                                if (nextIndexMC >= 0)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -192,19 +194,19 @@ namespace PuyoPuyo.GameObjects
 
                     // Player going right
                     case Orientation.Right:
-                        nextIndexMR = nextIndexMR + 1;
-                        nextIndexSR = nextIndexSR + 1;
+                        nextIndexMC = nextIndexMC + 1;
+                        nextIndexSC = nextIndexSC + 1;
 
-                        switch (direction)
+                        switch (Player.Orientation)
                         {
                             // Slave
                             case Orientation.Left:
-                                if (nextIndexSR < Columns)
+                                if (nextIndexMC < Columns)
                                 {
-                                    if (Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
+                                    if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -215,12 +217,12 @@ namespace PuyoPuyo.GameObjects
                             // Both
                             case Orientation.Down:
                             case Orientation.Up:
-                                if (nextIndexMR < Columns && nextIndexSR < Columns)
+                                if (nextIndexMC < Columns && nextIndexSC < Columns)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined && Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -230,12 +232,12 @@ namespace PuyoPuyo.GameObjects
                                 break;
                             // Master
                             case Orientation.Right:
-                                if (nextIndexMR < Columns)
+                                if (nextIndexSC < Columns)
                                 {
-                                    if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined)
+                                    if (Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -251,19 +253,19 @@ namespace PuyoPuyo.GameObjects
                     // Player going up
                     case Orientation.Up:
 
-                        nextIndexMC = nextIndexMC - 1;
-                        nextIndexSC = nextIndexSC - 1;
+                        nextIndexMR = nextIndexMR - 1;
+                        nextIndexSR = nextIndexSR - 1;
 
-                        switch (direction)
+                        switch (Player.Orientation)
                         {
                             case Orientation.Left:
                             case Orientation.Right:
-                                if (nextIndexMC >= 0 && nextIndexSC >= 0)
+                                if (nextIndexMR >= 0 && nextIndexSR >= 0)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined && Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -272,12 +274,12 @@ namespace PuyoPuyo.GameObjects
                                 }
                                 break;
                             case Orientation.Up:
-                                if (nextIndexSC >= 0)
+                                if (nextIndexSR >= 0)
                                 {
                                     if (Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -287,12 +289,12 @@ namespace PuyoPuyo.GameObjects
                                 break;
                             // Master
                             case Orientation.Down:
-                                if (nextIndexMC >= 0)
+                                if (nextIndexMR >= 0)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
@@ -305,56 +307,68 @@ namespace PuyoPuyo.GameObjects
                         }
                         break;
 
-                    // Player going up
+                    // Player going down
                     case Orientation.Down:
 
-                        nextIndexMC = nextIndexMC + 1;
-                        nextIndexSC = nextIndexSC + 1;
+                        nextIndexMR = nextIndexMR + 1;
+                        nextIndexSR = nextIndexSR + 1;
 
-                        switch (direction)
+                        switch (Player.Orientation)
                         {
                             case Orientation.Left:
                             case Orientation.Right:
-                                if (nextIndexMC < Rows && nextIndexSC < Rows)
+                                if (nextIndexMR < Rows && nextIndexSR < Rows)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined && Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
                                         BreakAndFall();
                                     }
+                                }
+                                else
+                                {
+                                    Player.Alive = false;
                                 }
                                 break;
                             case Orientation.Up:
-                                if (nextIndexSC < Rows)
-                                {
-                                    if (Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
-                                    {
-                                        // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
-                                    }
-                                    else
-                                    {
-                                        BreakAndFall();
-                                    }
-                                }
-                                break;
-                            // Master
-                            case Orientation.Down:
-                                if (nextIndexMC < Rows)
+                                if (nextIndexMR < Rows)
                                 {
                                     if (Cells[nextIndexMR, nextIndexMC] == Puyo.Undefined)
                                     {
                                         // Free cell, move puyo
-                                        Player.Master = new Point(nextIndexMR, nextIndexMC);
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
                                     }
                                     else
                                     {
                                         BreakAndFall();
                                     }
+                                }
+                                else
+                                {
+                                    Player.Alive = false;
+                                }
+                                break;
+                            // Master
+                            case Orientation.Down:
+                                if (nextIndexSR < Rows)
+                                {
+                                    if (Cells[nextIndexSR, nextIndexSC] == Puyo.Undefined)
+                                    {
+                                        // Free cell, move puyo
+                                        FreeCellAndMovePuyo(nextIndexMR, nextIndexMC);
+                                    }
+                                    else
+                                    {
+                                        BreakAndFall();
+                                    }
+                                }
+                                else
+                                {
+                                    Player.Alive = false;
                                 }
                                 break;
                             default:
@@ -364,6 +378,15 @@ namespace PuyoPuyo.GameObjects
                 }
             }
             else throw new PlayerException(PlayerException.OfType.NotAlive);
+        }
+
+        private void FreeCellAndMovePuyo(int nextIndexMR, int nextIndexMC)
+        {
+            Cells[Player.Master.X, Player.Master.Y] = Puyo.Undefined;
+            Cells[Player.Slave.X, Player.Slave.Y] = Puyo.Undefined;
+            Player.Master = new Point(nextIndexMR, nextIndexMC);
+            Cells[Player.Master.X, Player.Master.Y] = Player.Color;
+            Cells[Player.Slave.X, Player.Slave.Y] = Player.Color;
         }
 
         /// <summary>
@@ -499,6 +522,10 @@ namespace PuyoPuyo.GameObjects
                 {
                     if (GetPuyo(row, col, out Puyo puyoColor))
                     {
+                        // Do not test undefined puyo
+                        if (puyoColor == Puyo.Undefined)
+                            continue;
+
                         List<Point> neighbors = GetNeighbors(row, col);
 
                         // Not connected
@@ -596,14 +623,14 @@ namespace PuyoPuyo.GameObjects
 
                         // Make every puyo fall
                         isPuyoFalling = false;
-                        for (int row = Rows; row >= 0; row--)
+                        for (int row = Rows - 1; row >= 0; row--)
                         {
                             for (int col = 0; col < Columns; col++)
                             {
                                 if (Cells[row, col] == Puyo.Undefined) continue;
                                 else
                                 {
-                                    if (Cells[row - 1, col] == Puyo.Undefined)
+                                    if (GetPuyo(row - 1, col, out Puyo puyo) && puyo == Puyo.Undefined)
                                     {
                                         // Move down the puyo
                                         Cells[row - 1, col] = Cells[row, col];
@@ -664,6 +691,7 @@ namespace PuyoPuyo.GameObjects
                         }
                         else
                         {
+                            Player = null;
                             isSpawnRequested = true;
                         }
                     }

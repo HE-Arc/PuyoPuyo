@@ -53,7 +53,8 @@
         // Control
         Enter,
         Escape
-      }
+    }
+
     public enum Puyo
     {
         Undefined = -1,
@@ -62,5 +63,11 @@
         Blue = 2,
         Yellow = 3,
         Purple = 4
+    }
+
+    public enum GameboardState
+    {
+        PAUSED, 
+        RUNNING,
     }
 }

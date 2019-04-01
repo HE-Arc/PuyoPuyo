@@ -19,15 +19,12 @@ namespace PuyoPuyo.Toolbox
         private List<Input> returnedInputs = new List<Input>();
         private Dictionary<Input, InputTimer> inputsUsable = new Dictionary<Input, InputTimer>();
 
-
         public float DeadzoneSticks = 0.25f;
 
-        public InputManager(bool controlIndex)
+        public InputManager()
         {
             foreach (Input item in Enum.GetValues(typeof(Input)))
             {
-                
-
                 InputTimer inputTimer = new InputTimer();
                 inputsUsable.Add(item, inputTimer);
             }

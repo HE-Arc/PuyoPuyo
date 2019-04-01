@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
+﻿using System.Timers;
 
 namespace PuyoPuyo.Toolbox
 {
@@ -14,7 +9,7 @@ namespace PuyoPuyo.Toolbox
         public InputTimer()
         {
             Timer timer = new Timer();
-            timer.Interval = 80;
+            timer.Interval = Consts.INPUT_TIMERTICK;
             timer.AutoReset = false;
             timer.Elapsed += (sender, e) => InputActivation(sender, e);
             Timer = timer;
@@ -24,7 +19,6 @@ namespace PuyoPuyo.Toolbox
 
         private void InputActivation(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("toto");
             Usable = true;
         }
     }

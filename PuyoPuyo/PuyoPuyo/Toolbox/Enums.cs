@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PuyoPuyo.Toolbox
+﻿namespace PuyoPuyo.Toolbox
 {
     public enum Rotation
     {
@@ -15,7 +9,7 @@ namespace PuyoPuyo.Toolbox
     public enum Orientation
     {
         Left = 0,
-        Top = 1,
+        Up = 1,
         Right = 2,
         Down = 3
     }
@@ -63,5 +57,14 @@ namespace PuyoPuyo.Toolbox
         // Control
         Enter,
         Escape
+      }
+    public enum Puyo
+    {
+        Undefined = -1,
+        Red = 0,
+        Green = 1,
+        Blue = 2,
+        Yellow = 3,
+        Purple = 4
     }
 }

@@ -39,7 +39,7 @@ namespace PuyoPuyo
             // Init texture manager
             textureManager.Initialize(Content);
 
-            GameboardTesting.Test();
+            //GameboardTesting.Test();
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
 using PuyoPuyo.GameObjects;
+using PuyoPuyo.Tests;
 using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
@@ -34,16 +35,12 @@ namespace PuyoPuyo.screen
             _serviceProvider = serviceProvider;
             _game = game;
             im = new InputManager();
+            gb.Resume();
         }
 
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
-
-            position = new Vector2(_game.GraphicsDevice.Viewport.Width / 2,
-                _game.GraphicsDevice.Viewport.Height / 2);
-            origin = new Vector2(128, 128);
-            texture = _game.Content.Load<Texture2D>("textures/puyos/R");
 
             //gb.Cells[0, 0] = Puyo.Red;
             //gb.Cells[0, 1] = Puyo.Blue;
@@ -51,6 +48,8 @@ namespace PuyoPuyo.screen
             //gb.Cells[1, 3] = Puyo.Purple;
             //gb.Cells[2, 0] = Puyo.Yellow;
             gb.Spawn(Puyo.Yellow);
+            gb.GetChains(out int[,] foo);
+            GameboardTesting.PrintArray(foo, gb.Rows, gb.Columns);
         }
 
         public override void UnloadContent()
@@ -61,6 +60,7 @@ namespace PuyoPuyo.screen
         public override void Update(GameTime gameTime)
         {
             UpdateTest();
+            gb.Update(gameTime);
         }
 
         private void UpdateTest()
@@ -154,9 +154,11 @@ namespace PuyoPuyo.screen
             _game.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(texture, position, origin: origin);
+
             gb.Draw(_spriteBatch);
+
             _spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }

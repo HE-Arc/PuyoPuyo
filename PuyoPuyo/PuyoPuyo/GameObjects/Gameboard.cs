@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PuyoPuyo.Exceptions;
 using PuyoPuyo.GameObjects.Puyos;
 using PuyoPuyo.Toolbox;
@@ -24,6 +25,11 @@ namespace PuyoPuyo.GameObjects
         public bool Enabled { get; set; }
         public int UpdateOrder => 0;
 
+        // Draw elements
+        private Texture2D BoardCase;
+        private const int SizeBoardCase = 50;
+        private Vector2 Scale = new Vector2(0.38f);
+
         /// <summary>
         /// Help managing puyos.
         /// <para/> Row-major
@@ -32,6 +38,7 @@ namespace PuyoPuyo.GameObjects
         /// <param name="rows">rows of the grid</param>
         public Gameboard(int columns, int rows)
         {
+            // Logic elements init
             Columns = columns > 0 ? columns : throw new ArgumentException("Invalid column count");
             Rows = rows > 0 ? rows : throw new ArgumentException("Invalid row count");
 
@@ -375,5 +382,68 @@ namespace PuyoPuyo.GameObjects
             throw new NotImplementedException();
         }
 
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            BoardCase = new Texture2D(spriteBatch.GraphicsDevice, SizeBoardCase, SizeBoardCase);
+            int X = 0;
+            int Y = 0;
+
+            // Row first
+            for(int y=0; y<Rows; y++)
+            {
+                X = 0;
+                Y += SizeBoardCase;
+                for(int x=0; x<Columns; x++)
+                {
+                    RectangleSprite.DrawRectangle(spriteBatch, new Rectangle(X, Y, SizeBoardCase, SizeBoardCase), Color.Red, 2);
+                    Texture2D t = null;
+
+                    switch(Cells[y,x])
+                    {
+                        case Puyo.Red:
+                           t = TextureManager.Instance.TryGet<Texture2D>("PuyoRed");
+                           break;
+                        case Puyo.Green:
+                            t = TextureManager.Instance.TryGet<Texture2D>("PuyoGreen");
+                            break;
+                        case Puyo.Blue:
+                            t = TextureManager.Instance.TryGet<Texture2D>("PuyoBlue");
+                            break;
+                        case Puyo.Yellow:
+                            t = TextureManager.Instance.TryGet<Texture2D>("PuyoYellow");
+                            break;
+                        case Puyo.Purple:
+                            t = TextureManager.Instance.TryGet<Texture2D>("PuyoPurple");
+                            break;
+                    }
+
+                    if(t != null)
+                    {
+                        spriteBatch.Draw(t, new Vector2(X, Y), origin: new Vector2(0, 0), scale: Scale);
+                    }
+
+                    X += SizeBoardCase;
+                }
+            }
+           
+        }
+    }
+
+    class RectangleSprite
+    {
+        static Texture2D _pointTexture;
+        public static void DrawRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int lineWidth)
+        {
+            if (_pointTexture == null)
+            {
+                _pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                _pointTexture.SetData<Color>(new Color[] { Color.White });
+            }
+
+            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
+            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + lineWidth, lineWidth), color);
+            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
+            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + lineWidth, lineWidth), color);
+        }
     }
 }

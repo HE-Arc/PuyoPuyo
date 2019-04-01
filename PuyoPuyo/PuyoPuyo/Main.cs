@@ -25,6 +25,8 @@ namespace PuyoPuyo
         {
             
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 1600;
             Content.RootDirectory = "Content";
 
             // Init screen management

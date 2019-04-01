@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PuyoPuyo.Toolbox;
 using System.Timers;
+using PuyoPuyo.GameObjects;
 
 namespace PuyoPuyo.Toolbox
 {
@@ -15,14 +16,29 @@ namespace PuyoPuyo.Toolbox
 
         private KeyboardState kState;
         private GamePadState gState;
-        private List<Input> inputs = new List<Input>();
-        private List<Input> returnedInputs = new List<Input>();
+        private Dictionary<Player, PlayerIndex> playersKeyBoard = new Dictionary<Player, PlayerIndex>();
+        private Dictionary<Player, PlayerIndex> playersGamePad = new Dictionary<Player, PlayerIndex>();
+        private PlayerIndex gamePadIndex;
         private Dictionary<Input, InputTimer> inputsUsable = new Dictionary<Input, InputTimer>();
+
 
         public float DeadzoneSticks = 0.25f;
 
-        public InputManager()
+        private static InputManager instance;
+        public static InputManager Instance
         {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new InputManager();
+                }
+
+                return instance;
+            }
+        }
+
+        private InputManager() {
             foreach (Input item in Enum.GetValues(typeof(Input)))
             {
                 InputTimer inputTimer = new InputTimer();
@@ -30,130 +46,209 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
-        public List<Input> Perform()
+        public bool SetKeyBoard(Player player, PlayerIndex gamePadIndex)
         {
-            List<Input> lstInputs = new List<Input>();
+            if (playersKeyBoard.ContainsValue(gamePadIndex))
+                return false;
 
-            //keyboard
+            if (!playersKeyBoard.ContainsKey(player))
+                playersKeyBoard.Add(player, gamePadIndex);
+            else
+                playersKeyBoard[player] = gamePadIndex;
+
+            return true;
+        }
+
+        public bool SetGamePad(Player player, PlayerIndex gamePadIndex)
+        {
+            if (playersKeyBoard.ContainsValue(gamePadIndex))
+                return false;
+
+            if (!playersGamePad.ContainsKey(player))
+                playersGamePad.Add(player, gamePadIndex);
+            else
+                playersGamePad[player] = gamePadIndex;
+
+            return true;
+        }
+
+        private void Player1Keyboard(List<Input> inputs)
+        {
+            kState = Keyboard.GetState();
+            if (kState != null)
+            {
+                if (kState.IsKeyDown(Keys.A))
+                    inputs.Add(Input.Left);
+
+                if (kState.IsKeyDown(Keys.W))
+                    inputs.Add(Input.Up);
+
+                if (kState.IsKeyDown(Keys.D))
+                    inputs.Add(Input.Right);
+
+                if (kState.IsKeyDown(Keys.S))
+                    inputs.Add(Input.Down);
+
+                if (kState.IsKeyDown(Keys.Enter))
+                    inputs.Add(Input.Validate);
+
+                if (kState.IsKeyDown(Keys.Escape))
+                    inputs.Add(Input.Cancel);
+
+                if (kState.IsKeyDown(Keys.Tab))
+                    inputs.Add(Input.Pause);
+
+                if (kState.IsKeyDown(Keys.Q))
+                    inputs.Add(Input.CounterclockwiseRotation);
+
+                if (kState.IsKeyDown(Keys.E))
+                    inputs.Add(Input.ClockwiseRotation);
+            }
+        }
+
+        private void Player2Keyboard(List<Input> inputs)
+        {
             kState = Keyboard.GetState();
             if (kState != null)
             {
                 if (kState.IsKeyDown(Keys.Left))
-                    lstInputs.Add(Input.Left);
+                    inputs.Add(Input.Left);
 
                 if (kState.IsKeyDown(Keys.Up))
-                    lstInputs.Add(Input.Up);
+                    inputs.Add(Input.Up);
 
                 if (kState.IsKeyDown(Keys.Right))
-                    lstInputs.Add(Input.Right);
+                    inputs.Add(Input.Right);
 
                 if (kState.IsKeyDown(Keys.Down))
-                    lstInputs.Add(Input.Down);
+                    inputs.Add(Input.Down);          
 
-                if (kState.IsKeyDown(Keys.Enter))
-                    lstInputs.Add(Input.Enter);
+                if (kState.IsKeyDown(Keys.P))
+                    inputs.Add(Input.Pause);
 
-                if (kState.IsKeyDown(Keys.Escape))
-                    lstInputs.Add(Input.Escape);
+                if (kState.IsKeyDown(Keys.PageUp))
+                    inputs.Add(Input.CounterclockwiseRotation);
 
-                if (kState.IsKeyDown(Keys.Back))
-                    lstInputs.Add(Input.Back);       
+                if (kState.IsKeyDown(Keys.PageDown))
+                    inputs.Add(Input.ClockwiseRotation);
             }
+        }
 
-            // Gamepad
-            gState = GamePad.GetState(PlayerIndex.One);
+        private void PlayerGamePad(List<Input> inputs, Player player = null)
+        { 
+            gState = (player != null) ? GamePad.GetState(playersGamePad[player]) : GamePad.GetState(gamePadIndex);
             if (gState.IsConnected)
             {
                 // Left Stick
-                if(gState.ThumbSticks.Left.X < -DeadzoneSticks)
+                if (gState.ThumbSticks.Left.X < -DeadzoneSticks)
                 {
-                    lstInputs.Add(Input.LeftStickLeft);
+                    inputs.Add(Input.Left);
                 }
 
                 if (gState.ThumbSticks.Left.Y > DeadzoneSticks)
                 {
-                    lstInputs.Add(Input.LeftStickUp);           
+                    inputs.Add(Input.Up);
                 }
 
                 if (gState.ThumbSticks.Left.X > DeadzoneSticks)
                 {
-                    lstInputs.Add(Input.LeftStickRight);              
+                    inputs.Add(Input.Right);
                 }
 
                 if (gState.ThumbSticks.Left.Y < -DeadzoneSticks)
                 {
-                    lstInputs.Add(Input.LeftStickDown);
-                }
-
-                // Right Stick
-                if (gState.ThumbSticks.Right.X < -DeadzoneSticks)
-                {
-                    lstInputs.Add(Input.RightStickLeft);
-                }
-
-                if (gState.ThumbSticks.Right.Y > DeadzoneSticks)
-                {
-                    lstInputs.Add(Input.RightStickUp);
-                }
-
-                if (gState.ThumbSticks.Right.X > DeadzoneSticks)
-                {
-                    lstInputs.Add(Input.RightStickRight);
-                }
-
-                if (gState.ThumbSticks.Right.Y < -DeadzoneSticks)
-                {
-                    lstInputs.Add(Input.RightStickDown);
+                    inputs.Add(Input.Down);
                 }
 
                 // DPad
                 if (gState.IsButtonDown(Buttons.DPadLeft))
                 {
-                    lstInputs.Add(Input.PadLeft);
+                    inputs.Add(Input.Left);
                 }
 
                 if (gState.IsButtonDown(Buttons.DPadUp))
                 {
-                    lstInputs.Add(Input.PadUp);
+                    inputs.Add(Input.Up);
                 }
 
                 if (gState.IsButtonDown(Buttons.DPadRight))
                 {
-                    lstInputs.Add(Input.PadRight);
+                    inputs.Add(Input.Right);
                 }
 
                 if (gState.IsButtonDown(Buttons.DPadDown))
                 {
-                    lstInputs.Add(Input.PadDown);
+                    inputs.Add(Input.Down);
                 }
 
                 if (gState.IsButtonDown(Buttons.A))
                 {
-                    lstInputs.Add(Input.A);
+                    inputs.Add(Input.Validate);
                 }
 
                 if (gState.IsButtonDown(Buttons.B))
                 {
-                    lstInputs.Add(Input.B);
+                    inputs.Add(Input.Cancel);
+                }
+
+                if (gState.IsButtonDown(Buttons.Start))
+                {
+                    inputs.Add(Input.Pause);
+                }
+
+                if (gState.IsButtonDown(Buttons.LeftTrigger))
+                {
+                    inputs.Add(Input.CounterclockwiseRotation);
+                }
+
+                if (gState.IsButtonDown(Buttons.RightTrigger))
+                {
+                    inputs.Add(Input.ClockwiseRotation);
                 }
             }
+        }
 
-            for (int i = lstInputs.Count -1; i >= 0; --i)
+        public List<Input> Perform(Player player = null)
+        {
+            List<Input> inputs = new List<Input>();
+
+            if (player != null)
             {
-                if (inputsUsable[lstInputs[i]].Usable)
+                if (playersGamePad.ContainsKey(player))
+                    PlayerGamePad(inputs, player);
+
+                if (inputs.Count == 0)
                 {
-                    inputsUsable[lstInputs[i]].Usable = false;
+                    if (playersKeyBoard[player] == PlayerIndex.One)
+                        Player1Keyboard(inputs);
+                    else
+                        Player2Keyboard(inputs);
+                }
+            }
+            else
+            {
+                PlayerGamePad(inputs);
+
+                if (inputs.Count == 0)
+                    Player1Keyboard(inputs);
+            }
+
+            for (int i = inputs.Count -1; i >= 0; --i)
+            {
+                if (inputsUsable[inputs[i]].Usable)
+                {
+                    inputsUsable[inputs[i]].Usable = false;
 
 
-                    inputsUsable[lstInputs[i]].Timer.Start();
+                    inputsUsable[inputs[i]].Timer.Start();
                 }
                 else
                 {
-                    lstInputs.RemoveAt(i);
+                    inputs.RemoveAt(i);
                 }
             }
 
-            return lstInputs;
+            return inputs;
         }
 
         

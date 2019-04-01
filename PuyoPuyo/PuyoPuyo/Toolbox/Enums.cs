@@ -16,48 +16,17 @@
 
     public enum Input
     {
-        None,
-        // Center
-        Home,
-        Start,
-        Back,
-        // D-Pad
         Up,
         Left,
         Down,
         Right,
-        // Face buttons
-        Y,
-        X,
-        A,
-        B,
-        // Shoulder buttons
-        LeftShoulder,
-        RightShoulder,
-        // Triggers
-        LeftTrigger,
-        RightTrigger,
-        // Left Stick
-        LeftStick,
-        LeftStickUp,
-        LeftStickLeft,
-        LeftStickDown,
-        LeftStickRight,
-        // Right Stick
-        RightStick,
-        RightStickUp,
-        RightStickLeft,
-        RightStickDown,
-        RightStickRight,
-        //Pad
-        PadUp,
-        PadLeft,
-        PadDown,
-        PadRight,
-        // Control
-        Enter,
-        Escape
+        Pause,
+        Validate,
+        Cancel,
+        CounterclockwiseRotation,
+        ClockwiseRotation,
       }
+
     public enum Puyo
     {
         Undefined = -1,

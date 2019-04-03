@@ -20,7 +20,7 @@ namespace PuyoPuyo.Toolbox
          * calcule le score, calcule la nuisance
          * et vide les listes pour le coup suivant */
 
-        private List<Puyo> lstPuyoColors;
+        private List<PuyoColor> lstPuyoColors;
         private List<int> lstGroup;
         private bool versus;
         private static readonly int[] pondColorBonus = { 0, 3, 6, 12, 24 };
@@ -32,12 +32,12 @@ namespace PuyoPuyo.Toolbox
 
         public ScoreManager(bool versus = false)
         {
-            lstPuyoColors = new List<Puyo>();
+            lstPuyoColors = new List<PuyoColor>();
             lstGroup = new List<int>();
             this.versus = versus;
         }
 
-        public void Add(Puyo puyoColor, int group)
+        public void Add(PuyoColor puyoColor, int group)
         {
             if (!lstPuyoColors.Contains(puyoColor))
                 lstPuyoColors.Add(puyoColor);

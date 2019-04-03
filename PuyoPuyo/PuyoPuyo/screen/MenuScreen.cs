@@ -89,10 +89,10 @@ namespace PuyoPuyo.screen
 
         public override void UnloadContent()
         {
+            base.UnloadContent();
+
             Content.Unload();
             Content.Dispose();
-
-            base.UnloadContent();
         }
 
        
@@ -188,6 +188,9 @@ namespace PuyoPuyo.screen
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            if (_spriteBatch == null)
+                return;
 
             _spriteBatch.Begin();
 

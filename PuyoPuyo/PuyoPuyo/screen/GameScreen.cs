@@ -31,25 +31,20 @@ namespace PuyoPuyo.screen
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
         {
-
             _serviceProvider = serviceProvider;
             _game = game;
             im = new InputManager();
+            
             gb.Resume();
+
+            gb.Spawn(PuyoColor.Yellow);
+            gb.GetChains(out int[,] foo);
         }
 
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
-
-            //gb.Cells[0, 0] = Puyo.Red;
-            //gb.Cells[0, 1] = Puyo.Blue;
-            //gb.Cells[1, 2] = Puyo.Green;
-            //gb.Cells[1, 3] = Puyo.Purple;
-            //gb.Cells[2, 0] = Puyo.Yellow;
-            gb.Spawn(Puyo.Yellow);
-            gb.GetChains(out int[,] foo);
-            GameboardTesting.PrintArray(foo, gb.Rows, gb.Columns);
+            Console.Write("Fromage");
         }
 
         public override void UnloadContent()
@@ -80,7 +75,6 @@ namespace PuyoPuyo.screen
                     case Input.Back:
                         break;
                     case Input.Up:
-                        gb.Up();
                         break;
                     case Input.Left:
                         gb.Left();
@@ -151,6 +145,9 @@ namespace PuyoPuyo.screen
 
         public override void Draw(GameTime gameTime)
         {
+            if (_spriteBatch == null)
+                return;
+
             _game.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();

@@ -15,6 +15,7 @@ namespace PuyoPuyo
     {
         public static Microsoft.Xna.Framework.Content.ContentManager ContentManager;
         public static GraphicsDeviceManager GraphicsDeviceManager;
+        public static SpriteBatch SpriteBatch;
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -29,17 +30,10 @@ namespace PuyoPuyo
             graphics.PreferredBackBufferWidth = 1600;
             Content.RootDirectory = "Content";
 
-            // Init screen management
-            SetScreenManagement();
-
             // Publish services
             ContentManager = this.Content;
             GraphicsDeviceManager = this.graphics;
-
-            // Init texture manager
-            textureManager.Initialize(Content);
-
-            //GameboardTesting.Test();
+            SpriteBatch = spriteBatch;
         }
 
         /// <summary>
@@ -51,6 +45,9 @@ namespace PuyoPuyo
         protected override void Initialize()
         {
             base.Initialize();
+
+            // Init screen management
+            SetScreenManagement();
         }
 
         /// <summary>
@@ -62,10 +59,8 @@ namespace PuyoPuyo
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Load assets
-            textureManager.LoadContent();
-
-            // TODO: use this.Content to load your game content here
+            // Init texture manager
+            textureManager.LoadContent(Content);
         }
 
         /// <summary>

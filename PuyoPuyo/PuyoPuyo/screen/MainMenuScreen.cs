@@ -18,7 +18,7 @@ namespace PuyoPuyo.screen
             base.LoadContent();
 
             AddMenuItem("New Game", Show<GameScreen>);
-            AddMenuItem("Tutorial", Show<TutorialScreen>);
+            //AddMenuItem("Tutorial", Show<TutorialScreen>);
             //AddMenuItem("Options", Show<OptionsScreen>);
             AddMenuItem("Exit", _main.Exit);
         }

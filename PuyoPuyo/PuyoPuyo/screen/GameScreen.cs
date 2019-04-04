@@ -20,6 +20,7 @@ namespace PuyoPuyo.screen
         private SpriteBatch _spriteBatch;
         private readonly Main _game;
         private InputManager im;
+        private bool puyoTest = true;
 
         // GameBoard Test
         Gameboard gb = new Gameboard(6, 12);
@@ -34,17 +35,19 @@ namespace PuyoPuyo.screen
             _serviceProvider = serviceProvider;
             _game = game;
             im = new InputManager();
+          
             
-            gb.Resume();
 
-            gb.Spawn(PuyoColor.Yellow);
-            gb.GetChains(out int[,] foo);
+            //gb.Spawn(PuyoColor.Yellow);
+            //gb.GetChains(out int[,] foo);
         }
 
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
-            Console.Write("Fromage");
+            Console.WriteLine("Fromage");
+            gb.Resume();
+            
         }
 
         public override void UnloadContent()
@@ -54,6 +57,14 @@ namespace PuyoPuyo.screen
        
         public override void Update(GameTime gameTime)
         {
+            if (puyoTest)
+            {
+                Console.WriteLine("pika");
+                gb.Spawn(PuyoColor.Yellow);
+                gb.GetChains(out int[,] foo);
+                puyoTest = false;
+            }
+
             UpdateTest();
             gb.Update(gameTime);
         }

@@ -30,10 +30,13 @@ namespace PuyoPuyo
             graphics.PreferredBackBufferWidth = 1600;
             Content.RootDirectory = "Content";
 
+            // Init screen management
+            SetScreenManagement();
+
             // Publish services
             ContentManager = this.Content;
             GraphicsDeviceManager = this.graphics;
-            SpriteBatch = spriteBatch;
+            SpriteBatch = spriteBatch;  
         }
 
         /// <summary>
@@ -46,8 +49,7 @@ namespace PuyoPuyo
         {
             base.Initialize();
 
-            // Init screen management
-            SetScreenManagement();
+            
         }
 
         /// <summary>

@@ -1,16 +1,16 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
 
 namespace PuyoPuyo.screen
 {
-    public class MainMenuScreen : MenuScreen
+    public class PrepareForOneMenuScreen : MenuScreen
     {
         private readonly Main _main;
+        public bool IsTwoPlayer { get; set; }
 
-        public MainMenuScreen(IServiceProvider serviceProvider, Main main)
+        public PrepareForOneMenuScreen(IServiceProvider serviceProvider, Main main)
             : base(serviceProvider, main)
         {
             main.IsMouseVisible = true;
@@ -20,12 +20,15 @@ namespace PuyoPuyo.screen
         public override void LoadContent()
         {
             base.LoadContent();
-
-            AddMenuItem("1 Player", Show<PrepareForOneMenuScreen>);
-            AddMenuItem("2 Player", Show<PrepareForOneMenuScreen>);
-            AddMenuItem("Exit", _main.Exit);
+            AddMenuItem("Print", this.ConsolePrint);
+            AddMenuItem("Play", Show<GameScreen>);
+            AddMenuItem("Back", Show<MainMenuScreen>);
         }
 
+        private void ConsolePrint()
+        {
+            Console.WriteLine("pika");
+        }
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

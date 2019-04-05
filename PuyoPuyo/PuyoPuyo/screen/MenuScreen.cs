@@ -18,7 +18,7 @@ namespace PuyoPuyo.screen
         private SpriteBatch _spriteBatch;
         private Dictionary<Keys, bool> _previousKeys = new Dictionary<Keys, bool>();
         private MenuItem cursor;
-        private MenuItem selectedItem;
+        protected MenuItem selectedItem;
         private int indexMenu;
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
@@ -93,38 +93,6 @@ namespace PuyoPuyo.screen
             base.UnloadContent();
         }
 
-       
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            List<Input> inputs = InputManager.Instance.Perform();
-
-            foreach (Input input in inputs)
-            {
-                switch (input)
-                {
-                    case Input.Up:
-                        SelectPrevious();
-                        break;
-                    case Input.Left:
-                        break;
-                    case Input.Down:
-                        SelectNext();
-                        break;
-                    case Input.Right:
-                        break;
-                    case Input.Validate:
-                        selectedItem.Action?.Invoke();
-                        break;
-                    case Input.Cancel:
-                        _main.Exit();
-                        break;
-                }
-            }
-        }
-
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -140,7 +108,7 @@ namespace PuyoPuyo.screen
             _spriteBatch.End();
         }
 
-        private void SelectPrevious()
+        protected void SelectPrevious()
         {
             --indexMenu;
             if (indexMenu < 0)
@@ -149,7 +117,7 @@ namespace PuyoPuyo.screen
             UpdateSelection();
         }
 
-        private void SelectNext()
+        protected void SelectNext()
         {
             ++indexMenu;
             if (indexMenu > MenuItems.Count - 1)

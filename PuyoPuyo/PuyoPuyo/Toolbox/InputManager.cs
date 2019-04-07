@@ -16,8 +16,8 @@ namespace PuyoPuyo.Toolbox
 
         private KeyboardState kState;
         private GamePadState gState;
-        private Dictionary<Player, PlayerIndex> playersKeyBoard = new Dictionary<Player, PlayerIndex>();
-        private Dictionary<Player, PlayerIndex> playersGamePad = new Dictionary<Player, PlayerIndex>();
+        private Dictionary<PlayerIndex, PlayerIndex> playersKeyBoard = new Dictionary<PlayerIndex, PlayerIndex>();
+        private Dictionary<PlayerIndex, PlayerIndex> playersGamePad = new Dictionary<PlayerIndex, PlayerIndex>();
         private PlayerIndex gamePadIndex;
         private Dictionary<Input, InputTimer> inputsUsable = new Dictionary<Input, InputTimer>();
 
@@ -46,7 +46,7 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
-        public bool SetKeyBoard(Player player, PlayerIndex gamePadIndex)
+        public bool SetKeyBoard(PlayerIndex player, PlayerIndex gamePadIndex)
         {
             if (playersKeyBoard.ContainsValue(gamePadIndex))
                 return false;
@@ -59,17 +59,22 @@ namespace PuyoPuyo.Toolbox
             return true;
         }
 
-        public bool SetGamePad(Player player, PlayerIndex gamePadIndex)
+        public bool SetGamePad(PlayerIndex player)
         {
-            if (playersKeyBoard.ContainsValue(gamePadIndex))
-                return false;
+            foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
+            {
+                if (!playersKeyBoard.ContainsValue(playerIndex))
+                {
+                    if (!playersGamePad.ContainsKey(player))
+                        playersGamePad.Add(player, gamePadIndex);
+                    else
+                        playersGamePad[player] = gamePadIndex;
 
-            if (!playersGamePad.ContainsKey(player))
-                playersGamePad.Add(player, gamePadIndex);
-            else
-                playersGamePad[player] = gamePadIndex;
+                    return true;
+                }
+            }
 
-            return true;
+            return false;
         }
 
         private void Player1Keyboard(List<Input> inputs)
@@ -134,9 +139,8 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
-        private void PlayerGamePad(List<Input> inputs, Player player = null)
+        private void UseGamePad(List<Input> inputs, GamePadState gState)
         { 
-            gState = (player != null) ? GamePad.GetState(playersGamePad[player]) : GamePad.GetState(gamePadIndex);
             if (gState.IsConnected)
             {
                 // Left Stick
@@ -208,29 +212,19 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
-        public List<Input> Perform(Player player = null)
+        public List<Input> Perform(PlayerIndex player)
         {
             List<Input> inputs = new List<Input>();
 
-            if (player != null)
-            {
-                if (playersGamePad.ContainsKey(player))
-                    PlayerGamePad(inputs, player);
+            if (playersGamePad.ContainsKey(player))
+                UseGamePad(inputs, GamePad.GetState(playersGamePad[player]));
 
-                if (inputs.Count == 0)
-                {
-                    if (playersKeyBoard[player] == PlayerIndex.One)
-                        Player1Keyboard(inputs);
-                    else
-                        Player2Keyboard(inputs);
-                }
-            }
-            else
+            if (inputs.Count == 0)
             {
-                PlayerGamePad(inputs);
-
-                if (inputs.Count == 0)
+                if (playersKeyBoard[player] == PlayerIndex.One)
                     Player1Keyboard(inputs);
+                else
+                    Player2Keyboard(inputs);
             }
 
             for (int i = inputs.Count -1; i >= 0; --i)
@@ -251,6 +245,40 @@ namespace PuyoPuyo.Toolbox
             return inputs;
         }
 
-        
+        public List<Input> Perform()
+        {
+            List<Input> inputs = new List<Input>();
+
+            UseGamePad(inputs, GamePad.GetState(PlayerIndex.One));
+
+            if (inputs.Count == 0)
+                Player1Keyboard(inputs);
+
+            for (int i = inputs.Count - 1; i >= 0; --i)
+            {
+                if (inputsUsable[inputs[i]].Usable)
+                {
+                    inputsUsable[inputs[i]].Usable = false;
+
+
+                    inputsUsable[inputs[i]].Timer.Start();
+                }
+                else
+                {
+                    inputs.RemoveAt(i);
+                }
+            }
+
+            return inputs;
+        }
+
+        public void RemovePlayer(PlayerIndex playerIndex)
+        {
+            if (playersKeyBoard.ContainsKey(playerIndex))
+                playersKeyBoard.Remove(playerIndex);
+
+            if (playersGamePad.ContainsKey(playerIndex))
+                playersGamePad.Remove(playerIndex);
+        }
     }
 }

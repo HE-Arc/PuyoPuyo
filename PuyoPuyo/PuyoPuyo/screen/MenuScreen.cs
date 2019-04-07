@@ -19,7 +19,7 @@ namespace PuyoPuyo.screen
         private Dictionary<Keys, bool> _previousKeys = new Dictionary<Keys, bool>();
         private MenuItem cursor;
         protected MenuItem selectedItem;
-        private int indexMenu;
+        protected int indexMenu;
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
         protected ContentManager Content { get; private set; }

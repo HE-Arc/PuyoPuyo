@@ -13,7 +13,6 @@ namespace PuyoPuyo.screen
         public MainMenuScreen(IServiceProvider serviceProvider, Main main)
             : base(serviceProvider, main)
         {
-            main.IsMouseVisible = true;
             _main = main;
         }
 

@@ -1,4 +1,4 @@
-z﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -66,7 +66,6 @@ namespace PuyoPuyo.screen
                     switch (input)
                     {
                         case Input.Up:
-                            gb.Up();
                             break;
                         case Input.Left:
                             gb.Left();
@@ -103,7 +102,6 @@ namespace PuyoPuyo.screen
                     switch (input)
                     {
                         case Input.Up:
-                            gb.Up();
                             break;
                         case Input.Left:
                             gb.Left();
@@ -121,8 +119,10 @@ namespace PuyoPuyo.screen
                         case Input.Cancel:
                             break;
                         case Input.CounterclockwiseRotation:
+                            gb.Rotate(Rotation.Counterclockwise);
                             break;
                         case Input.ClockwiseRotation:
+                            gb.Rotate(Rotation.Clockwise);
                             break;
                     }
                 }

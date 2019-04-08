@@ -70,7 +70,7 @@ namespace PuyoPuyo.Toolbox
 
             bonus = (bonus < 1) ? 1 : (bonus > 999) ? 999 : bonus;
 
-            Score = (10 * lstGroup.Sum() + puyoBonus) * bonus;
+            Score += (10 * lstGroup.Sum() + puyoBonus) * bonus;
 
             lstGroup.Clear();
             lstPuyoColors.Clear();

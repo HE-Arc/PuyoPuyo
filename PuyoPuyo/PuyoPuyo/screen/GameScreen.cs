@@ -29,7 +29,6 @@ namespace PuyoPuyo.screen
         {
             _serviceProvider = serviceProvider;
             _game = game;
-            gb.Resume();
         }
 
         public override void LoadContent()

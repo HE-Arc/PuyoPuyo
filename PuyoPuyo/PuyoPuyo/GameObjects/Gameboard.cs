@@ -191,7 +191,7 @@ namespace PuyoPuyo.GameObjects
             {
                 Player.Rotate(rotation);
             }
-            else throw new PlayerException(PlayerException.OfType.NotAlive);
+            else return; //throw new PlayerException(PlayerException.OfType.NotAlive);
         }
         #endregion
 

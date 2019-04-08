@@ -84,8 +84,10 @@ namespace PuyoPuyo.screen
                         case Input.Cancel:
                             break;
                         case Input.CounterclockwiseRotation:
+                            gb.Rotate(Rotation.Counterclockwise);
                             break;
                         case Input.ClockwiseRotation:
+                            gb.Rotate(Rotation.Clockwise);
                             break;
                     }
                 }

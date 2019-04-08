@@ -66,7 +66,7 @@ namespace PuyoPuyo.GameObjects.Puyos.Data
 
         public PuyoData_Yellow()
         {
-            Color = PuyoColor.Purple;
+            Color = PuyoColor.Yellow;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoYellow");
         }
     }
@@ -78,7 +78,7 @@ namespace PuyoPuyo.GameObjects.Puyos.Data
 
         public PuyoData_Red()
         {
-            Color = PuyoColor.Purple;
+            Color = PuyoColor.Red;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoRed");
         }
     }
@@ -90,7 +90,7 @@ namespace PuyoPuyo.GameObjects.Puyos.Data
 
         public PuyoData_Green()
         {
-            Color = PuyoColor.Purple;
+            Color = PuyoColor.Green;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoGreen");
         }
     }
@@ -102,7 +102,7 @@ namespace PuyoPuyo.GameObjects.Puyos.Data
 
         public PuyoData_Blue()
         {
-            Color = PuyoColor.Purple;
+            Color = PuyoColor.Blue;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoBlue");
         }
     }

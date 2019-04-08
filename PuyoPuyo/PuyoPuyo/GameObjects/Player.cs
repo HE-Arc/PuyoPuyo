@@ -173,8 +173,21 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row, Master.Column - 1];
             Cell next_s = grid[Slave.Row, Slave.Column - 1];
 
+            current_m.Release(Master);
+            current_s.Release(Slave);
+
             // Move and validate
-            return ValidateMove(current_m, current_s, next_m, next_s);
+            if (ValidateMove(current_m, current_s, next_m, next_s))
+            {
+                return true;
+            }
+            else
+            {
+                current_m.Insert(Master);
+                current_s.Insert(Slave);
+
+                return false;
+            }
         }
 
         public bool Right()
@@ -186,8 +199,21 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row, Master.Column + 1];
             Cell next_s = grid[Slave.Row, Slave.Column + 1];
 
+            current_m.Release(Master);
+            current_s.Release(Slave);
+
             // Move and validate
-            return ValidateMove(current_m, current_s, next_m, next_s);
+            if (ValidateMove(current_m, current_s, next_m, next_s))
+            {
+                return true;
+            }
+            else
+            {
+                current_m.Insert(Master);
+                current_s.Insert(Slave);
+
+                return false;
+            }
         }
 
         public bool Down()
@@ -199,8 +225,21 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row + 1, Master.Column];
             Cell next_s = grid[Slave.Row + 1, Slave.Column];
 
+            current_m.Release(Master);
+            current_s.Release(Slave);
+
             // Move and validate
-            return ValidateMove(current_m, current_s, next_m, next_s);
+            if (ValidateMove(current_m, current_s, next_m, next_s))
+            {
+                return true;
+            }
+            else
+            {
+                current_m.Insert(Master);
+                current_s.Insert(Slave);
+
+                return false;
+            }
         }
         #endregion
     }

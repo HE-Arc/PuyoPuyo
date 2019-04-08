@@ -72,6 +72,9 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// <returns>False if the given puyo is not the same as the one in the cell</returns>
         public bool Release(Puyo puyo)
         {
+            if (Puyo is null)
+                return true;
+
             bool allowed = Puyo.ReferenceEquals(Puyo, puyo);
             if (allowed)
             {

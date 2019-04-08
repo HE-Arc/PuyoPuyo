@@ -86,6 +86,8 @@ namespace PuyoPuyo.GameObjects.Puyos
             }
 
             this.grid = grid;
+            this.row = row;
+            this.column = column;
         }
 
         /// <summary>
@@ -103,6 +105,8 @@ namespace PuyoPuyo.GameObjects.Puyos
                 // Update row and column
                 this.row = cell.Row;
                 this.column = cell.Column;
+
+                return true;
             }
 
             return false;

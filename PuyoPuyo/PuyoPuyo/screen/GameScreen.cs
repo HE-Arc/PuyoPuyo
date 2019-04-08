@@ -60,7 +60,7 @@ namespace PuyoPuyo.screen
             {
                 Console.WriteLine("pika");
                 gb.Spawn(PuyoColor.Yellow);
-                gb.GetChains(out int[,] foo);
+                gb.GetChains(out int[,] foo, out int chainCount);
                 puyoTest = false;
             }
 

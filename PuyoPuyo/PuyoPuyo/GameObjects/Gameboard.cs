@@ -6,6 +6,7 @@ using PuyoPuyo.GameObjects.Puyos;
 using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -237,7 +238,7 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         /// <param name="indexes">an array mainly used for debug purpose</param>
         /// <returns>A dictionary containing every "piece" for every color</returns>
-        public Dictionary<PuyoColor, Dictionary<int, List<Point>>> GetChains(out int[,] indexes)
+        public Dictionary<PuyoColor, Dictionary<int, List<Point>>> GetChains(out int[,] indexes, out int chainCount)
         {
             Dictionary<PuyoColor, Dictionary<int, List<Point>>> pieces = new Dictionary<PuyoColor, Dictionary<int, List<Point>>>();
             foreach (PuyoColor PuyoColor in Enum.GetValues(typeof(PuyoColor)))
@@ -325,6 +326,17 @@ namespace PuyoPuyo.GameObjects
                 else continue;
             }
 
+            // Remove too small pieces
+            foreach (Dictionary<int, List<Point>> coloredPieces in pieces.Values)
+            {
+                // Reduce piece count
+                newIndex -= coloredPieces.ToList().RemoveAll(keyvalue => keyvalue.Value.Count < 4);
+            }
+            
+
+            // Set chain count
+            chainCount = newIndex - 1;
+
             return pieces;
         }
 
@@ -383,9 +395,10 @@ namespace PuyoPuyo.GameObjects
                         if (!isPuyoFalling)
                         {
                             // Check if any chain was created
-                            var chains = GetChains(out int[,] indexes);
+                            var chains = GetChains(out int[,] indexes, out int chainCount);
+
                             // Check if any chains has been found
-                            if (chains.Count == 0)
+                            if (chainCount == 0)
                             {
                                 // Request spawn
                                 isSpawnRequested = true;

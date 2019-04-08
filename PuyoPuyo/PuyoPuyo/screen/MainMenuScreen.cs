@@ -21,7 +21,7 @@ namespace PuyoPuyo.screen
             base.LoadContent();
 
             AddMenuItem("1 Player", Show<PrepareForOneMenuScreen>);
-            AddMenuItem("2 Player", Show<PrepareForOneMenuScreen>);
+            AddMenuItem("2 Player", Show<PrepareForTwoMenuScreen>);
             AddMenuItem("Exit", _main.Exit);
         }
 

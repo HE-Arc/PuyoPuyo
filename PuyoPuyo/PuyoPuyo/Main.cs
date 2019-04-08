@@ -110,6 +110,7 @@ namespace PuyoPuyo
             screenGameComponent.Register(new MainMenuScreen(this.Services, this));
             screenGameComponent.Register(new GameScreen(this.Services, this));
             screenGameComponent.Register(new PrepareForOneMenuScreen(this.Services, this));
+            screenGameComponent.Register(new PrepareForTwoMenuScreen(this.Services, this));
         }
     }
 }

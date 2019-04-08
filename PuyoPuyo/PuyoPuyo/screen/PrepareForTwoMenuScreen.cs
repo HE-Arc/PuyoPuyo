@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace PuyoPuyo.screen
 {
-    public class PrepareForOneMenuScreen : MenuScreen
+    public class PrepareForTwoMenuScreen : MenuScreen
     {
         private readonly Main _main;
 
-        public PrepareForOneMenuScreen(IServiceProvider serviceProvider, Main main)
+        public PrepareForTwoMenuScreen(IServiceProvider serviceProvider, Main main)
             : base(serviceProvider, main)
         {
             _main = main;
@@ -20,25 +20,58 @@ namespace PuyoPuyo.screen
         {
             base.LoadContent();
 
-            InputManager.Instance.NbPlayer = 1;
+            InputManager.Instance.NbPlayer = 2;
 
-            AddMenuItem("Keyboard", PlayerKeyboard);
-            AddMenuItem("GamePad", PlayerGamePad);
+            AddMenuItem("Keyboard", player1KeyBoard);
+            AddMenuItem("GamePad", Player1GamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
         }
 
-        private void PlayerKeyboard()
+        private void player1KeyBoard()
         {
-            Ready();
+            MenuItems.Clear();
+            indexMenu = 0;
+
+            AddMenuItem("Keyboard", player2KeyBoard);
+            AddMenuItem("GamePad", Player2GamePad);
+            AddMenuItem("Back", Back);
         }
 
-        private void PlayerGamePad()
+        private void Player1GamePad()
         {
             bool isSetted = InputManager.Instance.SetGamePad(PlayerIndex.One);
 
             if (isSetted)
             {
-                Ready();
+                MenuItems.Clear();
+                indexMenu = 0;
+
+                AddMenuItem("Keyboard", player2KeyBoard);
+                AddMenuItem("GamePad", Player2GamePad);
+                AddMenuItem("Back", Back);
+            }
+        }
+
+        private void player2KeyBoard()
+        {
+            MenuItems.Clear();
+            indexMenu = 0;
+
+            AddMenuItem("Play", Show<GameScreen>);
+            AddMenuItem("Back", Back);
+        }
+
+        private void Player2GamePad()
+        {
+            bool isSetted = InputManager.Instance.SetGamePad(PlayerIndex.Two);
+
+            if (isSetted)
+            {
+                MenuItems.Clear();
+                indexMenu = 0;
+
+                AddMenuItem("Play", Show<GameScreen>);
+                AddMenuItem("Back", Back);
             }
         }
 
@@ -52,18 +85,9 @@ namespace PuyoPuyo.screen
             MenuItems.Clear();
             indexMenu = 0;
 
-            AddMenuItem("Keyboard", PlayerKeyboard);
-            AddMenuItem("GamePad", PlayerGamePad);
+            AddMenuItem("KeyBoard", player1KeyBoard);
+            AddMenuItem("GamePad", Player1GamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
-        }
-
-        private void Ready()
-        {
-            MenuItems.Clear();
-            indexMenu = 0;
-
-            AddMenuItem("Play", Show<GameScreen>);
-            AddMenuItem("Back", Back);
         }
 
         public override void Update(GameTime gameTime)

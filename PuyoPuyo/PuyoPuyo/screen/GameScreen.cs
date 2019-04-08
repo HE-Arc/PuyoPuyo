@@ -52,24 +52,77 @@ namespace PuyoPuyo.screen
 
         private void UpdateTest()
         {
-            List<Input> inputs = InputManager.Instance.Perform();
+            int nbPlayer = InputManager.Instance.NbPlayer;
 
-            foreach (Input input in inputs)
+            // Action player 1
+            if (nbPlayer >= 1)
             {
-                switch (input)
+                List<Input> inputs = InputManager.Instance.Perform(PlayerIndex.One);
+
+
+                foreach (Input input in inputs)
                 {
-                    case Input.Up:
-                        position.Y -= 10;
-                        break;
-                    case Input.Left:
-                        position.X -= 10;
-                        break;
-                    case Input.Down:
-                        position.Y += 10;
-                        break;
-                    case Input.Right:
-                        position.X += 10;
-                        break;
+                    switch (input)
+                    {
+                        case Input.Up:
+                            position.Y -= 10;
+                            break;
+                        case Input.Left:
+                            position.X -= 10;
+                            break;
+                        case Input.Down:
+                            position.Y += 10;
+                            break;
+                        case Input.Right:
+                            position.X += 10;
+                            break;
+                        case Input.Pause:
+                            break;
+                        case Input.Validate:
+                            break;
+                        case Input.Cancel:
+                            break;
+                        case Input.CounterclockwiseRotation:
+                            break;
+                        case Input.ClockwiseRotation:
+                            break;
+                    }
+                }
+            }
+
+
+            // Action Player 2
+            if (nbPlayer >= 2)
+            {
+                List<Input> inputs = InputManager.Instance.Perform(PlayerIndex.Two);
+
+                foreach (Input input in inputs)
+                {
+                    switch (input)
+                    {
+                        case Input.Up:
+                            position.Y -= 10;
+                            break;
+                        case Input.Left:
+                            position.X -= 10;
+                            break;
+                        case Input.Down:
+                            position.Y += 10;
+                            break;
+                        case Input.Right:
+                            position.X += 10;
+                            break;
+                        case Input.Pause:
+                            break;
+                        case Input.Validate:
+                            break;
+                        case Input.Cancel:
+                            break;
+                        case Input.CounterclockwiseRotation:
+                            break;
+                        case Input.ClockwiseRotation:
+                            break;
+                    }
                 }
             }
         }

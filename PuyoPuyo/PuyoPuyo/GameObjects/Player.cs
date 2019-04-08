@@ -10,36 +10,57 @@ namespace PuyoPuyo.GameObjects
 {
     public class Player
     {
-        private static Random random = new Random();
+        private Point posMaster;
+        private Orientation orientation;
 
         public bool Alive { get; set; } 
-        public Orientation Orientation { get; set; }
-        public Color Color { get; private set; }
-        public Point Master { get; set; }
-        public Point Slave { get; set; }
+        public Orientation Orientation { get
+            {
+                return orientation;
+            }
+            set
+            {
+                orientation = value;
+                Slave = GetSlavePositionFromMaster();
+            }
+        }
+        public Puyo Color { get; private set; }
+        public Point Master
+        {
+            get
+            {
+                return posMaster;
+            }
+            set
+            {
+                posMaster = value;
+                Slave = GetSlavePositionFromMaster();
+            }
+        }
+        public Point Slave { get; private set; }
 
-        public Player(Gameboard gameboard, Color color)
+        public Player(Gameboard gameboard, Puyo color)
         {
             Alive = true;
             Orientation = Orientation.Up;
-            Color = color;
+            Color = color != Puyo.Undefined ? color : throw new ArgumentException("Invalid puyo (color) given");
 
             // Create new random spawn point
-            Point p = new Point(0, random.Next(0, gameboard.Columns));
+            Point p = new Point(1, gameboard.Columns / 2); //FIXME: DONT FORGET TO HIDE 2 FIRST LINES
 
             // Check that no puyo is in the cell
             if (gameboard.GetPuyo(p.X, p.Y, out Puyo puyo) && puyo == Puyo.Undefined)
             {
                 Master = p;
                 Slave = GetSlavePositionFromMaster();
+                gameboard.Cells[Master.X, Master.Y] = Color;
+                gameboard.Cells[Slave.X, Slave.Y] = Color;
             }
             else
             {
                 throw new ArgumentException("[x, y] already in use");
             }
         }
-
-        
 
         /// <summary>
         /// Returns the location of the slave

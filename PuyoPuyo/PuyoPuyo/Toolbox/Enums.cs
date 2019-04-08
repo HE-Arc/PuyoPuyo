@@ -25,7 +25,7 @@
         Cancel,
         CounterclockwiseRotation,
         ClockwiseRotation,
-      }
+    }
 
     public enum Puyo
     {
@@ -35,5 +35,11 @@
         Blue = 2,
         Yellow = 3,
         Purple = 4
+    }
+
+    public enum GameboardState
+    {
+        PAUSED, 
+        RUNNING,
     }
 }

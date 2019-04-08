@@ -42,7 +42,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Exceptions\GameboardException.cs" />
-    <Compile Include="GameObjects\GameLogic.cs" />
     <Compile Include="GameObjects\Player.cs" />
     <Compile Include="obj\x86\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\x86\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="Toolbox\InputManager.cs" />
     <Compile Include="Toolbox\InputTimer.cs" />
     <Compile Include="Toolbox\OrientationHandler.cs" />
+    <Compile Include="Toolbox\ScoreManager.cs" />
     <Compile Include="Toolbox\TextureManager.cs" />
   </ItemGroup>
   <ItemGroup>

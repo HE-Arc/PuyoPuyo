@@ -15,7 +15,7 @@ namespace PuyoPuyo.screen
     {
         private readonly Main _main;
         private readonly IServiceProvider _serviceProvider;
-        private SpriteBatch _spriteBatch;
+        protected SpriteBatch _spriteBatch;
         private Dictionary<Keys, bool> _previousKeys = new Dictionary<Keys, bool>();
         private MenuItem cursor;
         protected MenuItem selectedItem;

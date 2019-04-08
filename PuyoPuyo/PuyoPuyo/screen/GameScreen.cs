@@ -89,6 +89,7 @@ namespace PuyoPuyo.screen
                             gb.Right();
                             break;
                         case Input.Pause:
+                            Show<PauseScreen>();
                             break;
                         case Input.Validate:
                             break;

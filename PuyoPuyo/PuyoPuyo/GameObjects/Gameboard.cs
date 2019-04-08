@@ -520,7 +520,7 @@ namespace PuyoPuyo.GameObjects
                 }
             }
 
-            scoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+20, SizeBoardCase));
+            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+20, SizeBoardCase));
         }
     }
 

@@ -435,7 +435,6 @@ namespace PuyoPuyo.GameObjects
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            BoardCase = new Texture2D(spriteBatch.GraphicsDevice, SizeBoardCase, SizeBoardCase);
             int X = 0;
             int Y = 0;
 
@@ -446,38 +445,11 @@ namespace PuyoPuyo.GameObjects
                 Y += SizeBoardCase;
                 for (int x = 0; x < Grid.Columns; x++)
                 {
-                    RectangleSprite.DrawRectangle(spriteBatch, new Rectangle(X, Y, SizeBoardCase, SizeBoardCase), Color.Red, 2);
-                    Texture2D t = null;
+                    Grid.Draw(spriteBatch, X, Y, SizeBoardCase);
 
-                    try //FIXME : Should be done inside gameboard, grid and puyo ...
+                    if(!Grid[y, x].IsFree)
                     {
-                        switch (Grid[y, x].Puyo.Color)
-                        {
-                            case PuyoColor.Red:
-                                t = TextureManager.Instance.TryGet<Texture2D>("PuyoRed");
-                                break;
-                            case PuyoColor.Green:
-                                t = TextureManager.Instance.TryGet<Texture2D>("PuyoGreen");
-                                break;
-                            case PuyoColor.Blue:
-                                t = TextureManager.Instance.TryGet<Texture2D>("PuyoBlue");
-                                break;
-                            case PuyoColor.Yellow:
-                                t = TextureManager.Instance.TryGet<Texture2D>("PuyoYellow");
-                                break;
-                            case PuyoColor.Purple:
-                                t = TextureManager.Instance.TryGet<Texture2D>("PuyoPurple");
-                                break;
-                        }
-
-                        if (t != null)
-                        {
-                            spriteBatch.Draw(t, new Vector2(X, Y), origin: new Vector2(0, 0), scale: Scale);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-
+                        Grid[y, x].Puyo.Draw(spriteBatch, X, Y, Scale);
                     }
 
                     X += SizeBoardCase;
@@ -487,21 +459,5 @@ namespace PuyoPuyo.GameObjects
         }
     }
 
-    class RectangleSprite
-    {
-        static Texture2D _pointTexture;
-        public static void DrawRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int lineWidth)
-        {
-            if (_pointTexture == null)
-            {
-                _pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                _pointTexture.SetData<Color>(new Color[] { Color.White });
-            }
-
-            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
-            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + lineWidth, lineWidth), color);
-            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
-            spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + lineWidth, lineWidth), color);
-        }
-    }
+    
 }

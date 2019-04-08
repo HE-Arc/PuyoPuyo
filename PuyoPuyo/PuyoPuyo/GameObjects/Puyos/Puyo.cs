@@ -84,6 +84,8 @@ namespace PuyoPuyo.GameObjects.Puyos
             {
                 throw new Exceptions.PlayerException(Exceptions.PlayerException.OfType.SpawnError);
             }
+
+            this.grid = grid;
         }
 
         /// <summary>
@@ -104,6 +106,11 @@ namespace PuyoPuyo.GameObjects.Puyos
             }
 
             return false;
+        }
+
+        public void Draw(SpriteBatch spriteBatch, int X, int Y, Vector2 Scale)
+        {
+            spriteBatch.Draw(Texture, new Vector2(X, Y), origin: new Vector2(0, 0), scale: Scale);
         }
     }
 }

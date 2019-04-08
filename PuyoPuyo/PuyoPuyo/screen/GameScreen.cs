@@ -37,7 +37,6 @@ namespace PuyoPuyo.screen
             im = new InputManager();
           
             
-
             //gb.Spawn(PuyoColor.Yellow);
             //gb.GetChains(out int[,] foo);
         }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +22,7 @@ namespace PuyoPuyo.Toolbox
          * calcule le score, calcule la nuisance
          * et vide les listes pour le coup suivant */
 
-        private List<Puyo> lstPuyoColors;
+        private List<PuyoColor> lstPuyoColors;
         private List<int> lstGroup;
         private bool versus;
         private static readonly int[] pondColorBonus = { 0, 3, 6, 12, 24 };
@@ -32,12 +34,18 @@ namespace PuyoPuyo.Toolbox
 
         public ScoreManager(bool versus = false)
         {
-            lstPuyoColors = new List<Puyo>();
+            lstPuyoColors = new List<PuyoColor>();
             lstGroup = new List<int>();
+            Score = 0;
             this.versus = versus;
         }
 
-        public void Add(Puyo puyoColor, int group)
+        /// <summary>
+        /// SUPER COMMENT XML (signé Quentin)
+        /// </summary>
+        /// <param name="puyoColor"></param>
+        /// <param name="group">number of puyo</param>
+        public void Add(PuyoColor puyoColor, int group)
         {
             if (!lstPuyoColors.Contains(puyoColor))
                 lstPuyoColors.Add(puyoColor);
@@ -71,6 +79,11 @@ namespace PuyoPuyo.Toolbox
         public void Nuisance()
         {
             // TODO
+        }
+
+        public void Draw(SpriteBatch spritebatch, SpriteFont font, Vector2 position)
+        {
+            spritebatch.DrawString(font, "Score : " + Score, position, Color.White);
         }
     }
 }

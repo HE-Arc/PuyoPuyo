@@ -42,7 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Exceptions\GameboardException.cs" />
+    <Compile Include="GameObjects\Grids\Grid.cs" />
     <Compile Include="GameObjects\Player.cs" />
+    <Compile Include="GameObjects\Grids\Cell.cs" />
+    <Compile Include="GameObjects\Puyos\Puyo.cs" />
     <Compile Include="obj\x86\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\x86\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\x86\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
@@ -54,8 +57,8 @@
     <Compile Include="screen\GameScreen.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="GameObjects\Gameboard.cs" />
-    <Compile Include="GameObjects\Puyos\IPuyoData.cs" />
-    <Compile Include="GameObjects\Puyos\PuyoDataFactory.cs" />
+    <Compile Include="GameObjects\Puyos\Data\IPuyoData.cs" />
+    <Compile Include="GameObjects\Puyos\Data\PuyoDataFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\PuyoPuyo.Designer.cs">

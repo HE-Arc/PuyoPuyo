@@ -18,8 +18,8 @@ namespace UnitTestProject
 
             Gameboard gameboard = new Gameboard(columns, rows);
 
-            Assert.IsTrue(gameboard.Columns == columns);
-            Assert.IsTrue(gameboard.Rows == rows);
+            Assert.IsTrue(gameboard.Grid.Columns == columns);
+            Assert.IsTrue(gameboard.Grid.Rows == rows);
         }
 
         [TestMethod]
@@ -41,22 +41,6 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void TestGameboardValidSpawn()
-        {
-            int columns = 10;
-            int rows = 10;
-
-            // Init gameboard
-            Gameboard gameboard = new Gameboard(columns, rows);
-
-            // Spawn a puyo
-            gameboard.Spawn(Puyo.Red);
-
-            // Validate its color
-            Assert.IsTrue(gameboard.Player.Color == Puyo.Red);
-        }
-
-        [TestMethod]
         public void TestGameboardInvalidSpawn()
         {
             int columns = 10;
@@ -66,23 +50,7 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Validated that it is not possible to spawn a undefined puyo
-            Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(Puyo.Undefined));
-        }
-
-        [TestMethod]
-        public void TestGameboardInvalidSpawnPlayerAlreadyAlive()
-        {
-            int columns = 10;
-            int rows = 10;
-
-            // Init gameboard
-            Gameboard gameboard = new Gameboard(columns, rows);
-
-            // Spawn a puyo
-            gameboard.Spawn(Puyo.Red);
-
-            // Validated that it is not possible to spawn a puyo while one is already alive
-            Assert.ThrowsException<PlayerException>(() => gameboard.Spawn(Puyo.Red));
+            Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(PuyoColor.Undefined));
         }
 
         public void TestGameboardSpawnAndRotate()
@@ -94,16 +62,18 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Spawn a puyo
-            gameboard.Spawn(Puyo.Red);
+            gameboard.Spawn(PuyoColor.Red);
 
             // Get slave position
-            Point previousSlavePosition = gameboard.Player.Slave;
+            Point previousSlavePosition = new Point(gameboard.Player.Slave.Row, gameboard.Player.Slave.Column);
 
             // Rotate the player
-            gameboard.Player.Orientation = Orientation.Left;
+            gameboard.Player.Rotate(Rotation.Clockwise);
+
+            Point newSlavePosition = new Point(gameboard.Player.Slave.Row, gameboard.Player.Slave.Column);
 
             // Validated rotation
-            Assert.IsTrue((new Point(previousSlavePosition.X - 1, previousSlavePosition.Y + 1) == gameboard.Player.Master));
+            Assert.IsTrue(newSlavePosition == previousSlavePosition);
         }
 
         public void TestGameboardSpawnAndMove()
@@ -115,7 +85,7 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Spawn a puyo
-            gameboard.Spawn(Puyo.Red);
+            gameboard.Spawn(PuyoColor.Red);
 
             // Move the puyo
             gameboard.Right();
@@ -123,8 +93,10 @@ namespace UnitTestProject
             gameboard.Left();
             gameboard.Down();
 
+            Point master_pos = new Point(gameboard.Player.Master.Row, gameboard.Player.Master.Column);
+
             // Validated new position
-            Assert.IsTrue((new Point(columns / 2, rows - 2) == gameboard.Player.Master));
+            Assert.IsTrue((new Point(columns / 2, rows - 2) == master_pos));
         }
     }
 }

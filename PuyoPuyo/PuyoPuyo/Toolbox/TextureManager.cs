@@ -45,6 +45,9 @@ namespace PuyoPuyo.Toolbox
         /// <returns>The loaded asset</returns>
         private T Load<T>(string assetName, string subPath = "")
         {
+            if (contentManager == null)
+                throw new Exception("Initialize me first !");
+
             string directory;
             Type typeT = typeof(T);
 
@@ -58,12 +61,13 @@ namespace PuyoPuyo.Toolbox
             return contentManager.Load<T>(directory + subPath + assetName);
         }
 
-        public void Initialize(ContentManager cm)
+        public void LoadContent(ContentManager cm)
         {
             contentManager = cm;
+            LoadTextures();
         }
 
-        public void LoadContent()
+        private void LoadTextures()
         {
             textures.Add("PuyoRed", Load<Texture2D>("R", "puyos/"));
             textures.Add("PuyoGreen", Load<Texture2D>("G", "puyos/"));

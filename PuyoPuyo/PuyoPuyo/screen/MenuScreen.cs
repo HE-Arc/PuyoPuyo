@@ -23,7 +23,7 @@ namespace PuyoPuyo.screen
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
         protected ContentManager Content { get; private set; }
-        
+
 
         protected MenuScreen(IServiceProvider serviceProvider, Main main)
         {
@@ -87,15 +87,18 @@ namespace PuyoPuyo.screen
 
         public override void UnloadContent()
         {
+            base.UnloadContent();
+
             Content.Unload();
             Content.Dispose();
-
-            base.UnloadContent();
         }
 
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            if (_spriteBatch == null)
+                return;
 
             _spriteBatch.Begin();
 

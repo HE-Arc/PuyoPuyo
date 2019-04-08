@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+z﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -19,50 +19,39 @@ namespace PuyoPuyo.screen
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
         private readonly Main _game;
+        protected SpriteFont Font { get; private set; }
 
         // GameBoard Test
         Gameboard gb = new Gameboard(6, 12);
 
-        // TEST
-        Texture2D texture;
-        Vector2 position;
-        Vector2 origin;
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
         {
-
             _serviceProvider = serviceProvider;
             _game = game;
-
             gb.Resume();
         }
 
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
+            Font = _game.Content.Load<SpriteFont>("Font");
+            gb.Resume();
 
-            //gb.Cells[0, 0] = Puyo.Red;
-            //gb.Cells[0, 1] = Puyo.Blue;
-            //gb.Cells[1, 2] = Puyo.Green;
-            //gb.Cells[1, 3] = Puyo.Purple;
-            //gb.Cells[2, 0] = Puyo.Yellow;
-            gb.Spawn(Puyo.Yellow);
-            gb.GetChains(out int[,] foo);
-            GameboardTesting.PrintArray(foo, gb.Rows, gb.Columns);
         }
 
         public override void UnloadContent()
         {
 
         }
-       
+
         public override void Update(GameTime gameTime)
         {
-            UpdateTest();
+            UpdateInputs();
             gb.Update(gameTime);
         }
 
-        private void UpdateTest()
+        private void UpdateInputs()
         {
             int nbPlayer = InputManager.Instance.NbPlayer;
 
@@ -142,11 +131,14 @@ namespace PuyoPuyo.screen
 
         public override void Draw(GameTime gameTime)
         {
+            if (_spriteBatch == null)
+                return;
+
             _game.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
 
-            gb.Draw(_spriteBatch);
+            gb.Draw(_spriteBatch, Font);
 
             _spriteBatch.End();
 

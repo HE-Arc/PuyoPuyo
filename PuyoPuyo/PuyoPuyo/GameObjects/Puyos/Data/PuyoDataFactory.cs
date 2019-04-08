@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using PuyoPuyo.Toolbox;
 using System;
 using System.Collections.Generic;
 
-namespace PuyoPuyo.GameObjects.Puyos
+namespace PuyoPuyo.GameObjects.Puyos.Data
 {
     public class PuyoDataFactory
     {
@@ -25,21 +24,21 @@ namespace PuyoPuyo.GameObjects.Puyos
         }
         #endregion
 
-        private readonly Dictionary<Color, IPuyoData> puyodatas;
+        private readonly Dictionary<PuyoColor, IPuyoData> puyodatas;
 
         private PuyoDataFactory()
         {
-            puyodatas = new Dictionary<Color, IPuyoData>()
+            puyodatas = new Dictionary<PuyoColor, IPuyoData>()
             {
-                { Color.Purple, new PuyoData_Purple() },
-                { Color.Yellow, new PuyoData_Yellow() },
-                { Color.Red, new PuyoData_Red() },
-                { Color.Green, new PuyoData_Green() },
-                { Color.Blue, new PuyoData_Blue() },
+                { PuyoColor.Purple, new PuyoData_Purple() },
+                { PuyoColor.Yellow, new PuyoData_Yellow() },
+                { PuyoColor.Red, new PuyoData_Red() },
+                { PuyoColor.Green, new PuyoData_Green() },
+                { PuyoColor.Blue, new PuyoData_Blue() },
             };
         }
 
-        public IPuyoData Get(Color color)
+        public IPuyoData Get(PuyoColor color)
         {
             if (puyodatas.TryGetValue(color, out IPuyoData data))
                 return data;
@@ -50,60 +49,60 @@ namespace PuyoPuyo.GameObjects.Puyos
 
     internal class PuyoData_Purple : IPuyoData
     {
-        public Color Color { get; private set; }
+        public PuyoColor Color { get; private set; }
         public Texture2D Texture { get; private set; }
 
         public PuyoData_Purple()
         {
-            Color = Color.Purple;
+            Color = PuyoColor.Purple;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoPurple");
         }
     }
 
     internal class PuyoData_Yellow : IPuyoData
     {
-        public Color Color { get; private set; }
+        public PuyoColor Color { get; private set; }
         public Texture2D Texture { get; private set; }
 
         public PuyoData_Yellow()
         {
-            Color = Color.Purple;
+            Color = PuyoColor.Yellow;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoYellow");
         }
     }
 
     internal class PuyoData_Red : IPuyoData
     {
-        public Color Color { get; private set; }
+        public PuyoColor Color { get; private set; }
         public Texture2D Texture { get; private set; }
 
         public PuyoData_Red()
         {
-            Color = Color.Purple;
+            Color = PuyoColor.Red;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoRed");
         }
     }
 
     internal class PuyoData_Green : IPuyoData
     {
-        public Color Color { get; private set; }
+        public PuyoColor Color { get; private set; }
         public Texture2D Texture { get; private set; }
 
         public PuyoData_Green()
         {
-            Color = Color.Purple;
+            Color = PuyoColor.Green;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoGreen");
         }
     }
 
     internal class PuyoData_Blue : IPuyoData
     {
-        public Color Color { get; private set; }
+        public PuyoColor Color { get; private set; }
         public Texture2D Texture { get; private set; }
 
         public PuyoData_Blue()
         {
-            Color = Color.Purple;
+            Color = PuyoColor.Blue;
             Texture = TextureManager.Instance.TryGet<Texture2D>("PuyoBlue");
         }
     }

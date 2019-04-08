@@ -6,6 +6,11 @@ namespace PuyoPuyo.Toolbox
     {
         public static int Count = Enum.GetValues(typeof(Orientation)).Length;
 
+        public static Orientation Next(Orientation orientation, Rotation rotation)
+        {
+            return NewOrientation(orientation, rotation == Rotation.Clockwise ? 1 : -1);
+        }
+
         public static Orientation NewOrientation(Orientation orientation, int n)
         {
             return (Orientation)((((int)orientation) + n) % Count);

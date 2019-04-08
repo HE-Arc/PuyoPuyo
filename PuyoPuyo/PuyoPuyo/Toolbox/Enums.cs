@@ -27,7 +27,7 @@
         ClockwiseRotation,
     }
 
-    public enum Puyo
+    public enum PuyoColor
     {
         Undefined = -1,
         Red = 0,

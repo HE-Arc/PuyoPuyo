@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using PuyoPuyo.Toolbox;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PuyoPuyo.GameObjects.Puyos
+namespace PuyoPuyo.GameObjects.Puyos.Data
 {
     public interface IPuyoData
     {
-        Color Color { get; }
+        PuyoColor Color { get; }
         Texture2D Texture { get; }
     }
 }

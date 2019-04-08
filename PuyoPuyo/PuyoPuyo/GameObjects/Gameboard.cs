@@ -458,6 +458,9 @@ namespace PuyoPuyo.GameObjects
                                         }
                                     }
                                 }
+
+                                // Compute
+                                ScoreManager.CalculateScore();
                             }
                         }
                     }

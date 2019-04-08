@@ -40,6 +40,9 @@ namespace PuyoPuyo.GameObjects
         // Grid
         public Grid Grid { get; private set; }
 
+        // ScoreManager
+        public ScoreManager ScoreManager { get; private set; }
+
         // Draw elements
         private Texture2D BoardCase;
         private const int SizeBoardCase = 50;
@@ -57,6 +60,7 @@ namespace PuyoPuyo.GameObjects
             this.Grid = new Grid(rows, columns);
 
             // ---
+            this.ScoreManager = new ScoreManager();
         }
 
         /// <summary>
@@ -81,7 +85,7 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         public void Spawn()
         {
-            Spawn((PuyoColor)rng.Next(0, puyoCount));
+            Spawn((PuyoColor)rng.Next(0, puyoCount - 1));
         }
 
         /// <summary>
@@ -140,7 +144,7 @@ namespace PuyoPuyo.GameObjects
                         break;
                 }
             }
-            else throw new PlayerException(PlayerException.OfType.NotAlive);
+            else return; // throw new PlayerException(PlayerException.OfType.NotAlive);
         }
 
         private void BreakPuyoPuyo()
@@ -198,10 +202,10 @@ namespace PuyoPuyo.GameObjects
         /// <param name="row">row</param>
         /// <param name="PuyoColor">out : color of the PuyoColor</param>
         /// <returns>Every PuyoColor of the same color in V4</returns>
-        public List<Point> GetNeighbors(int row, int column)
+        public List<Puyo> GetNeighbors(int row, int column)
         {
             // Get neighbors
-            List<Point> neighbors = new List<Point>(4);
+            List<Puyo> neighbors = new List<Puyo>(4);
 
             // Get the cell in at the given row and column
             Cell center = Grid[row, column];
@@ -225,7 +229,7 @@ namespace PuyoPuyo.GameObjects
                     // Test if cell exist and is occupied
                     if (!(temp_cell == null) && !temp_cell.IsFree)
                     {
-                        neighbors.Add(p);
+                        neighbors.Add(temp_cell.Puyo);
                     }
                 }
             }
@@ -238,12 +242,12 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         /// <param name="indexes">an array mainly used for debug purpose</param>
         /// <returns>A dictionary containing every "piece" for every color</returns>
-        public Dictionary<PuyoColor, Dictionary<int, List<Point>>> GetChains(out int[,] indexes, out int chainCount)
+        public Dictionary<PuyoColor, Dictionary<int, List<Puyo>>> GetChains(out int[,] indexes, out int chainCount)
         {
-            Dictionary<PuyoColor, Dictionary<int, List<Point>>> pieces = new Dictionary<PuyoColor, Dictionary<int, List<Point>>>();
+            Dictionary<PuyoColor, Dictionary<int, List<Puyo>>> pieces = new Dictionary<PuyoColor, Dictionary<int, List<Puyo>>>();
             foreach (PuyoColor PuyoColor in Enum.GetValues(typeof(PuyoColor)))
             {
-                pieces.Add(PuyoColor, new Dictionary<int, List<Point>>());
+                pieces.Add(PuyoColor, new Dictionary<int, List<Puyo>>());
             }
 
             int newIndex = 1;
@@ -251,61 +255,25 @@ namespace PuyoPuyo.GameObjects
             // Will contains indexes
             indexes = new int[Grid.Rows, Grid.Columns];
 
-            foreach(Cell cell in Grid)
+            // Row first
+            for (int row = Grid.Rows; row >= 0; row--)
             {
-                // Test if cell exist and is occupied
-                if (!(cell == null) && !cell.IsFree)
+                for (int col = 0; col < Grid.Columns; col++)
                 {
-                    List<Point> neighbors = GetNeighbors(cell.Row, cell.Column);
-
-                    // Not connected
-                    if (neighbors.Count == 0)
+                    Cell cell = this.Grid[row, col];
+                    // Test if cell exist and is occupied
+                    if (!(cell == null) && !cell.IsFree)
                     {
-                        // Add it as a new piece
-                        pieces[cell.Puyo.Color].Add(newIndex, new List<Point>()
-                            {
-                                new Point(cell.Row, cell.Column)
-                            });
+                        List<Puyo> neighbors = GetNeighbors(cell.Row, cell.Column);
 
-                        // Add it to the map
-                        indexes[cell.Row, cell.Column] = newIndex;
-
-                        // Increment piece index
-                        newIndex++;
-                    }
-                    else
-                    {
-                        int minIndex = Int32.MaxValue;
-                        int puyoIndex = indexes[cell.Row, cell.Column];
-
-                        if (puyoIndex <= 0)
-                        {
-                            puyoIndex = newIndex;
-                        }
-
-                        // Search pieces
-                        foreach (Point neighbor in neighbors)
-                        {
-                            int neighborIndex = indexes[neighbor.X, neighbor.Y];
-                            if (neighborIndex > 0 && neighborIndex < minIndex)
-                                minIndex = indexes[neighbor.X, neighbor.Y];
-                        }
-
-                        // Replace puyoindex
-                        if (minIndex < puyoIndex)
-                        {
-                            puyoIndex = minIndex;
-                        }
-
-
-                        // Insert the new PuyoColor to the matching pieces
-                        if (!pieces[cell.Puyo.Color].ContainsKey(puyoIndex))
+                        // Not connected
+                        if (neighbors.Count == 0)
                         {
                             // Add it as a new piece
-                            pieces[cell.Puyo.Color].Add(newIndex, new List<Point>()
-                                {
-                                    new Point(cell.Row, cell.Column)
-                                });
+                            pieces[cell.Puyo.Color].Add(newIndex, new List<Puyo>()
+                            {
+                                cell.Puyo
+                            });
 
                             // Add it to the map
                             indexes[cell.Row, cell.Column] = newIndex;
@@ -315,25 +283,90 @@ namespace PuyoPuyo.GameObjects
                         }
                         else
                         {
-                            // Add the new
-                            pieces[cell.Puyo.Color][puyoIndex].Add(new Point(cell.Row, cell.Column));
+                            int minIndex = Int32.MaxValue;
+                            int puyoIndex = indexes[cell.Row, cell.Column];
 
-                            // Adapt index on the map
-                            indexes[cell.Row, cell.Column] = puyoIndex;
+                            if (puyoIndex <= 0)
+                            {
+                                puyoIndex = newIndex;
+                            }
+
+                            // Search pieces
+                            foreach (Puyo neighbor in neighbors)
+                            {
+                                int neighborIndex = indexes[neighbor.Row, neighbor.Column];
+                                if (neighborIndex > 0 && neighborIndex < minIndex)
+                                    minIndex = indexes[neighbor.Row, neighbor.Column];
+                            }
+
+                            // Replace puyoindex
+                            if (minIndex < puyoIndex)
+                            {
+                                puyoIndex = minIndex;
+                            }
+
+
+                            // Insert the new PuyoColor to the matching pieces
+                            if (!pieces[cell.Puyo.Color].ContainsKey(puyoIndex))
+                            {
+                                // Add it as a new piece
+                                pieces[cell.Puyo.Color].Add(newIndex, new List<Puyo>()
+                                {
+                                    cell.Puyo
+                                });
+
+                                // Add it to the map
+                                indexes[cell.Row, cell.Column] = newIndex;
+
+                                // Increment piece index
+                                newIndex++;
+                            }
+                            else
+                            {
+                                // Add the new
+                                pieces[cell.Puyo.Color][puyoIndex].Add(cell.Puyo);
+
+                                // Adapt index on the map
+                                indexes[cell.Row, cell.Column] = puyoIndex;
+                            }
                         }
                     }
+                    else continue;
                 }
-                else continue;
             }
+
+            List<int> indexToRemove = new List<int>();
 
             // Remove too small pieces
-            foreach (Dictionary<int, List<Point>> coloredPieces in pieces.Values)
+            foreach (var kv in pieces)
             {
-                // Reduce piece count
-                newIndex -= coloredPieces.ToList().RemoveAll(keyvalue => keyvalue.Value.Count < 4);
+                PuyoColor puyoColor = kv.Key;
+                Dictionary<int, List<Puyo>> coloredPieces = kv.Value;
+
+                foreach(KeyValuePair<int, List<Puyo>> piece in coloredPieces)
+                {
+                    // Register too short puyos
+                    if (piece.Value.Count < 4)
+                    {
+                        indexToRemove.Add(piece.Key);
+                        newIndex--;
+                    }
+                }
+            }
+
+            // Remove puyos who are too short
+            foreach(int index in indexToRemove)
+            {
+                foreach (var kv in pieces)
+                {
+                    PuyoColor puyoColor = kv.Key;
+                    Dictionary<int, List<Puyo>> coloredPieces = kv.Value;
+
+                    // Remove the piece
+                    coloredPieces.Remove(index);
+                }
             }
             
-
             // Set chain count
             chainCount = newIndex - 1;
 
@@ -402,15 +435,33 @@ namespace PuyoPuyo.GameObjects
                             {
                                 // Request spawn
                                 isSpawnRequested = true;
+                                isChainBroken = false;
                             }
                             else
                             {
                                 isChainBroken = true;
                                 // Export chains
                                 // TODO:
+                                foreach (var kv in chains)
+                                {
+                                    PuyoColor pc = kv.Key;
+                                    Dictionary<int, List<Puyo>> coloredPieces = kv.Value;
+                                    foreach (List<Puyo> piece in coloredPieces.Values)
+                                    {
+                                        // Add it to score Manager
+                                        ScoreManager.Add(pc, piece.Count);
+
+                                        // Release cells
+                                        foreach(Puyo puyo in piece)
+                                        {
+                                            this.Grid[puyo.Row, puyo.Column].Release(puyo);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+
                     // Player is not cut in a half !
                     else
                     {

@@ -37,6 +37,11 @@ namespace PuyoPuyo.Toolbox
             this.versus = versus;
         }
 
+        /// <summary>
+        /// SUPER COMMENT XML (signé Quentin)
+        /// </summary>
+        /// <param name="puyoColor"></param>
+        /// <param name="group">number of puyo</param>
         public void Add(PuyoColor puyoColor, int group)
         {
             if (!lstPuyoColors.Contains(puyoColor))

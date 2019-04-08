@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +36,7 @@ namespace PuyoPuyo.Toolbox
         {
             lstPuyoColors = new List<PuyoColor>();
             lstGroup = new List<int>();
+            Score = 0;
             this.versus = versus;
         }
 
@@ -76,6 +79,11 @@ namespace PuyoPuyo.Toolbox
         public void Nuisance()
         {
             // TODO
+        }
+
+        public void Draw(SpriteBatch spritebatch, SpriteFont font, Vector2 position)
+        {
+            spritebatch.DrawString(font, "Score : " + Score, position, Color.White);
         }
     }
 }

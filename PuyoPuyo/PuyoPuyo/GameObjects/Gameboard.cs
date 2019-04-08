@@ -152,7 +152,7 @@ namespace PuyoPuyo.GameObjects
             //TODO: continue
             Player = null;
         }
-        
+
         #region Control command
         /// <summary>
         /// Move the player on the left
@@ -209,7 +209,7 @@ namespace PuyoPuyo.GameObjects
 
             // Get the cell in at the given row and column
             Cell center = Grid[row, column];
-            
+
             // Test if cell exist and is occupied
             if (!(center == null) && !center.IsFree)
             {
@@ -366,7 +366,7 @@ namespace PuyoPuyo.GameObjects
                     coloredPieces.Remove(index);
                 }
             }
-            
+
             // Set chain count
             chainCount = newIndex - 1;
 
@@ -497,7 +497,7 @@ namespace PuyoPuyo.GameObjects
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont Font)
         {
             int X = 0;
             int Y = 0;
@@ -520,8 +520,9 @@ namespace PuyoPuyo.GameObjects
                 }
             }
 
+            scoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+20, SizeBoardCase));
         }
     }
 
-    
+
 }

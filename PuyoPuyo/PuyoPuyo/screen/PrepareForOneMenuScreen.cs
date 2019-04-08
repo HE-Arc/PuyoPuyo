@@ -44,10 +44,7 @@ namespace PuyoPuyo.screen
 
         private void Back()
         {
-            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
-            {
-                InputManager.Instance.RemovePlayer(player);
-            }
+            InputManager.Instance.Reset();
 
             MenuItems.Clear();
             indexMenu = 0;

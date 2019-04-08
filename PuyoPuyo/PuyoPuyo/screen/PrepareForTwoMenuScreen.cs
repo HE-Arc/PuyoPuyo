@@ -34,7 +34,7 @@ namespace PuyoPuyo.screen
 
             AddMenuItem("Keyboard", player2KeyBoard);
             AddMenuItem("GamePad", Player2GamePad);
-            AddMenuItem("Back", Back);
+            AddMenuItem("Back", BackToOne);
         }
 
         private void Player1GamePad()
@@ -48,7 +48,7 @@ namespace PuyoPuyo.screen
 
                 AddMenuItem("Keyboard", player2KeyBoard);
                 AddMenuItem("GamePad", Player2GamePad);
-                AddMenuItem("Back", Back);
+                AddMenuItem("Back", BackToOne);
             }
         }
 
@@ -58,7 +58,7 @@ namespace PuyoPuyo.screen
             indexMenu = 0;
 
             AddMenuItem("Play", Show<GameScreen>);
-            AddMenuItem("Back", Back);
+            AddMenuItem("Back", BackToTwo);
         }
 
         private void Player2GamePad()
@@ -71,23 +71,32 @@ namespace PuyoPuyo.screen
                 indexMenu = 0;
 
                 AddMenuItem("Play", Show<GameScreen>);
-                AddMenuItem("Back", Back);
+                AddMenuItem("Back", BackToTwo);
             }
         }
 
-        private void Back()
+        private void BackToOne()
         {
-            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
-            {
-                InputManager.Instance.RemovePlayer(player);
-            }
+            InputManager.Instance.RemovePlayer(PlayerIndex.One);
 
             MenuItems.Clear();
             indexMenu = 0;
 
-            AddMenuItem("KeyBoard", player1KeyBoard);
+            AddMenuItem("Keyboard", player1KeyBoard);
             AddMenuItem("GamePad", Player1GamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
+        }
+
+        private void BackToTwo()
+        {
+            InputManager.Instance.RemovePlayer(PlayerIndex.Two);
+
+            MenuItems.Clear();
+            indexMenu = 0;
+
+            AddMenuItem("Keyboard", player2KeyBoard);
+            AddMenuItem("GamePad", Player2GamePad);
+            AddMenuItem("Back", BackToOne);
         }
 
         public override void Update(GameTime gameTime)

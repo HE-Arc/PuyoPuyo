@@ -280,5 +280,10 @@ namespace PuyoPuyo.Toolbox
             if (playersGamePad.ContainsKey(playerIndex))
                 playersGamePad.Remove(playerIndex);
         }
+
+        public void Reset()
+        {
+            playersGamePad.Clear();
+        }
     }
 }

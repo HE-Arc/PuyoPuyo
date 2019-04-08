@@ -40,6 +40,9 @@ namespace PuyoPuyo.GameObjects
         // Grid
         public Grid Grid { get; private set; }
 
+        // Score
+        ScoreManager scoreManager;
+
         // Draw elements
         private Texture2D BoardCase;
         private const int SizeBoardCase = 50;
@@ -56,7 +59,8 @@ namespace PuyoPuyo.GameObjects
             // Create a new grid
             this.Grid = new Grid(rows, columns);
 
-            // ---
+            // Score
+            scoreManager = new ScoreManager();
         }
 
         /// <summary>
@@ -446,7 +450,7 @@ namespace PuyoPuyo.GameObjects
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont Font)
         {
             int X = 0;
             int Y = 0;
@@ -469,6 +473,7 @@ namespace PuyoPuyo.GameObjects
                 }
             }
 
+            scoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+20, SizeBoardCase));
         }
     }
 

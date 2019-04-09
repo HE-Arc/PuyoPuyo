@@ -196,184 +196,6 @@ namespace PuyoPuyo.GameObjects
         #endregion
 
         /// <summary>
-        /// Get the neighbors of a PuyoColor at given coordinates
-        /// </summary>
-        /// <param name="column">column</param>
-        /// <param name="row">row</param>
-        /// <param name="PuyoColor">out : color of the PuyoColor</param>
-        /// <returns>Every PuyoColor of the same color in V4</returns>
-        public List<Puyo> GetNeighbors(int row, int column)
-        {
-            // Get neighbors
-            List<Puyo> neighbors = new List<Puyo>(4);
-
-            // Get the cell in at the given row and column
-            Cell center = Grid[row, column];
-
-            // Test if cell exist and is occupied
-            if (!(center == null) && !center.IsFree)
-            {
-                Point[] lrud = new Point[4]
-                {
-                    new Point(row, column - 1),
-                    new Point(row, column + 1),
-                    new Point(row - 1, column),
-                    new Point(row + 1, column)
-                };
-
-                foreach(Point p in lrud)
-                {
-                    // Get the cell
-                    Cell temp_cell = Grid[p.X, p.Y];
-
-                    // Test if cell exist and is occupied
-                    if (!(temp_cell == null) && !temp_cell.IsFree)
-                    {
-                        neighbors.Add(temp_cell.Puyo);
-                    }
-                }
-            }
-
-            return neighbors;
-        }
-
-        /// <summary>
-        /// Goes through every cell and bind puyos of the same colors together
-        /// </summary>
-        /// <param name="indexes">an array mainly used for debug purpose</param>
-        /// <returns>A dictionary containing every "piece" for every color</returns>
-        public Dictionary<PuyoColor, Dictionary<int, List<Puyo>>> GetChains(out int[,] indexes, out int chainCount)
-        {
-            Dictionary<PuyoColor, Dictionary<int, List<Puyo>>> pieces = new Dictionary<PuyoColor, Dictionary<int, List<Puyo>>>();
-            foreach (PuyoColor PuyoColor in Enum.GetValues(typeof(PuyoColor)))
-            {
-                pieces.Add(PuyoColor, new Dictionary<int, List<Puyo>>());
-            }
-
-            int newIndex = 1;
-
-            // Will contains indexes
-            indexes = new int[Grid.Rows, Grid.Columns];
-
-            // Row first
-            for (int row = Grid.Rows; row >= 0; row--)
-            {
-                for (int col = 0; col < Grid.Columns; col++)
-                {
-                    Cell cell = this.Grid[row, col];
-                    // Test if cell exist and is occupied
-                    if (!(cell == null) && !cell.IsFree)
-                    {
-                        List<Puyo> neighbors = GetNeighbors(cell.Row, cell.Column);
-
-                        // Not connected
-                        if (neighbors.Count == 0)
-                        {
-                            // Add it as a new piece
-                            pieces[cell.Puyo.Color].Add(newIndex, new List<Puyo>()
-                            {
-                                cell.Puyo
-                            });
-
-                            // Add it to the map
-                            indexes[cell.Row, cell.Column] = newIndex;
-
-                            // Increment piece index
-                            newIndex++;
-                        }
-                        else
-                        {
-                            int minIndex = Int32.MaxValue;
-                            int puyoIndex = indexes[cell.Row, cell.Column];
-
-                            if (puyoIndex <= 0)
-                            {
-                                puyoIndex = newIndex;
-                            }
-
-                            // Search pieces
-                            foreach (Puyo neighbor in neighbors)
-                            {
-                                int neighborIndex = indexes[neighbor.Row, neighbor.Column];
-                                if (neighborIndex > 0 && neighborIndex < minIndex)
-                                    minIndex = indexes[neighbor.Row, neighbor.Column];
-                            }
-
-                            // Replace puyoindex
-                            if (minIndex < puyoIndex)
-                            {
-                                puyoIndex = minIndex;
-                            }
-
-
-                            // Insert the new PuyoColor to the matching pieces
-                            if (!pieces[cell.Puyo.Color].ContainsKey(puyoIndex))
-                            {
-                                // Add it as a new piece
-                                pieces[cell.Puyo.Color].Add(newIndex, new List<Puyo>()
-                                {
-                                    cell.Puyo
-                                });
-
-                                // Add it to the map
-                                indexes[cell.Row, cell.Column] = newIndex;
-
-                                // Increment piece index
-                                newIndex++;
-                            }
-                            else
-                            {
-                                // Add the new
-                                pieces[cell.Puyo.Color][puyoIndex].Add(cell.Puyo);
-
-                                // Adapt index on the map
-                                indexes[cell.Row, cell.Column] = puyoIndex;
-                            }
-                        }
-                    }
-                    else continue;
-                }
-            }
-
-            List<int> indexToRemove = new List<int>();
-
-            // Remove too small pieces
-            foreach (var kv in pieces)
-            {
-                PuyoColor puyoColor = kv.Key;
-                Dictionary<int, List<Puyo>> coloredPieces = kv.Value;
-
-                foreach(KeyValuePair<int, List<Puyo>> piece in coloredPieces)
-                {
-                    // Register too short puyos
-                    if (piece.Value.Count < 4)
-                    {
-                        indexToRemove.Add(piece.Key);
-                        newIndex--;
-                    }
-                }
-            }
-
-            // Remove puyos who are too short
-            foreach(int index in indexToRemove)
-            {
-                foreach (var kv in pieces)
-                {
-                    PuyoColor puyoColor = kv.Key;
-                    Dictionary<int, List<Puyo>> coloredPieces = kv.Value;
-
-                    // Remove the piece
-                    coloredPieces.Remove(index);
-                }
-            }
-
-            // Set chain count
-            chainCount = newIndex - 1;
-
-            return pieces;
-        }
-
-        /// <summary>
         /// Update the gameboard
         /// </summary>
         /// <param name="gameTime">Not used</param>
@@ -428,7 +250,7 @@ namespace PuyoPuyo.GameObjects
                         if (!isPuyoFalling)
                         {
                             // Check if any chain was created
-                            var chains = GetChains(out int[,] indexes, out int chainCount);
+                            var chains = GridHelper.GetChains(Grid, out int chainCount);
 
                             // Check if any chains has been found
                             if (chainCount == 0)
@@ -445,8 +267,8 @@ namespace PuyoPuyo.GameObjects
                                 foreach (var kv in chains)
                                 {
                                     PuyoColor pc = kv.Key;
-                                    Dictionary<int, List<Puyo>> coloredPieces = kv.Value;
-                                    foreach (List<Puyo> piece in coloredPieces.Values)
+                                    List<List<Puyo>> coloredPieces = kv.Value;
+                                    foreach (List<Puyo> piece in coloredPieces)
                                     {
                                         // Add it to score Manager
                                         ScoreManager.Add(pc, piece.Count);

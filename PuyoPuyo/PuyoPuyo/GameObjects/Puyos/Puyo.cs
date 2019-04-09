@@ -3,6 +3,7 @@ using PuyoPuyo.Toolbox;
 using PuyoPuyo.GameObjects.Puyos.Data;
 using Microsoft.Xna.Framework.Graphics;
 using PuyoPuyo.GameObjects.Grids;
+using System.Collections.Generic;
 
 namespace PuyoPuyo.GameObjects.Puyos
 {
@@ -88,6 +89,38 @@ namespace PuyoPuyo.GameObjects.Puyos
             this.grid = grid;
             this.row = row;
             this.column = column;
+        }
+
+        /// <summary>
+        /// Get the neighbors of this puyo
+        /// <para>Neigbors are puyos with the same color as this one</para>
+        /// </summary>
+        /// <returns>Every PuyoColor of the same color in V4</returns>
+        public List<Puyo> GetNeighbors()
+        {
+            // Get neighbors
+            List<Puyo> neighbors = new List<Puyo>(4);
+
+            Point[] lrud = new Point[4]
+            {
+                new Point(row, column - 1),
+                new Point(row, column + 1),
+                new Point(row - 1, column),
+                new Point(row + 1, column)
+            };
+
+            foreach (Point p in lrud)
+            {
+                // Get the cell
+                Cell temp_cell = grid[p.X, p.Y];
+
+                // Test if cell exist and is occupied
+                if (temp_cell == null || temp_cell.IsFree)
+                    continue;
+                else neighbors.Add(temp_cell.Puyo);
+            }
+
+            return neighbors;
         }
 
         /// <summary>

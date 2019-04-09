@@ -62,6 +62,10 @@ namespace PuyoPuyo.GameObjects.Grids
             }
         }
 
+        /// <summary>
+        /// Enables iteration over cells
+        /// </summary>
+        /// <returns>Enumerator on cells contained in this grid</returns>
         public IEnumerator<Cell> GetEnumerator()
         {
             for (int row = 0; row < Rows; row++)
@@ -70,6 +74,20 @@ namespace PuyoPuyo.GameObjects.Grids
                 {
                     yield return cells[row, col];
                 }
+            }
+        }
+
+        /// <summary>
+        /// Enables iteration over puyos
+        /// </summary>
+        /// <returns>Enumerator on puyos inside this grid</returns>
+        public IEnumerator<Puyo> GetPuyos()
+        {
+            foreach(Cell cell in this)
+            {
+                if (cell == null || cell.IsFree)
+                    continue;
+                yield return cell.Puyo;
             }
         }
 

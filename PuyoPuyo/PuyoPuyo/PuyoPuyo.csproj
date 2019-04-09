@@ -71,6 +71,7 @@
     <Compile Include="Tests\GameboardTesting.cs" />
     <Compile Include="Toolbox\Consts.cs" />
     <Compile Include="Toolbox\Enums.cs" />
+    <Compile Include="Toolbox\GridHelper.cs" />
     <Compile Include="Toolbox\InputManager.cs" />
     <Compile Include="Toolbox\InputTimer.cs" />
     <Compile Include="Toolbox\OrientationHandler.cs" />

@@ -13,7 +13,12 @@ namespace PuyoPuyo.Toolbox
 
         public static Orientation NewOrientation(Orientation orientation, int n)
         {
-            return (Orientation)((((int)orientation) + n) % Count);
+            n = n % Count;
+
+            int o = (int)orientation;
+            int next_o = o + n;
+            int index_o = (next_o + Count) % Count; // handle negative values
+            return (Orientation)(index_o);
         }
 
         public static Orientation GetMirrorOrientation(Orientation orientation)

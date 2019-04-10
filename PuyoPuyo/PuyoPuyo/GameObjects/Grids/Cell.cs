@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using PuyoPuyo.GameObjects.Grids;
+using System;
+using System.Text;
 
 namespace PuyoPuyo.GameObjects.Puyos
 {
@@ -18,7 +20,7 @@ namespace PuyoPuyo.GameObjects.Puyos
         public static Cell Create(Grid grid, int row, int column)
         {
             // Set grid
-            if (grid is null)
+            if (grid == null)
                 throw new System.ArgumentException("Grid can't be null");
 
             // Verifiy parameters
@@ -72,7 +74,7 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// <returns>False if the given puyo is not the same as the one in the cell</returns>
         public bool Release(Puyo puyo)
         {
-            if (Puyo is null)
+            if (Puyo == null)
                 return true;
 
             bool allowed = Puyo.ReferenceEquals(Puyo, puyo);
@@ -81,6 +83,11 @@ namespace PuyoPuyo.GameObjects.Puyos
                 this.Puyo = null;
             }
             return allowed;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[{0},{1}] : {2}", row, column, Puyo?.Color);
         }
     }
 }

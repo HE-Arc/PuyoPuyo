@@ -226,7 +226,7 @@ namespace PuyoPuyo.GameObjects
                     // Check if player is cut in half
                     // If true : player should not be able to move
                     // If false: game continues normally
-                    if (isChainBroken || Player is null)
+                    if (isChainBroken || Player == null)
                     {
                         // Check if it's time to move on
                         if (stopwatch.ElapsedMilliseconds < DELAY_FALL_FAST)
@@ -238,16 +238,35 @@ namespace PuyoPuyo.GameObjects
                         // Make every PuyoColor fall
                         isPuyoFalling = false;
 
-                        foreach(Cell cell in Grid)
+                        for (int row = Grid.Rows - 1; row >= 0; row--)
                         {
-                            // Test if cell exist and is occupied
-                            if (!(cell == null) && !cell.IsFree)
+                            for (int col = 0; col < Grid.Columns; col++)
                             {
-                                Cell next_cell = Grid[cell.Row + 1, cell.Column];
+                                // Get cell
+                                Cell cell = Grid[row, col];
+                                Puyo puyo = cell.Puyo;
 
-                                // Move down puyo
-                                if (cell.Puyo.TryMoveToCell(next_cell))
+                                // Player is handled below
+                                if (puyo == Player?.Master || puyo == Player?.Slave)
+                                    continue;
+
+                                // Test if cell exist and is occupied
+                                if (cell == null || cell.IsFree)
+                                    continue;
+
+                                // Get next cell
+                                Cell next_cell = Grid[cell.Row + 1, cell.Column];
+                                if (next_cell == null || !next_cell.IsFree)
+                                    continue;
+
+                                // Insert into new cell
+                                if (next_cell.Insert(puyo))
+                                {
+                                    // Release previous position
+                                    cell.Release(puyo);
+
                                     isPuyoFalling = true;
+                                }
                             }
                         }
 
@@ -308,21 +327,17 @@ namespace PuyoPuyo.GameObjects
                                 // Check if it's time to move on
                                 if (stopwatch.ElapsedMilliseconds < DELAY_FALL_FAST)
                                     return;
-
-                                // Restart stopwatch
-                                stopwatch.Restart();
-                                Down();
                             }
                             else
                             {
                                 // Check if it's time to move on
                                 if (stopwatch.ElapsedMilliseconds < DELAY_FALL)
                                     return;
-
-                                // Restart stopwatch
-                                stopwatch.Restart();
-                                Down();
                             }
+
+                            // Restart stopwatch
+                            stopwatch.Restart();
+                            Down();
                         }
                         else
                         {

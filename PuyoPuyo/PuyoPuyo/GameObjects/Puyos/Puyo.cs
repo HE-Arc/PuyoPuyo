@@ -12,42 +12,8 @@ namespace PuyoPuyo.GameObjects.Puyos
         private readonly Grid grid;
         private readonly IPuyoData data;
 
-        private int row;
-        private int column;
-
-        /// <summary>
-        /// <para>Get : Get the current row</para>
-        /// <para>Set : Free current cell and insert into the new cell according to given value</para>
-        /// </summary>
-        public int Row
-        {
-            get
-            {
-                return row;
-            }
-            set
-            {
-                Cell c = grid[value, column];
-                this.TryMoveToCell(c);
-            }
-        }
-
-        /// <summary>
-        /// <para>Get : Get the current column</para>
-        /// <para>Set : Free current cell and insert into the new cell according to given value</para>
-        /// </summary>
-        public int Column
-        {
-            get
-            {
-                return column;
-            }
-            set
-            {
-                Cell c = grid[row, value];
-                this.TryMoveToCell(c);
-            }
-        }
+        public int Row { get; private set; }
+        public int Column { get; private set; }
 
         /// <summary>
         /// Color of this puyo
@@ -71,7 +37,7 @@ namespace PuyoPuyo.GameObjects.Puyos
         public Puyo(Grid grid, int row, int column, IPuyoData data)
         {
             // Validate parameters
-            if (grid is null || data is null)
+            if (grid == null || data == null)
                 throw new System.ArgumentException("Invalid parameter provided");
 
             // Set data
@@ -81,14 +47,43 @@ namespace PuyoPuyo.GameObjects.Puyos
             Cell c = grid[row, column];
 
             // Try to insert the puyo
-            if (c is null || !c.Insert(this))
+            if (c == null || !c.Insert(this))
             {
                 throw new Exceptions.PlayerException(Exceptions.PlayerException.OfType.SpawnError);
             }
 
             this.grid = grid;
-            this.row = row;
-            this.column = column;
+            this.Row = row;
+            this.Column = column;
+        }
+
+        /// <summary>
+        /// Try to move a puyo to a cell
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        public bool Move(Cell cell)
+        {
+            if (cell == null || !cell.IsFree)
+                return false;
+
+            // Get the current cell
+            Cell currentCell = grid[Row, Column];
+
+            // Try to move this puyo
+            if(cell.Insert(this))
+            {
+                // update row and column
+                this.Row = cell.Row;
+                this.Column = cell.Column;
+
+                // release previous position
+                currentCell.Release(this);
+                return true;
+            }
+
+            // It failed
+            return false;
         }
 
         /// <summary>
@@ -103,10 +98,10 @@ namespace PuyoPuyo.GameObjects.Puyos
 
             Point[] lrud = new Point[4]
             {
-                new Point(row, column - 1),
-                new Point(row, column + 1),
-                new Point(row - 1, column),
-                new Point(row + 1, column)
+                new Point(Row, Column - 1),
+                new Point(Row, Column + 1),
+                new Point(Row - 1, Column),
+                new Point(Row + 1, Column)
             };
 
             foreach (Point p in lrud)
@@ -121,33 +116,6 @@ namespace PuyoPuyo.GameObjects.Puyos
             }
 
             return neighbors;
-        }
-
-        /// <summary>
-        /// Move this puyo to the provided cell
-        /// </summary>
-        /// <param name="cell">where to teleport this puyo</param>
-        /// <returns>true if it succeded</returns>
-        public bool TryMoveToCell(Cell cell)
-        {
-            // Release the current cell
-            grid[row, column].Release(this);
-
-            // Try to move the puyo to the next cell
-            if (!(cell == null) && cell.Insert(this))
-            {
-                // Update row and column
-                row = cell.Row;
-                column = cell.Column;
-
-                return true;
-            }
-            else
-            {
-                // Place the puyo back to his place
-                grid[row, column].Insert(this);
-                return false;
-            }
         }
 
         public void Draw(SpriteBatch spriteBatch, int X, int Y, Vector2 Scale)

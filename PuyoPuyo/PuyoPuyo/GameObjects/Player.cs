@@ -117,20 +117,6 @@ namespace PuyoPuyo.GameObjects
         }
 
         /// <summary>
-        /// Try to move a puyo
-        /// <para>If it fails, move the puyo back to his current cell</para>
-        /// </summary>
-        /// <param name="current_m">current cell used by master</param>
-        /// <param name="current_s">current cell used by slave</param>
-        /// <param name="next_m">next cell used by master</param>
-        /// <param name="next_s">next cell used by slave</param>
-        /// <returns>True if both next cells are free</returns>
-        private bool Move(Cell current_m, Cell current_s, Cell next_m, Cell next_s)
-        {
-            // Move and validate
-            return Master.TryMoveToCell(next_m) && Slave.TryMoveToCell(next_s) && ValidateSlavePosition();
-        }
-        /// <summary>
         /// Update slave position according to given orientation
         /// </summary>
         /// <returns>true if it succeded</returns>
@@ -138,7 +124,8 @@ namespace PuyoPuyo.GameObjects
         {
             GetSlaveRowAndColumnFromOrientation(out int predict_row, out int predict_column);
             Cell slave_new_cell = grid[predict_row, predict_column];
-            return Slave.TryMoveToCell(slave_new_cell);
+
+            return Slave.Move(slave_new_cell);
         }
         #endregion
 
@@ -173,11 +160,15 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row, Master.Column - 1];
             Cell next_s = grid[Slave.Row, Slave.Column - 1];
 
-            current_m.Release(Master);
-            current_s.Release(Slave);
-
             // Move and validate
-            return Move(current_m, current_s, next_m, next_s);
+            if (Orientation == Orientation.Left)
+            {
+                return Slave.Move(next_s) & Master.Move(next_m);
+            }
+            else
+            {
+                return Master.Move(next_m) & Slave.Move(next_s);
+            }
         }
 
         public bool Right()
@@ -189,11 +180,15 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row, Master.Column + 1];
             Cell next_s = grid[Slave.Row, Slave.Column + 1];
 
-            current_m.Release(Master);
-            current_s.Release(Slave);
-
             // Move and validate
-            return Move(current_m, current_s, next_m, next_s);
+            if (Orientation == Orientation.Right)
+            {
+                return Slave.Move(next_s) && Master.Move(next_m) && ValidateSlavePosition();
+            }
+            else
+            {
+                return Master.Move(next_m) && Slave.Move(next_s) && ValidateSlavePosition();
+            }
         }
 
         public bool Down()
@@ -205,8 +200,15 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row + 1, Master.Column];
             Cell next_s = grid[Slave.Row + 1, Slave.Column];
 
-            // Move the puyo
-            return Move(current_m, current_s, next_m, next_s);
+            // Move and validate
+            if (Orientation == Orientation.Down)
+            {
+                return Slave.Move(next_s) && Master.Move(next_m) && ValidateSlavePosition();
+            }
+            else
+            {
+                return Master.Move(next_m) && Slave.Move(next_s) && ValidateSlavePosition();
+            }
         }
         #endregion
     }

@@ -45,7 +45,7 @@ namespace PuyoPuyo.GameObjects
         /// <param name="grid"></param>
         /// <param name="color"></param>
         /// <param name="orientation"></param>
-        public Player(Grid grid, PuyoColor color, Orientation orientation = Orientation.Up)
+        public Player(Grid grid, Tuple<PuyoColor, PuyoColor> colors, Orientation orientation = Orientation.Up)
         {
             // Keep track of the grid
             this.grid = grid;
@@ -54,7 +54,7 @@ namespace PuyoPuyo.GameObjects
             Orientation = orientation;
 
             // Set color
-            if(color == PuyoColor.Undefined)
+            if(colors.Item1 == PuyoColor.Undefined || colors.Item2 == PuyoColor.Undefined)
                 throw new ArgumentException("Invalid puyo (color) given");
 
             // Get half columns count
@@ -70,11 +70,12 @@ namespace PuyoPuyo.GameObjects
             if (cell_m.IsFree && cell_s.IsFree)
             {
                 // Get puyo data
-                IPuyoData data = PuyoDataFactory.Instance.Get(color);
+                IPuyoData master_data = PuyoDataFactory.Instance.Get(colors.Item1);
+                IPuyoData slave_data = PuyoDataFactory.Instance.Get(colors.Item2);
 
                 // Create puyos
-                Master = new Puyo(grid, 1, middle, data);
-                Slave = new Puyo(grid, 0, middle, data);
+                Master = new Puyo(grid, 1, middle, master_data);
+                Slave = new Puyo(grid, 0, middle, slave_data);
             }
             else throw new Exceptions.PlayerException(Exceptions.PlayerException.OfType.SpawnError);
         }

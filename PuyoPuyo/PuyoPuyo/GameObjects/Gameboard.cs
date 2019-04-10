@@ -36,6 +36,8 @@ namespace PuyoPuyo.GameObjects
 
         // PuyoColor
         public Player Player { get; private set; }
+        public Queue<Tuple<PuyoColor, PuyoColor>> NextPuyos;
+
 
         // Grid
         public Grid Grid { get; private set; }
@@ -61,6 +63,9 @@ namespace PuyoPuyo.GameObjects
 
             // ---
             this.ScoreManager = new ScoreManager();
+
+            // ---
+            NextPuyos = new Queue<Tuple<PuyoColor, PuyoColor>>();
         }
 
         /// <summary>
@@ -81,22 +86,14 @@ namespace PuyoPuyo.GameObjects
         }
 
         /// <summary>
-        /// Spawn a random puyopuyo
-        /// </summary>
-        public void Spawn()
-        {
-            Spawn((PuyoColor)rng.Next(0, puyoCount - 1));
-        }
-
-        /// <summary>
         /// Spawn a puyopuyo
         /// </summary>
         /// <param name="color"></param>
-        public void Spawn(PuyoColor color)
+        public void Spawn(Tuple<PuyoColor, PuyoColor> colors)
         {
             if (Player is null)
             {
-                Player = new Player(this.Grid, color);
+                Player = new Player(this.Grid, colors);
                 isSpawnRequested = false;
             }
             else throw new PlayerException(PlayerException.OfType.SpawnError);
@@ -195,6 +192,8 @@ namespace PuyoPuyo.GameObjects
         }
         #endregion
 
+        
+
         /// <summary>
         /// Update the gameboard
         /// </summary>
@@ -207,13 +206,19 @@ namespace PuyoPuyo.GameObjects
             }
             else
             {
+                // Generate puyopuyo
+                if(NextPuyos.Count < 5)
+                {
+                    NextPuyos.Enqueue(new Tuple<PuyoColor, PuyoColor>((PuyoColor)rng.Next(0, puyoCount - 1), (PuyoColor)rng.Next(0, puyoCount - 1)));
+                }
+
                 // Handle spawn
                 if (isSpawnRequested && !isChainBroken)
                 {
                     // Stopwatch must have been resetted and the PuyoColor died
                     if (stopwatch.ElapsedMilliseconds > DELAY_SPAWN)
                     {
-                        Spawn();
+                        Spawn(NextPuyos.Dequeue());
                     }
                 }
                 else

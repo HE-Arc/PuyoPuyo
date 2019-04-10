@@ -157,7 +157,19 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         public void Left()
         {
-            Move(Orientation.Left);
+            switch(Player.Orientation)
+            {
+                case Orientation.Left:
+                    if (Player.Slave.Column > 0) Move(Orientation.Left);
+                    break;
+                case Orientation.Right:
+                    if (Player.Master.Column > 0) Move(Orientation.Left);
+                    break;
+                case Orientation.Up:
+                case Orientation.Down:
+                    if (Player.Master.Column > 0 && Player.Slave.Column > 0) Move(Orientation.Left);
+                    break;
+            }
         }
 
         /// <summary>
@@ -166,7 +178,19 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         public void Right()
         {
-            Move(Orientation.Right);
+            switch (Player.Orientation)
+            {
+                case Orientation.Left:
+                    if (Player.Master.Column < Grid.Columns - 1) Move(Orientation.Right);
+                    break;
+                case Orientation.Right:
+                    if (Player.Slave.Column < Grid.Columns - 1) Move(Orientation.Right);
+                    break;
+                case Orientation.Up:
+                case Orientation.Down:
+                    if (Player.Master.Column < Grid.Columns - 1 && Player.Slave.Column < Grid.Columns - 1) Move(Orientation.Right);
+                    break;
+            }   
         }
 
         /// <summary>

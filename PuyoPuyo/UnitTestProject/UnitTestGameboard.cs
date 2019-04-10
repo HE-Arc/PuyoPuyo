@@ -50,7 +50,7 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Validated that it is not possible to spawn a undefined puyo
-            Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(PuyoColor.Any));
+            Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(new Tuple<PuyoColor, PuyoColor>(PuyoColor.Red, PuyoColor.Any)));
         }
 
         public void TestGameboardSpawnAndRotate()
@@ -62,7 +62,7 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Spawn a puyo
-            gameboard.Spawn(PuyoColor.Red);
+            gameboard.Spawn(new Tuple<PuyoColor, PuyoColor>(PuyoColor.Red, PuyoColor.Red));
 
             // Get slave position
             Point previousSlavePosition = new Point(gameboard.Player.Slave.Row, gameboard.Player.Slave.Column);
@@ -85,7 +85,7 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Spawn a puyo
-            gameboard.Spawn(PuyoColor.Red);
+            gameboard.Spawn(new Tuple<PuyoColor, PuyoColor>(PuyoColor.Red, PuyoColor.Red));
 
             // Move the puyo
             gameboard.Right();

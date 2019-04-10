@@ -135,7 +135,7 @@ namespace PuyoPuyo.screen
             if (_spriteBatch == null)
                 return;
 
-            _game.GraphicsDevice.Clear(Color.White);
+            _game.GraphicsDevice.Clear(Color.DarkGray);
 
             _spriteBatch.Begin();
 

@@ -72,17 +72,9 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// </summary>
         /// <param name="puyo">Used to validate the release</param>
         /// <returns>False if the given puyo is not the same as the one in the cell</returns>
-        public bool Release(Puyo puyo)
+        public void Release()
         {
-            if (Puyo == null)
-                return true;
-
-            bool allowed = Puyo.ReferenceEquals(Puyo, puyo);
-            if (allowed)
-            {
-                this.Puyo = null;
-            }
-            return allowed;
+            Puyo = null;
         }
 
         public override string ToString()

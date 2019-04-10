@@ -10,13 +10,13 @@ namespace PuyoPuyo.Toolbox
 {
     public static class GridHelper
     {
-        public static Dictionary<PuyoColor, List<List<Puyo>>> GetChains(Grid grid, out int chainCount, int minimumLenght = 4)
+        public static Dictionary<PuyoColor, List<IEnumerable<Puyo>>> GetChains(Grid grid, out int chainCount, int minimumLenght = 4)
         {
             // Init result's dictionary
-            Dictionary<PuyoColor, List<List<Puyo>>> chains = new Dictionary<PuyoColor, List<List<Puyo>>>();
+            Dictionary<PuyoColor, List<IEnumerable<Puyo>>> chains = new Dictionary<PuyoColor, List<IEnumerable<Puyo>>>();
             foreach(PuyoColor puyoColor in Enum.GetValues(typeof(PuyoColor)))
             {
-                chains.Add(puyoColor, new List<List<Puyo>>());
+                chains.Add(puyoColor, new List<IEnumerable<Puyo>>());
             }
 
             // Tools
@@ -31,26 +31,18 @@ namespace PuyoPuyo.Toolbox
                 currentPuyo = puyoEnumerator.Current;
 
                 // Puyo already in a piece
-                if (knownPuyos.Contains(currentPuyo))
-                    continue;
-                else
-                {
-                    // Add it to knows puyos
-                    knownPuyos.Add(currentPuyo);
+                if (knownPuyos.Contains(currentPuyo)) continue;
 
-                    // Create a new piece
-                    List<Puyo> piece = new List<Puyo>()
-                    {
-                        currentPuyo
-                    };
+                // Create a new piece
+                var piece = GetPiece(currentPuyo);
 
-                    // Iterate over neighbor
-                    piece.AddRange(GetAllNeighbors(currentPuyo));
+                // Add every puyo of the chain to knowns puyo
+                foreach (Puyo p in piece)
+                    knownPuyos.Add(p);
 
-                    // Check if piece is valid and append it to chains
-                    if (piece.Count >= minimumLenght)
-                        chains[currentPuyo.Color].Add(piece);
-                }
+                // Check if piece is valid and append it to chains
+                if (piece.Count >= minimumLenght)
+                    chains[currentPuyo.Color].Add(piece);
             }
 
             // Get number of chains
@@ -60,36 +52,29 @@ namespace PuyoPuyo.Toolbox
             return chains;
         }
 
-        private static List<Puyo> GetAllNeighbors(Puyo puyo)
+        private static HashSet<Puyo> GetPiece(Puyo puyo)
         {
-            return GetAllNeighbors(puyo, new HashSet<Puyo>());
+            HashSet<Puyo> chain = new HashSet<Puyo>();
+            FillChain(puyo, ref chain);
+            return chain;
         }
 
-        private static List<Puyo> GetAllNeighbors(Puyo puyo, HashSet<Puyo> knowns)
+        private static void FillChain(Puyo puyo, ref HashSet<Puyo> chain)
         {
             // Check if puyo is known, try to add it
-            if (!knowns.Add(puyo)) return new List<Puyo>();
+            if (!chain.Add(puyo)) return;
 
             // Get neighbors
             List<Puyo> neighbors = puyo.GetNeighbors();
-            if (neighbors.Count == 0) return new List<Puyo>();
-
-            List<Puyo> chain = new List<Puyo>();
-
-            // Iterate over neighbors
-            // TODO : return what and when ?
-            // throw new NotImplementedException();
+            if (neighbors.Count == 0) return;
             
             foreach(Puyo neighbor in neighbors)
             {
-                if (neighbor.Color == puyo.Color)
+                if (neighbor.Color == puyo.Color || neighbor.Color == PuyoColor.Any)
                 {
-                    chain.Add(neighbor);
-                    chain.AddRange(GetAllNeighbors(neighbor, knowns));
+                    FillChain(neighbor, ref chain);
                 }
             }
-
-            return chain;
         }
     }
 }

@@ -78,7 +78,7 @@ namespace PuyoPuyo.GameObjects.Puyos
                 this.Column = cell.Column;
 
                 // release previous position
-                currentCell.Release(this);
+                currentCell.Release();
                 return true;
             }
 

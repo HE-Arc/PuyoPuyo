@@ -54,7 +54,7 @@ namespace PuyoPuyo.GameObjects
             Orientation = orientation;
 
             // Set color
-            if(colors.Item1 == PuyoColor.Undefined || colors.Item2 == PuyoColor.Undefined)
+            if(colors.Item1 == PuyoColor.Any || colors.Item2 == PuyoColor.Any)
                 throw new ArgumentException("Invalid puyo (color) given");
 
             // Get half columns count

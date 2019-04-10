@@ -32,12 +32,10 @@ namespace PuyoPuyo.GameObjects
         private bool isChainBroken = false;
         private bool isSpawnRequested = false;
         private bool isPuyoFalling = false;
-        private bool isGameSpeedUp = false;
 
         // PuyoColor
         public Player Player { get; private set; }
         public Queue<Tuple<PuyoColor, PuyoColor>> NextPuyos;
-
 
         // Grid
         public Grid Grid { get; private set; }
@@ -110,7 +108,7 @@ namespace PuyoPuyo.GameObjects
              * | - player has not been already spawned  |
              * | - player has been broken in half       |
             /* --------------------------------------- */
-            return !(Player is null);
+            return !(Player == null);
         }
 
         /// <summary>
@@ -157,19 +155,23 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         public void Left()
         {
-            switch(Player.Orientation)
+            if (CanAlterPlayer())
             {
-                case Orientation.Left:
-                    if (Player.Slave.Column > 0) Move(Orientation.Left);
-                    break;
-                case Orientation.Right:
-                    if (Player.Master.Column > 0) Move(Orientation.Left);
-                    break;
-                case Orientation.Up:
-                case Orientation.Down:
-                    if (Player.Master.Column > 0 && Player.Slave.Column > 0) Move(Orientation.Left);
-                    break;
+                switch (Player.Orientation)
+                {
+                    case Orientation.Left:
+                        if (Player.Slave.Column > 0) Move(Orientation.Left);
+                        break;
+                    case Orientation.Right:
+                        if (Player.Master.Column > 0) Move(Orientation.Left);
+                        break;
+                    case Orientation.Up:
+                    case Orientation.Down:
+                        if (Player.Master.Column > 0 && Player.Slave.Column > 0) Move(Orientation.Left);
+                        break;
+                }
             }
+            else return; //throw new PlayerException(PlayerException.OfType.NotAlive);
         }
 
         /// <summary>
@@ -178,19 +180,23 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         public void Right()
         {
-            switch (Player.Orientation)
+            if (CanAlterPlayer())
             {
-                case Orientation.Left:
-                    if (Player.Master.Column < Grid.Columns - 1) Move(Orientation.Right);
-                    break;
-                case Orientation.Right:
-                    if (Player.Slave.Column < Grid.Columns - 1) Move(Orientation.Right);
-                    break;
-                case Orientation.Up:
-                case Orientation.Down:
-                    if (Player.Master.Column < Grid.Columns - 1 && Player.Slave.Column < Grid.Columns - 1) Move(Orientation.Right);
-                    break;
-            }   
+                switch (Player.Orientation)
+                {
+                    case Orientation.Left:
+                        if (Player.Master.Column < Grid.Columns - 1) Move(Orientation.Right);
+                        break;
+                    case Orientation.Right:
+                        if (Player.Slave.Column < Grid.Columns - 1) Move(Orientation.Right);
+                        break;
+                    case Orientation.Up:
+                    case Orientation.Down:
+                        if (Player.Master.Column < Grid.Columns - 1 && Player.Slave.Column < Grid.Columns - 1) Move(Orientation.Right);
+                        break;
+                }
+            }
+            else return; //throw new PlayerException(PlayerException.OfType.NotAlive);
         }
 
         /// <summary>
@@ -199,7 +205,11 @@ namespace PuyoPuyo.GameObjects
         /// </summary>
         public void Down()
         {
-            Move(Orientation.Down);
+            if (CanAlterPlayer())
+            {
+                Move(Orientation.Down);
+            }
+            else return; //throw new PlayerException(PlayerException.OfType.NotAlive);
         }
 
         /// <summary>
@@ -231,7 +241,7 @@ namespace PuyoPuyo.GameObjects
             else
             {
                 // Generate puyopuyo
-                if(NextPuyos.Count < 5)
+                while (NextPuyos.Count < 5)
                 {
                     NextPuyos.Enqueue(new Tuple<PuyoColor, PuyoColor>((PuyoColor)rng.Next(0, puyoCount - 1), (PuyoColor)rng.Next(0, puyoCount - 1)));
                 }
@@ -283,14 +293,8 @@ namespace PuyoPuyo.GameObjects
                                 if (next_cell == null || !next_cell.IsFree)
                                     continue;
 
-                                // Insert into new cell
-                                if (next_cell.Insert(puyo))
-                                {
-                                    // Release previous position
-                                    cell.Release(puyo);
-
-                                    isPuyoFalling = true;
-                                }
+                                // Try to move puyo
+                                if(puyo.Move(next_cell)) isPuyoFalling = true;
                             }
                         }
 
@@ -310,14 +314,11 @@ namespace PuyoPuyo.GameObjects
                             else
                             {
                                 isChainBroken = true;
-                                // Export chains
-                                // TODO:
-                                Console.WriteLine(chains);
 
                                 foreach (var kv in chains)
                                 {
                                     PuyoColor pc = kv.Key;
-                                    List<List<Puyo>> coloredPieces = kv.Value;
+                                    List<IEnumerable<Puyo>> coloredPieces = kv.Value;
 
                                     if(kv.Value.Count > 0)
                                     {
@@ -325,12 +326,12 @@ namespace PuyoPuyo.GameObjects
                                         ScoreManager.Add(pc, coloredPieces.Count);
                                     }
 
-                                    foreach (List<Puyo> piece in coloredPieces)
+                                    foreach (HashSet<Puyo> piece in coloredPieces)
                                     {
                                         // Release cells
                                         foreach (Puyo puyo in piece)
                                         {
-                                            this.Grid[puyo.Row, puyo.Column].Release(puyo);
+                                            this.Grid[puyo.Row, puyo.Column].Release();
                                         }
                                     }
                                 }
@@ -344,20 +345,10 @@ namespace PuyoPuyo.GameObjects
                     // Player is not cut in a half !
                     else
                     {
-                        if (!(Player is null))
+                        if (Player != null)
                         {
-                            if (isGameSpeedUp)
-                            {
-                                // Check if it's time to move on
-                                if (stopwatch.ElapsedMilliseconds < DELAY_FALL_FAST)
-                                    return;
-                            }
-                            else
-                            {
-                                // Check if it's time to move on
-                                if (stopwatch.ElapsedMilliseconds < DELAY_FALL)
-                                    return;
-                            }
+                            // Check if it's time to move on
+                            if (stopwatch.ElapsedMilliseconds < DELAY_FALL) return;
 
                             // Restart stopwatch
                             stopwatch.Restart();

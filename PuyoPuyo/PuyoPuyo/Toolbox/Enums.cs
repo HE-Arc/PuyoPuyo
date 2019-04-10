@@ -29,7 +29,7 @@
 
     public enum PuyoColor
     {
-        Undefined = -1,
+        Any = -1,
         Red = 0,
         Green = 1,
         Blue = 2,

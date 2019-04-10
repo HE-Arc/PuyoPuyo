@@ -50,7 +50,7 @@ namespace UnitTestProject
             Gameboard gameboard = new Gameboard(columns, rows);
 
             // Validated that it is not possible to spawn a undefined puyo
-            Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(PuyoColor.Undefined));
+            Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(PuyoColor.Any));
         }
 
         public void TestGameboardSpawnAndRotate()

@@ -264,17 +264,23 @@ namespace PuyoPuyo.GameObjects
                                 isChainBroken = true;
                                 // Export chains
                                 // TODO:
+                                Console.WriteLine(chains);
+
                                 foreach (var kv in chains)
                                 {
                                     PuyoColor pc = kv.Key;
                                     List<List<Puyo>> coloredPieces = kv.Value;
-                                    foreach (List<Puyo> piece in coloredPieces)
+
+                                    if(kv.Value.Count > 0)
                                     {
                                         // Add it to score Manager
-                                        ScoreManager.Add(pc, piece.Count);
+                                        ScoreManager.Add(pc, coloredPieces.Count);
+                                    }
 
+                                    foreach (List<Puyo> piece in coloredPieces)
+                                    {
                                         // Release cells
-                                        foreach(Puyo puyo in piece)
+                                        foreach (Puyo puyo in piece)
                                         {
                                             this.Grid[puyo.Row, puyo.Column].Release(puyo);
                                         }

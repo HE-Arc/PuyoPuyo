@@ -59,12 +59,36 @@ namespace PuyoPuyo.Toolbox
 
             int groupBonus = 0;
             int puyoBonus = 0; // TODO
+
             foreach (int nbElement in lstGroup)
             {
                 groupBonus += (nbElement > pondGroupBonus.Length) ? pondGroupBonus.Last() : pondGroupBonus[nbElement - 1];
             }
 
-            int chainBonus = (versus) ? (lstGroup.Count > pondChainBonus.Length) ? pondChainBonus.Last() : pondChainBonus[lstGroup.Count - 1] : (lstGroup.Count > pondChainBonusVersus.Length) ? pondChainBonusVersus.Last() : pondChainBonusVersus[lstGroup.Count - 1];
+            int chainBonus = 0;
+
+            if(!versus)
+            {
+                if(lstGroup.Count > pondChainBonus.Length)
+                {
+                    chainBonus = pondChainBonus.Last();
+                }
+                else
+                {
+                    chainBonus = pondChainBonus[lstGroup.Count - 1];
+                }
+            }
+            else
+            {
+                if(lstGroup.Count > pondChainBonusVersus.Length)
+                {
+                    chainBonus = pondChainBonusVersus.Last();
+                }
+                else
+                {
+                    chainBonus = pondChainBonusVersus[lstGroup.Count - 1];
+                }
+            }
 
             int bonus = colorBonus + groupBonus + chainBonus;
 

@@ -76,10 +76,7 @@ namespace PuyoPuyo.GameObjects
                 Master = new Puyo(grid, 1, middle, data);
                 Slave = new Puyo(grid, 0, middle, data);
             }
-            else
-            {
-                throw new Exceptions.PlayerException(Exceptions.PlayerException.OfType.SpawnError);
-            }
+            else throw new Exceptions.PlayerException(Exceptions.PlayerException.OfType.SpawnError);
         }
 
         #region Private functions
@@ -117,28 +114,26 @@ namespace PuyoPuyo.GameObjects
                     break;
             }
         }
-        private bool ValidateMove(Cell current_m, Cell current_s, Cell next_m, Cell next_s)
+
+        /// <summary>
+        /// Try to move a puyo
+        /// <para>If it fails, move the puyo back to his current cell</para>
+        /// </summary>
+        /// <param name="current_m">current cell used by master</param>
+        /// <param name="current_s">current cell used by slave</param>
+        /// <param name="next_m">next cell used by master</param>
+        /// <param name="next_s">next cell used by slave</param>
+        /// <returns>True if both next cells are free</returns>
+        private bool Move(Cell current_m, Cell current_s, Cell next_m, Cell next_s)
         {
             // Move and validate
-            if (Master.TryMoveToCell(next_m) && Slave.TryMoveToCell(next_s) && ValidateSlavePosition())
-            {
-                return true;
-            }
-            else
-            {
-                // Reset positions
-                Master.TryMoveToCell(current_m);
-                Slave.TryMoveToCell(current_s);
-
-                return false;
-            }
+            return Master.TryMoveToCell(next_m) && Slave.TryMoveToCell(next_s) && ValidateSlavePosition();
         }
         /// <summary>
         /// Update slave position according to given orientation
         /// </summary>
-        /// <param name="orientation"></param>
         /// <returns>true if it succeded</returns>
-        private bool UpdateSlaveFromOrientation(Orientation orientation)
+        private bool UpdateSlaveFromOrientation()
         {
             GetSlaveRowAndColumnFromOrientation(out int predict_row, out int predict_column);
             Cell slave_new_cell = grid[predict_row, predict_column];
@@ -154,14 +149,18 @@ namespace PuyoPuyo.GameObjects
         /// <returns>true if it succeded</returns>
         public bool Rotate(Rotation rotation)
         {
-            Orientation orientation = OrientationHandler.Next(this.Orientation, rotation);
-            if (UpdateSlaveFromOrientation(orientation))
+            Orientation previousOrientation = Orientation;
+            Orientation = OrientationHandler.Next(this.Orientation, rotation);
+            if (UpdateSlaveFromOrientation())
             {
-                Orientation = orientation;
                 return true;
             }
-
-            return false;
+            else
+            {
+                // If failed rotate it back
+                Orientation = previousOrientation;
+                return false;
+            }
         }
 
         public bool Left()
@@ -177,17 +176,7 @@ namespace PuyoPuyo.GameObjects
             current_s.Release(Slave);
 
             // Move and validate
-            if (ValidateMove(current_m, current_s, next_m, next_s))
-            {
-                return true;
-            }
-            else
-            {
-                current_m.Insert(Master);
-                current_s.Insert(Slave);
-
-                return false;
-            }
+            return Move(current_m, current_s, next_m, next_s);
         }
 
         public bool Right()
@@ -203,17 +192,7 @@ namespace PuyoPuyo.GameObjects
             current_s.Release(Slave);
 
             // Move and validate
-            if (ValidateMove(current_m, current_s, next_m, next_s))
-            {
-                return true;
-            }
-            else
-            {
-                current_m.Insert(Master);
-                current_s.Insert(Slave);
-
-                return false;
-            }
+            return Move(current_m, current_s, next_m, next_s);
         }
 
         public bool Down()
@@ -225,21 +204,8 @@ namespace PuyoPuyo.GameObjects
             Cell next_m = grid[Master.Row + 1, Master.Column];
             Cell next_s = grid[Slave.Row + 1, Slave.Column];
 
-            current_m.Release(Master);
-            current_s.Release(Slave);
-
-            // Move and validate
-            if (ValidateMove(current_m, current_s, next_m, next_s))
-            {
-                return true;
-            }
-            else
-            {
-                current_m.Insert(Master);
-                current_s.Insert(Slave);
-
-                return false;
-            }
+            // Move the puyo
+            return Move(current_m, current_s, next_m, next_s);
         }
         #endregion
     }

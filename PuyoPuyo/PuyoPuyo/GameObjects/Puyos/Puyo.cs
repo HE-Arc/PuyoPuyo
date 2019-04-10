@@ -130,19 +130,24 @@ namespace PuyoPuyo.GameObjects.Puyos
         /// <returns>true if it succeded</returns>
         public bool TryMoveToCell(Cell cell)
         {
-            if (!(cell is null) && cell.IsFree)
-            {
-                grid[row, column].Release(this);
-                cell.Insert(this);
+            // Release the current cell
+            grid[row, column].Release(this);
 
+            // Try to move the puyo to the next cell
+            if (!(cell == null) && cell.Insert(this))
+            {
                 // Update row and column
-                this.row = cell.Row;
-                this.column = cell.Column;
+                row = cell.Row;
+                column = cell.Column;
 
                 return true;
             }
-
-            return false;
+            else
+            {
+                // Place the puyo back to his place
+                grid[row, column].Insert(this);
+                return false;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, int X, int Y, Vector2 Scale)

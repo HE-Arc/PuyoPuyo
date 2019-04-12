@@ -320,12 +320,6 @@ namespace PuyoPuyo.GameObjects
                                     PuyoColor pc = kv.Key;
                                     List<IEnumerable<Puyo>> coloredPieces = kv.Value;
 
-                                    if(kv.Value.Count > 0)
-                                    {
-                                        // Add it to score Manager
-                                        ScoreManager.Add(pc, coloredPieces.Count);
-                                    }
-
                                     foreach (HashSet<Puyo> piece in coloredPieces)
                                     {
                                         // Release cells
@@ -333,6 +327,9 @@ namespace PuyoPuyo.GameObjects
                                         {
                                             this.Grid[puyo.Row, puyo.Column].Release();
                                         }
+
+                                        // Add it to score Manager
+                                        ScoreManager.Add(pc, piece.Count);
                                     }
                                 }
 

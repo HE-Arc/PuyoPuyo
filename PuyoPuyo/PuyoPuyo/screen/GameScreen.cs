@@ -22,7 +22,7 @@ namespace PuyoPuyo.screen
         protected SpriteFont Font { get; private set; }
 
         // GameBoard Test
-        Gameboard gb = new Gameboard(6, 12);
+        Gameboard gb = new Gameboard(6, 14);
 
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
@@ -34,7 +34,7 @@ namespace PuyoPuyo.screen
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
-            Font = _game.Content.Load<SpriteFont>("Font");
+            Font = _game.Content.Load<SpriteFont>("GameFont");
             gb.Resume();
 
         }

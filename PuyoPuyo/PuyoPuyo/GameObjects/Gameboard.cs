@@ -10,6 +10,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using PuyoPuyo.GameObjects.Puyos.Data;
 
 namespace PuyoPuyo.GameObjects
 {
@@ -45,8 +46,8 @@ namespace PuyoPuyo.GameObjects
 
         // Draw elements
         private Texture2D BoardCase;
-        private const int SizeBoardCase = 50;
-        private Vector2 Scale = new Vector2(0.38f);
+        private const int SizeBoardCase = 65;
+        private Vector2 Scale = new Vector2(0.50f); // 128 => 1 | SizeBoardCase => SizeBoardCase*1/128 = 
 
         /// <summary>
         /// Help managing puyos.
@@ -366,7 +367,7 @@ namespace PuyoPuyo.GameObjects
             int Y = 0;
 
             // Row first
-            for (int y = 0; y < Grid.Rows; y++)
+            for (int y = 2; y < Grid.Rows; y++)
             {
                 X = 0;
                 Y += SizeBoardCase;
@@ -383,7 +384,20 @@ namespace PuyoPuyo.GameObjects
                 }
             }
 
-            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+20, SizeBoardCase));
+            int offsetX = 35;
+            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+ offsetX, SizeBoardCase));
+
+            int offsetY = 2;
+            foreach(var p in NextPuyos)
+            {
+                IPuyoData master = PuyoDataFactory.Instance.Get(p.Item1);
+                IPuyoData slave = PuyoDataFactory.Instance.Get(p.Item2);
+
+                spriteBatch.Draw(slave.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+30, offsetY * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
+                spriteBatch.Draw(master.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+30, (offsetY+1) * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
+
+                offsetY += 3;
+            }
         }
     }
 

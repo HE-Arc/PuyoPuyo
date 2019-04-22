@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace PuyoPuyo.screen
 {
-    public class MainMenuScreen : MenuScreen
+    public class GameoverScreen : MenuScreen
     {
         private readonly Main _main;
 
-        public MainMenuScreen(IServiceProvider serviceProvider, Main main)
+        public GameoverScreen(IServiceProvider serviceProvider, Main main)
             : base(serviceProvider, main)
         {
             _main = main;
@@ -20,8 +20,8 @@ namespace PuyoPuyo.screen
         {
             base.LoadContent();
 
-            AddMenuItem("1 Player", Show<PrepareForOneMenuScreen>);
-            AddMenuItem("2 Player", Show<PrepareForTwoMenuScreen>);
+            AddMenuItem("Retry", Show<GameScreen>);
+            AddMenuItem("Home", Show<MainMenuScreen>);
             AddMenuItem("Exit", _main.Exit);
         }
 

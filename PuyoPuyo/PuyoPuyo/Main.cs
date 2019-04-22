@@ -111,6 +111,7 @@ namespace PuyoPuyo
             screenGameComponent.Register(new PauseScreen(this.Services, this));
             screenGameComponent.Register(new PrepareForOneMenuScreen(this.Services, this));
             screenGameComponent.Register(new PrepareForTwoMenuScreen(this.Services, this));
+            screenGameComponent.Register(new GameoverScreen(this.Services, this));
         }
     }
 }

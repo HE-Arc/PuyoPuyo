@@ -84,7 +84,7 @@ namespace PuyoPuyo.screen
                     FindScreen<GameoverScreen>().setScorePlayer2(gbPlayer2.ScoreManager.Score);
 
                     gbPlayer2 = null;
-                    gbPlayer2 = new Gameboard(columns, rows, 700, 0);
+                    gbPlayer2 = new Gameboard(columns, rows, 750, 700);
                     gbPlayer2.Resume();
                 }
 

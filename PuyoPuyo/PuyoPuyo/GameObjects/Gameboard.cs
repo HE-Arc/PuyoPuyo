@@ -259,8 +259,19 @@ namespace PuyoPuyo.GameObjects
             else
             {
                 // Calcul fallAcceleration in function of the Score value
-                if(ScoreManager.Score != 0)
-                    fallAcceleration = (int)Math.Log10(Convert.ToDouble(ScoreManager.Score)) * 10; 
+                if (ScoreManager.Score != 0)
+                {
+                    //fallAcceleration = (int)Math.Log10(Convert.ToDouble(ScoreManager.Score)) * 10; FIRST FUNCTION
+                    fallAcceleration = (int)(2694530 + (14.93574 - 2694530) / (1 + Math.Pow(ScoreManager.Score / 141280700000,0.6469458))); // SECOND FUNCTION
+                    // 0 -> 0
+                    // 1000 -> 50
+                    // 10000 -> 80
+                    // 25000 -> 125
+                    // 35000 -> 150
+                    // 50000 -> 200
+                    // 75000 -> 250
+                    // 100000 -> 300 => DEATH
+                }
 
                 // Generate puyopuyo
                 while (NextPuyos.Count < 5)

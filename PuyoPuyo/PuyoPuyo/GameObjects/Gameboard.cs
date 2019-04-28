@@ -81,8 +81,7 @@ namespace PuyoPuyo.GameObjects
             this.offsetX = offsetX;
             this.offsetY = offsetY;
 
-            // Background texture
-            //Background = background;
+            // Background texture          
         }
 
         /// <summary>
@@ -390,7 +389,7 @@ namespace PuyoPuyo.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont Font)
         {
-            spriteBatch.Draw(Background, new Vector2(offsetY, 0));
+            spriteBatch.Draw(TextureManager.Instance.TryGet<Texture2D>("InGameBg"), new Vector2(offsetY, 0));
 
             int X = offsetX;
             int Y = 0;

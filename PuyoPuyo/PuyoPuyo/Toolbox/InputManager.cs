@@ -270,6 +270,10 @@ namespace PuyoPuyo.Toolbox
             return inputs;
         }
 
+        /// <summary>
+        /// Return inputs from default configuration (wasd and first Gamepad)
+        /// </summary>
+        /// <returns></returns>
         public List<Input> Perform()
         {
             List<Input> inputs = new List<Input>();

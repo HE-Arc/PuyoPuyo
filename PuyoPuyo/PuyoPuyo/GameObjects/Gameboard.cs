@@ -23,7 +23,10 @@ namespace PuyoPuyo.GameObjects
         // Delay
         public static readonly int DELAY_SPAWN = 500;
         public static readonly int DELAY_FALL = 350;
-        public static readonly int DELAY_FALL_FAST = 150;
+        public static readonly int DELAY_FALL_FAST = (int)(DELAY_FALL / 3);
+
+        private int fallAcceleration = 0;
+
 
         // Game flow
         private readonly Stopwatch stopwatch = new Stopwatch();
@@ -241,6 +244,10 @@ namespace PuyoPuyo.GameObjects
             }
             else
             {
+                // Calcul fallAcceleration in function of the Score value
+                if(ScoreManager.Score != 0)
+                    fallAcceleration = (int)Math.Log10(Convert.ToDouble(ScoreManager.Score)) * 10; 
+
                 // Generate puyopuyo
                 while (NextPuyos.Count < 5)
                 {
@@ -251,7 +258,7 @@ namespace PuyoPuyo.GameObjects
                 if (isSpawnRequested && !isChainBroken)
                 {
                     // Stopwatch must have been resetted and the PuyoColor died
-                    if (stopwatch.ElapsedMilliseconds > DELAY_SPAWN)
+                    if (stopwatch.ElapsedMilliseconds > DELAY_SPAWN - fallAcceleration)
                     {
                         Spawn(NextPuyos.Dequeue());
                     }
@@ -264,7 +271,7 @@ namespace PuyoPuyo.GameObjects
                     if (isChainBroken || Player == null)
                     {
                         // Check if it's time to move on
-                        if (stopwatch.ElapsedMilliseconds < DELAY_FALL_FAST)
+                        if (stopwatch.ElapsedMilliseconds < DELAY_FALL_FAST - fallAcceleration)
                             return;
 
                         // Restart stopwatch
@@ -346,7 +353,7 @@ namespace PuyoPuyo.GameObjects
                         if (Player != null)
                         {
                             // Check if it's time to move on
-                            if (stopwatch.ElapsedMilliseconds < DELAY_FALL) return;
+                            if (stopwatch.ElapsedMilliseconds < DELAY_FALL - fallAcceleration) return;
 
                             // Restart stopwatch
                             stopwatch.Restart();

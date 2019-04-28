@@ -26,7 +26,7 @@ namespace PuyoPuyo.screen
         {
             base.LoadContent();
 
-            AddMenuItem("Retry", Show<GameScreen>);
+            AddMenuItem("Retry", RestartGame);
             AddMenuItem("Home", ReturnToHome);
             AddMenuItem("Exit", _main.Exit);
 
@@ -97,6 +97,14 @@ namespace PuyoPuyo.screen
             menuScorePlayer1.Text = "";
             menuScorePlayer2.Text = "";
             Show<MainMenuScreen>();
+        }
+
+        public void RestartGame()
+        {
+            if (InputManager.Instance.NbPlayer >= 2)
+                _main.setSize(true);
+
+            Show<GameScreen>();
         }
     }
 }

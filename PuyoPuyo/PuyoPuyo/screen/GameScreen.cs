@@ -22,12 +22,13 @@ namespace PuyoPuyo.screen
 
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
+        private Texture2D Background;
         private readonly Main _game;
         protected SpriteFont Font { get; private set; }
 
         
         Gameboard gbPlayer1 = new Gameboard(columns, rows, 50, 0);
-        Gameboard gbPlayer2 = new Gameboard(columns, rows, 700, 0);
+        Gameboard gbPlayer2 = new Gameboard(columns, rows, 750, 700);
 
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
@@ -39,7 +40,12 @@ namespace PuyoPuyo.screen
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
+            
             Font = _game.Content.Load<SpriteFont>("GameFont");
+
+            gbPlayer1.LoadTexture(_game.Content.Load<Texture2D>("textures/bg/ingame_bg"));
+            gbPlayer2.LoadTexture(_game.Content.Load<Texture2D>("textures/bg/ingame_bg"));
+
             gbPlayer1.Resume();
             gbPlayer2.Resume();
         }

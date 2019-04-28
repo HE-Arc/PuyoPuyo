@@ -47,13 +47,18 @@ namespace PuyoPuyo.GameObjects
         // ScoreManager
         public ScoreManager ScoreManager { get; private set; }
 
+        // Next Puyo
+        private int nbNextPuyoShown = 4;
+
         // Draw elements
-        private Texture2D BoardCase;
+        private Texture2D Background;
         private const int SizeBoardCase = 65;
         private Vector2 Scale = new Vector2(0.50f); // 128 => 1 | SizeBoardCase => SizeBoardCase*1/128 = 
 
         private int offsetX;
         private int offsetY;
+
+        
 
         /// <summary>
         /// Help managing puyos.
@@ -75,6 +80,9 @@ namespace PuyoPuyo.GameObjects
             // Get offset
             this.offsetX = offsetX;
             this.offsetY = offsetY;
+
+            // Background texture
+            //Background = background;
         }
 
         /// <summary>
@@ -375,8 +383,15 @@ namespace PuyoPuyo.GameObjects
             }
         }
 
+        public void LoadTexture(Texture2D t)
+        {
+            Background = t;
+        }
+
         public void Draw(SpriteBatch spriteBatch, SpriteFont Font)
         {
+            spriteBatch.Draw(Background, new Vector2(offsetY, 0));
+
             int X = offsetX;
             int Y = 0;
 
@@ -387,7 +402,7 @@ namespace PuyoPuyo.GameObjects
                 Y += SizeBoardCase;
                 for (int x = 0; x < Grid.Columns; x++)
                 {
-                    Grid.Draw(spriteBatch, X, Y, SizeBoardCase);
+                    //Grid.Draw(spriteBatch, X, Y, SizeBoardCase);
 
                     if(!Grid[y, x].IsFree)
                     {
@@ -399,18 +414,23 @@ namespace PuyoPuyo.GameObjects
             }
 
             int offsetScore = 45;
-            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+offsetX+offsetScore, SizeBoardCase));
+            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+offsetX+offsetScore, SizeBoardCase+ 12));
 
-            int offsetPuyo= 2;
+            int nbNextPuyoShow = 0;
+            double offsetPuyo= 2.5;
             foreach(var p in NextPuyos)
             {
-                IPuyoData master = PuyoDataFactory.Instance.Get(p.Item1);
-                IPuyoData slave = PuyoDataFactory.Instance.Get(p.Item2);
+                if (nbNextPuyoShow < nbNextPuyoShown)
+                {
+                    IPuyoData master = PuyoDataFactory.Instance.Get(p.Item1);
+                    IPuyoData slave = PuyoDataFactory.Instance.Get(p.Item2);
 
-                spriteBatch.Draw(slave.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+60, offsetPuyo * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
-                spriteBatch.Draw(master.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+60, (offsetPuyo + 1) * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
+                    spriteBatch.Draw(slave.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX + 98, (int)(offsetPuyo * SizeBoardCase) + 20) , origin: new Vector2(0, 0), scale: Scale);
+                    spriteBatch.Draw(master.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX + 98, (int)((offsetPuyo + 1) * SizeBoardCase) + 20), origin: new Vector2(0, 0), scale: Scale);
 
-                offsetPuyo += 3;
+                    offsetPuyo += 2.5;
+                    nbNextPuyoShow++;
+                }
             }
         }
     }

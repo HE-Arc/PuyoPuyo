@@ -10,9 +10,11 @@ namespace PuyoPuyo.screen
     {
         private readonly Main _main;
 
-        private int score;
+        private int scorePlayer1;
+        private int scorePlayer2;
 
-        private MenuItem menuScore;
+        private MenuItem menuScorePlayer1;
+        private MenuItem menuScorePlayer2;
 
         public GameoverScreen(IServiceProvider serviceProvider, Main main)
             : base(serviceProvider, main)
@@ -25,11 +27,14 @@ namespace PuyoPuyo.screen
             base.LoadContent();
 
             AddMenuItem("Retry", Show<GameScreen>);
-            AddMenuItem("Home", Show<MainMenuScreen>);
+            AddMenuItem("Home", ReturnToHome);
             AddMenuItem("Exit", _main.Exit);
 
-            menuScore = new MenuItem(Font, "Your score : " + score);
-            menuScore.Position = new Vector2(50, 150);
+            menuScorePlayer1 = new MenuItem(Font, "");
+            menuScorePlayer1.Position = new Vector2(50, 150);
+
+            menuScorePlayer2 = new MenuItem(Font, "");
+            menuScorePlayer2.Position = new Vector2(50, 200);
 
             SetTitle("Game Over");
         }
@@ -69,15 +74,29 @@ namespace PuyoPuyo.screen
 
             _spriteBatch.Begin();
 
-            menuScore.Draw(_spriteBatch);
+            menuScorePlayer1.Draw(_spriteBatch);
+            menuScorePlayer2.Draw(_spriteBatch);
 
             _spriteBatch.End();
         }
 
-        public void setScore(int score)
+        public void setScorePlayer1(int scorePlayer1)
         {
-            this.score = score;
-            menuScore.Text = "Your score : " + this.score;
+            this.scorePlayer1 = scorePlayer1;
+            menuScorePlayer1.Text = "Score Player 1 : " + this.scorePlayer1;
+        }
+
+        public void setScorePlayer2(int scorePlayer2)
+        {
+            this.scorePlayer2 = scorePlayer2;
+            menuScorePlayer2.Text = "Score Player 2 : " + this.scorePlayer2;
+        }
+
+        public void ReturnToHome()
+        {
+            menuScorePlayer1.Text = "";
+            menuScorePlayer2.Text = "";
+            Show<MainMenuScreen>();
         }
     }
 }

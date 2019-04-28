@@ -32,9 +32,8 @@ namespace PuyoPuyo.screen
 
         private void Quit()
         {
-            // TODO : reset game
-
             InputManager.Instance.Reset();
+            _main.setSize(false);
             Show<MainMenuScreen>();
         }
 

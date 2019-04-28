@@ -25,8 +25,9 @@ namespace PuyoPuyo.screen
         private readonly Main _game;
         protected SpriteFont Font { get; private set; }
 
-        // GameBoard Test
-        Gameboard gb = new Gameboard(columns, rows);
+        
+        Gameboard gbPlayer1 = new Gameboard(columns, rows);
+        Gameboard gbPlayer2 = new Gameboard(columns, rows);
 
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
@@ -39,8 +40,8 @@ namespace PuyoPuyo.screen
         {
             _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
             Font = _game.Content.Load<SpriteFont>("GameFont");
-            gb.Resume();
-
+            gbPlayer1.Resume();
+            gbPlayer2.Resume();
         }
 
         public override void UnloadContent()
@@ -54,19 +55,35 @@ namespace PuyoPuyo.screen
 
             try
             {
-                gb.Update(gameTime);
+                gbPlayer1.Update(gameTime);
+
+                if (InputManager.Instance.NbPlayer >= 2)
+                    gbPlayer2.Update(gameTime);
             }
             catch (PlayerException pe)
             {
                 // Gameover
 
                 // Set score to gameoverScreen
-                FindScreen<GameoverScreen>().setScore(gb.ScoreManager.Score);
+                FindScreen<GameoverScreen>().setScorePlayer1(gbPlayer1.ScoreManager.Score);
+
 
                 // Reset game
-                gb = null;
-                gb = new Gameboard(columns, rows);
-                gb.Resume();
+                gbPlayer1 = null;
+                gbPlayer1 = new Gameboard(columns, rows);
+                gbPlayer1.Resume();
+
+                if (InputManager.Instance.NbPlayer >= 2)
+                {
+                    FindScreen<GameoverScreen>().setScorePlayer2(gbPlayer2.ScoreManager.Score);
+
+                    gbPlayer2 = null;
+                    gbPlayer2 = new Gameboard(columns, rows);
+                    gbPlayer2.Resume();
+                }
+
+                // Reset size of windows
+                _game.setSize(false);
 
                 // Show gameoverScreen
                 Show<GameoverScreen>();
@@ -94,13 +111,13 @@ namespace PuyoPuyo.screen
                         case Input.Up:
                             break;
                         case Input.Left:
-                            gb.Left();
+                            gbPlayer1.Left();
                             break;
                         case Input.Down:
-                            gb.Down();
+                            gbPlayer1.Down();
                             break;
                         case Input.Right:
-                            gb.Right();
+                            gbPlayer1.Right();
                             break;
                         case Input.Pause:
                             Show<PauseScreen>();
@@ -110,10 +127,10 @@ namespace PuyoPuyo.screen
                         case Input.Cancel:
                             break;
                         case Input.CounterclockwiseRotation:
-                            gb.Rotate(Rotation.Counterclockwise);
+                            gbPlayer1.Rotate(Rotation.Counterclockwise);
                             break;
                         case Input.ClockwiseRotation:
-                            gb.Rotate(Rotation.Clockwise);
+                            gbPlayer1.Rotate(Rotation.Clockwise);
                             break;
                     }
                 }
@@ -132,13 +149,13 @@ namespace PuyoPuyo.screen
                         case Input.Up:
                             break;
                         case Input.Left:
-                            gb.Left();
+                            gbPlayer2.Left();
                             break;
                         case Input.Down:
-                            gb.Down();
+                            gbPlayer2.Down();
                             break;
                         case Input.Right:
-                            gb.Right();
+                            gbPlayer2.Right();
                             break;
                         case Input.Pause:
                             break;
@@ -147,10 +164,10 @@ namespace PuyoPuyo.screen
                         case Input.Cancel:
                             break;
                         case Input.CounterclockwiseRotation:
-                            gb.Rotate(Rotation.Counterclockwise);
+                            gbPlayer2.Rotate(Rotation.Counterclockwise);
                             break;
                         case Input.ClockwiseRotation:
-                            gb.Rotate(Rotation.Clockwise);
+                            gbPlayer2.Rotate(Rotation.Clockwise);
                             break;
                     }
                 }
@@ -166,23 +183,9 @@ namespace PuyoPuyo.screen
 
             _spriteBatch.Begin();
 
-            //TODO : Buttons to retry, return to menu, help, etc
-            //TODO : Use GameoverScreen (needs ability to display score, etc)
-            /*if(isGameOver)
-            {
-                Vector2 gol = new Vector2(
-                        _game.GraphicsDevice.Viewport.Width / 2,
-                        _game.GraphicsDevice.Viewport.Height / 2
-                        );
-                string gos = String.Format("Gameover !\r\nYour score : {0}\r\n press 'Enter' to retry", gb.ScoreManager.Score);
-                _spriteBatch.DrawString(Font, gos, gol, Color.IndianRed);
-            }
-            else
-            {
-                gb.Draw(_spriteBatch, Font);
-            }*/
-
-            gb.Draw(_spriteBatch, Font);
+            gbPlayer1.Draw(_spriteBatch, Font);
+            if (InputManager.Instance.NbPlayer >= 2)
+                gbPlayer2.Draw(_spriteBatch, Font);
 
             _spriteBatch.End();
 

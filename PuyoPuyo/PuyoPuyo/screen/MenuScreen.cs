@@ -16,7 +16,7 @@ namespace PuyoPuyo.screen
     /// </summary>
     public abstract class MenuScreen : Screen
     {
-        private readonly Main _main;
+        protected readonly Main _main;
         private readonly IServiceProvider _serviceProvider;
         protected SpriteBatch _spriteBatch;
         private MenuItem cursor;

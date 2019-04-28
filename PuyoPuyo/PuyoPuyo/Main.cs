@@ -113,5 +113,25 @@ namespace PuyoPuyo
             screenGameComponent.Register(new PrepareForTwoMenuScreen(this.Services, this));
             screenGameComponent.Register(new GameoverScreen(this.Services, this));
         }
+
+        /// <summary>
+        /// Resize the windows if there is two players
+        /// </summary>
+        /// <param name="game2Player"></param>
+        public void setSize(bool game2Player)
+        {
+            if (game2Player)
+            {
+                graphics.PreferredBackBufferHeight = 900;
+                graphics.PreferredBackBufferWidth = 1500;
+            }
+            else
+            {
+                graphics.PreferredBackBufferHeight = 900;
+                graphics.PreferredBackBufferWidth = 600;
+            }
+
+            graphics.ApplyChanges();
+        }
     }
 }

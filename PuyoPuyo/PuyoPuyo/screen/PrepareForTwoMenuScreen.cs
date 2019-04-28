@@ -20,8 +20,6 @@ namespace PuyoPuyo.screen
         {
             base.LoadContent();
 
-            InputManager.Instance.NbPlayer = 2;
-
             AddMenuItem("Keyboard", player1KeyBoard);
             AddMenuItem("GamePad", Player1GamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
@@ -72,7 +70,7 @@ namespace PuyoPuyo.screen
             MenuItems.Clear();
             indexMenu = 0;
 
-            AddMenuItem("Play", Show<GameScreen>);
+            AddMenuItem("Play", StartGame);
             AddMenuItem("Back", BackToTwo);
 
             SetTitle("Ready ?");
@@ -90,7 +88,7 @@ namespace PuyoPuyo.screen
                 MenuItems.Clear();
                 indexMenu = 0;
 
-                AddMenuItem("Play", Show<GameScreen>);
+                AddMenuItem("Play", StartGame);
                 AddMenuItem("Back", BackToTwo);
 
                 SetTitle("Ready ?");
@@ -159,6 +157,13 @@ namespace PuyoPuyo.screen
                         break;
                 }
             }
+        }
+
+        public void StartGame()
+        {
+            InputManager.Instance.NbPlayer = 2;
+            _main.setSize(true);
+            Show<GameScreen>();
         }
     }
 }

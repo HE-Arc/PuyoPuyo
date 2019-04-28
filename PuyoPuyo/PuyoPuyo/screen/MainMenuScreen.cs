@@ -23,6 +23,8 @@ namespace PuyoPuyo.screen
             AddMenuItem("1 Player", Show<PrepareForOneMenuScreen>);
             AddMenuItem("2 Player", Show<PrepareForTwoMenuScreen>);
             AddMenuItem("Exit", _main.Exit);
+
+            SetTitle("Home");
         }
 
         public override void Update(GameTime gameTime)

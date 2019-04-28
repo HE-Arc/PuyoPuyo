@@ -25,8 +25,13 @@ namespace PuyoPuyo.screen
             AddMenuItem("Keyboard", player1KeyBoard);
             AddMenuItem("GamePad", Player1GamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
+
+            SetTitle("Player 1");
         }
 
+        /// <summary>
+        /// Set WASD to player 1
+        /// </summary>
         private void player1KeyBoard()
         {
             MenuItems.Clear();
@@ -35,8 +40,13 @@ namespace PuyoPuyo.screen
             AddMenuItem("Keyboard", player2KeyBoard);
             AddMenuItem("GamePad", Player2GamePad);
             AddMenuItem("Back", BackToOne);
+
+            SetTitle("Player 2");
         }
 
+        /// <summary>
+        /// Set gamepad to player 1
+        /// </summary>
         private void Player1GamePad()
         {
             bool isSetted = InputManager.Instance.SetGamePad(PlayerIndex.One);
@@ -49,9 +59,14 @@ namespace PuyoPuyo.screen
                 AddMenuItem("Keyboard", player2KeyBoard);
                 AddMenuItem("GamePad", Player2GamePad);
                 AddMenuItem("Back", BackToOne);
+
+                SetTitle("Player 2");
             }
         }
 
+        /// <summary>
+        /// Set arrows to player 2
+        /// </summary>
         private void player2KeyBoard()
         {
             MenuItems.Clear();
@@ -59,8 +74,13 @@ namespace PuyoPuyo.screen
 
             AddMenuItem("Play", Show<GameScreen>);
             AddMenuItem("Back", BackToTwo);
+
+            SetTitle("Ready ?");
         }
 
+        /// <summary>
+        /// Set GamePad to player 2
+        /// </summary>
         private void Player2GamePad()
         {
             bool isSetted = InputManager.Instance.SetGamePad(PlayerIndex.Two);
@@ -72,9 +92,14 @@ namespace PuyoPuyo.screen
 
                 AddMenuItem("Play", Show<GameScreen>);
                 AddMenuItem("Back", BackToTwo);
+
+                SetTitle("Ready ?");
             }
         }
 
+        /// <summary>
+        /// Return to choose input system to player 1
+        /// </summary>
         private void BackToOne()
         {
             InputManager.Instance.RemovePlayer(PlayerIndex.One);
@@ -85,8 +110,13 @@ namespace PuyoPuyo.screen
             AddMenuItem("Keyboard", player1KeyBoard);
             AddMenuItem("GamePad", Player1GamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
+
+            SetTitle("Player 1");
         }
 
+        /// <summary>
+        /// Return to choose input system to player 2
+        /// </summary>
         private void BackToTwo()
         {
             InputManager.Instance.RemovePlayer(PlayerIndex.Two);
@@ -97,6 +127,8 @@ namespace PuyoPuyo.screen
             AddMenuItem("Keyboard", player2KeyBoard);
             AddMenuItem("GamePad", Player2GamePad);
             AddMenuItem("Back", BackToOne);
+
+            SetTitle("Player 2");
         }
 
         public override void Update(GameTime gameTime)

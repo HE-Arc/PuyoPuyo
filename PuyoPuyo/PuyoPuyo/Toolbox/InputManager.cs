@@ -11,16 +11,18 @@ using PuyoPuyo.GameObjects;
 
 namespace PuyoPuyo.Toolbox
 {
+    /// <summary>
+    /// Singleton to manage keyboard and Gamepad on whole application
+    /// </summary>
     class InputManager
     {
 
         private KeyboardState kState;
         private GamePadState gState;
-        private Dictionary<PlayerIndex, PlayerIndex> playersGamePad = new Dictionary<PlayerIndex, PlayerIndex>();
-        private Dictionary<Input, InputTimer> inputsUsable = new Dictionary<Input, InputTimer>();
+        private Dictionary<PlayerIndex, PlayerIndex> playersGamePad = new Dictionary<PlayerIndex, PlayerIndex>(); // reference each gamepad use by player
+        private Dictionary<Input, InputTimer> inputsUsable = new Dictionary<Input, InputTimer>(); // list of timer to avoid to use an action many times at one human input
 
-
-        public float DeadzoneSticks = 0.25f;
+        public float DeadzoneSticks = 0.25f; // avoid to move without will
 
         private static InputManager instance;
         public static InputManager Instance
@@ -47,6 +49,11 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
+        /// <summary>
+        /// Set the next free gamepad to the player
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public bool SetGamePad(PlayerIndex player)
         {
             foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
@@ -58,10 +65,6 @@ namespace PuyoPuyo.Toolbox
                     else
                         playersGamePad[player] = playerIndex;
 
-                    foreach (var item in playersGamePad)
-                    {
-                        Console.WriteLine(item.Key.ToString() + " : " + item.Value.ToString());
-                    }
                     return true;
                 }
             }
@@ -69,6 +72,10 @@ namespace PuyoPuyo.Toolbox
             return false;
         }
 
+        /// <summary>
+        /// List of action made by the player 1 with the keyboard
+        /// </summary>
+        /// <param name="inputs"></param>
         private void Player1Keyboard(List<Input> inputs)
         {
             kState = Keyboard.GetState();
@@ -103,6 +110,10 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
+        /// <summary>
+        /// List of action made by the player 2 with the keyboard
+        /// </summary>
+        /// <param name="inputs"></param>
         private void Player2Keyboard(List<Input> inputs)
         {
             kState = Keyboard.GetState();
@@ -131,6 +142,11 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
+        /// <summary>
+        /// List of action made by the current gamepad
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <param name="gState"></param>
         private void UseGamePad(List<Input> inputs, GamePadState gState)
         {
 
@@ -202,11 +218,17 @@ namespace PuyoPuyo.Toolbox
             }
         }
 
+        /// <summary>
+        /// Return list of action made by the current player
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public List<Input> Perform(PlayerIndex player)
         {
             List<Input> inputs = new List<Input>();
             bool gamePadConnected = false;
 
+            // Check if a gamepad is setted for the current player
             if (playersGamePad.ContainsKey(player))
             {
                 gState = GamePad.GetState(playersGamePad[player]);
@@ -215,6 +237,8 @@ namespace PuyoPuyo.Toolbox
                     gamePadConnected = true;
             }
 
+            // Check if the gamepad is always connected
+            // If it's true use this else use keyboard
             if (gamePadConnected)
             {
                 UseGamePad(inputs, gState);
@@ -227,6 +251,7 @@ namespace PuyoPuyo.Toolbox
                     Player2Keyboard(inputs);
             }
 
+            // Check if the last use of input isn't too short
             for (int i = inputs.Count - 1; i >= 0; --i)
             {
                 if (inputsUsable[inputs[i]].Usable)
@@ -274,6 +299,10 @@ namespace PuyoPuyo.Toolbox
             return inputs;
         }
 
+        /// <summary>
+        /// Remove gamepad setted for the current player
+        /// </summary>
+        /// <param name="playerIndex"></param>
         public void RemovePlayer(PlayerIndex playerIndex)
         {
 
@@ -281,6 +310,7 @@ namespace PuyoPuyo.Toolbox
                 playersGamePad.Remove(playerIndex);
         }
 
+        // Reset gamepad selected
         public void Reset()
         {
             playersGamePad.Clear();

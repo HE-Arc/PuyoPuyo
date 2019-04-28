@@ -11,20 +11,27 @@ using System.Linq;
 
 namespace PuyoPuyo.screen
 {
+    /// <summary>
+    /// Define the gestion of menus
+    /// </summary>
     public abstract class MenuScreen : Screen
     {
         private readonly Main _main;
         private readonly IServiceProvider _serviceProvider;
         protected SpriteBatch _spriteBatch;
-        private Dictionary<Keys, bool> _previousKeys = new Dictionary<Keys, bool>();
         private MenuItem cursor;
         protected MenuItem selectedItem;
         protected int indexMenu;
+        private MenuItem title;
         public List<MenuItem> MenuItems { get; }
         protected SpriteFont Font { get; private set; }
         protected ContentManager Content { get; private set; }
 
-
+        /// <summary>
+        /// Instanciate menu screen
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="main"></param>
         protected MenuScreen(IServiceProvider serviceProvider, Main main)
         {
             _serviceProvider = serviceProvider;
@@ -33,21 +40,27 @@ namespace PuyoPuyo.screen
             indexMenu = 0;
         }
 
+        /// <summary>
+        /// Add button with action on screen
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="action"></param>
         protected void AddMenuItem(string text, Action action = null)
         {
             var menuItem = new MenuItem(Font, text)
             {
-                Position = new Vector2(300, 200 + 32 * MenuItems.Count),
+                Position = new Vector2(200, 300 + 100 * MenuItems.Count),
                 Action = action
             };
 
+            // Select first item
             if (MenuItems.Count == 0)
             {
                 selectedItem = menuItem;
                 menuItem.Color = Color.Yellow;
                 cursor = new MenuItem(Font, ">")
                 {
-                    Position = new Vector2(290, 200 + 32 * MenuItems.Count),
+                    Position = new Vector2(150, 300 + 100 * MenuItems.Count),
                     Color = Color.Yellow
                 };
             }
@@ -61,11 +74,6 @@ namespace PuyoPuyo.screen
 
             Content = new ContentManager(_serviceProvider, "Content");
 
-            // Initialize keys
-            foreach(Keys k in Enum.GetValues(typeof(Keys)))
-            {
-                _previousKeys.Add(k, false);
-            }
         }
 
         public override void Dispose()
@@ -83,6 +91,9 @@ namespace PuyoPuyo.screen
 
             _spriteBatch = new SpriteBatch(graphicsDeviceService.GraphicsDevice);
             Font = Content.Load<SpriteFont>("Font");
+
+            title = new MenuItem(Font, "title");
+            title.Position = new Vector2(150, 50);
         }
 
         public override void UnloadContent()
@@ -102,6 +113,8 @@ namespace PuyoPuyo.screen
 
             _spriteBatch.Begin();
 
+            title.Draw(_spriteBatch);
+
             foreach (var menuItem in MenuItems)
                 menuItem.Draw(_spriteBatch);
 
@@ -111,6 +124,9 @@ namespace PuyoPuyo.screen
             _spriteBatch.End();
         }
 
+        /// <summary>
+        /// Select previous link
+        /// </summary>
         protected void SelectPrevious()
         {
             --indexMenu;
@@ -120,6 +136,9 @@ namespace PuyoPuyo.screen
             UpdateSelection();
         }
 
+        /// <summary>
+        /// select second link
+        /// </summary>
         protected void SelectNext()
         {
             ++indexMenu;
@@ -129,12 +148,24 @@ namespace PuyoPuyo.screen
             UpdateSelection();
         }
 
+        /// <summary>
+        /// Move cursor at the selected link
+        /// </summary>
         private void UpdateSelection()
         {
             selectedItem.Color = Color.White;
             selectedItem = MenuItems[indexMenu];
             selectedItem.Color = Color.Yellow;
-            cursor.Position = new Vector2(selectedItem.Position.X - 10, selectedItem.Position.Y);
+            cursor.Position = new Vector2(selectedItem.Position.X - 50, selectedItem.Position.Y);
+        }
+
+        /// <summary>
+        /// Update title screen
+        /// </summary>
+        /// <param name="title"></param>
+        protected void SetTitle(string title)
+        {
+            this.title.Text = title;
         }
     }
 }

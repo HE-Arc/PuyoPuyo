@@ -25,6 +25,8 @@ namespace PuyoPuyo.screen
             AddMenuItem("Keyboard", PlayerKeyboard);
             AddMenuItem("GamePad", PlayerGamePad);
             AddMenuItem("Back", Show<MainMenuScreen>);
+
+            SetTitle("Player 1");
         }
 
         private void PlayerKeyboard()

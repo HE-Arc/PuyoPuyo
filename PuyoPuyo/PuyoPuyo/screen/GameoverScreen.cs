@@ -10,6 +10,10 @@ namespace PuyoPuyo.screen
     {
         private readonly Main _main;
 
+        private int score;
+
+        private MenuItem menuScore;
+
         public GameoverScreen(IServiceProvider serviceProvider, Main main)
             : base(serviceProvider, main)
         {
@@ -23,6 +27,11 @@ namespace PuyoPuyo.screen
             AddMenuItem("Retry", Show<GameScreen>);
             AddMenuItem("Home", Show<MainMenuScreen>);
             AddMenuItem("Exit", _main.Exit);
+
+            menuScore = new MenuItem(Font, "Your score : " + score);
+            menuScore.Position = new Vector2(50, 150);
+
+            SetTitle("Game Over");
         }
 
         public override void Update(GameTime gameTime)
@@ -49,6 +58,26 @@ namespace PuyoPuyo.screen
                         break;
                 }
             }
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            if (_spriteBatch == null)
+                return;
+
+            _spriteBatch.Begin();
+
+            menuScore.Draw(_spriteBatch);
+
+            _spriteBatch.End();
+        }
+
+        public void setScore(int score)
+        {
+            this.score = score;
+            menuScore.Text = "Your score : " + this.score;
         }
     }
 }

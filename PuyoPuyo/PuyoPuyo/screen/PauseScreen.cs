@@ -26,6 +26,8 @@ namespace PuyoPuyo.screen
 
             AddMenuItem("Resume", Show<GameScreen>);
             AddMenuItem("Quit", Quit);
+
+            SetTitle("Pause");
         }
 
         private void Quit()

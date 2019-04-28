@@ -2,6 +2,9 @@
 
 namespace PuyoPuyo.Toolbox
 {
+    /// <summary>
+    /// Timer of input to manage the activation
+    /// </summary>
     public class InputTimer
     {
         public Timer Timer { get; }
@@ -17,6 +20,11 @@ namespace PuyoPuyo.Toolbox
             Usable = true;
         }
 
+        /// <summary>
+        /// Reactivate the input after the time elapsed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InputActivation(object sender, ElapsedEventArgs e)
         {
             Usable = true;

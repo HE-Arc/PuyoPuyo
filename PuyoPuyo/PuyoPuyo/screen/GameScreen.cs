@@ -27,7 +27,6 @@ namespace PuyoPuyo.screen
 
         // GameBoard Test
         Gameboard gb = new Gameboard(columns, rows);
-        bool isGameOver = false;
 
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
@@ -52,7 +51,7 @@ namespace PuyoPuyo.screen
         public override void Update(GameTime gameTime)
         {
             UpdateInputs();
-            if (isGameOver) return;
+
             try
             {
                 gb.Update(gameTime);
@@ -60,7 +59,17 @@ namespace PuyoPuyo.screen
             catch (PlayerException pe)
             {
                 // Gameover
-                isGameOver = true;
+
+                // Set score to gameoverScreen
+                FindScreen<GameoverScreen>().setScore(gb.ScoreManager.Score);
+
+                // Reset game
+                gb = null;
+                gb = new Gameboard(columns, rows);
+                gb.Resume();
+
+                // Show gameoverScreen
+                Show<GameoverScreen>();
             }
             catch (Exception e)
             {
@@ -97,13 +106,6 @@ namespace PuyoPuyo.screen
                             Show<PauseScreen>();
                             break;
                         case Input.Validate:
-                            if (isGameOver)
-                            {
-                                gb = null;
-                                gb = new Gameboard(columns, rows);
-                                gb.Resume();
-                                isGameOver = false;
-                            }
                             break;
                         case Input.Cancel:
                             break;
@@ -141,13 +143,6 @@ namespace PuyoPuyo.screen
                         case Input.Pause:
                             break;
                         case Input.Validate:
-                            if (isGameOver)
-                            {
-                                gb = null;
-                                gb = new Gameboard(columns, rows);
-                                gb.Resume();
-                                isGameOver = false;
-                            }
                             break;
                         case Input.Cancel:
                             break;
@@ -173,7 +168,7 @@ namespace PuyoPuyo.screen
 
             //TODO : Buttons to retry, return to menu, help, etc
             //TODO : Use GameoverScreen (needs ability to display score, etc)
-            if(isGameOver)
+            /*if(isGameOver)
             {
                 Vector2 gol = new Vector2(
                         _game.GraphicsDevice.Viewport.Width / 2,
@@ -185,7 +180,9 @@ namespace PuyoPuyo.screen
             else
             {
                 gb.Draw(_spriteBatch, Font);
-            }
+            }*/
+
+            gb.Draw(_spriteBatch, Font);
 
             _spriteBatch.End();
 

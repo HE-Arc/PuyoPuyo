@@ -26,8 +26,8 @@ namespace PuyoPuyo.screen
         protected SpriteFont Font { get; private set; }
 
         
-        Gameboard gbPlayer1 = new Gameboard(columns, rows);
-        Gameboard gbPlayer2 = new Gameboard(columns, rows);
+        Gameboard gbPlayer1 = new Gameboard(columns, rows, 50, 0);
+        Gameboard gbPlayer2 = new Gameboard(columns, rows, 700, 0);
 
 
         public GameScreen(IServiceProvider serviceProvider, Main game)
@@ -70,7 +70,7 @@ namespace PuyoPuyo.screen
 
                 // Reset game
                 gbPlayer1 = null;
-                gbPlayer1 = new Gameboard(columns, rows);
+                gbPlayer1 = new Gameboard(columns, rows, 50, 0);
                 gbPlayer1.Resume();
 
                 if (InputManager.Instance.NbPlayer >= 2)
@@ -78,7 +78,7 @@ namespace PuyoPuyo.screen
                     FindScreen<GameoverScreen>().setScorePlayer2(gbPlayer2.ScoreManager.Score);
 
                     gbPlayer2 = null;
-                    gbPlayer2 = new Gameboard(columns, rows);
+                    gbPlayer2 = new Gameboard(columns, rows, 50, 0);
                     gbPlayer2.Resume();
                 }
 

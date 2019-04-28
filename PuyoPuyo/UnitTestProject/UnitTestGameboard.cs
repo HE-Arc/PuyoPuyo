@@ -16,7 +16,7 @@ namespace UnitTestProject
             int columns = 10;
             int rows = 10;
 
-            Gameboard gameboard = new Gameboard(columns, rows);
+            Gameboard gameboard = new Gameboard(columns, rows, 50, 0);
 
             Assert.IsTrue(gameboard.Grid.Columns == columns);
             Assert.IsTrue(gameboard.Grid.Rows == rows);
@@ -28,7 +28,7 @@ namespace UnitTestProject
             int columns = -1;
             int rows = 10;
 
-            Assert.ThrowsException<ArgumentException>(() => new Gameboard(columns, rows));
+            Assert.ThrowsException<ArgumentException>(() => new Gameboard(columns, rows, 50, 0));
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace UnitTestProject
             int columns = 10;
             int rows = -1;
 
-            Assert.ThrowsException<ArgumentException>(() => new Gameboard(columns, rows));
+            Assert.ThrowsException<ArgumentException>(() => new Gameboard(columns, rows, 50, 0));
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace UnitTestProject
             int rows = 10;
 
             // Init gameboard
-            Gameboard gameboard = new Gameboard(columns, rows);
+            Gameboard gameboard = new Gameboard(columns, rows, 50, 0);
 
             // Validated that it is not possible to spawn a undefined puyo
             Assert.ThrowsException<ArgumentException>(() => gameboard.Spawn(new Tuple<PuyoColor, PuyoColor>(PuyoColor.Red, PuyoColor.Any)));
@@ -59,7 +59,7 @@ namespace UnitTestProject
             int rows = 10;
 
             // Init gameboard
-            Gameboard gameboard = new Gameboard(columns, rows);
+            Gameboard gameboard = new Gameboard(columns, rows, 50, 0);
 
             // Spawn a puyo
             gameboard.Spawn(new Tuple<PuyoColor, PuyoColor>(PuyoColor.Red, PuyoColor.Red));
@@ -82,7 +82,7 @@ namespace UnitTestProject
             int rows = 10;
 
             // Init gameboard
-            Gameboard gameboard = new Gameboard(columns, rows);
+            Gameboard gameboard = new Gameboard(columns, rows, 50, 0);
 
             // Spawn a puyo
             gameboard.Spawn(new Tuple<PuyoColor, PuyoColor>(PuyoColor.Red, PuyoColor.Red));

@@ -52,13 +52,16 @@ namespace PuyoPuyo.GameObjects
         private const int SizeBoardCase = 65;
         private Vector2 Scale = new Vector2(0.50f); // 128 => 1 | SizeBoardCase => SizeBoardCase*1/128 = 
 
+        private int offsetX;
+        private int offsetY;
+
         /// <summary>
         /// Help managing puyos.
         /// <para/> Row-major
         /// </summary>
         /// <param name="columns">columns of the grid</param>
         /// <param name="rows">rows of the grid</param>
-        public Gameboard(int columns, int rows)
+        public Gameboard(int columns, int rows, int offsetX, int offsetY)
         {
             // Create a new grid
             this.Grid = new Grid(rows, columns);
@@ -68,6 +71,10 @@ namespace PuyoPuyo.GameObjects
 
             // ---
             NextPuyos = new Queue<Tuple<PuyoColor, PuyoColor>>();
+
+            // Get offset
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
         }
 
         /// <summary>
@@ -370,13 +377,13 @@ namespace PuyoPuyo.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont Font)
         {
-            int X = 50;
+            int X = offsetX;
             int Y = 0;
 
             // Row first
             for (int y = 2; y < Grid.Rows; y++)
             {
-                X = 50;
+                X = offsetX;
                 Y += SizeBoardCase;
                 for (int x = 0; x < Grid.Columns; x++)
                 {
@@ -391,19 +398,19 @@ namespace PuyoPuyo.GameObjects
                 }
             }
 
-            int offsetX = 85;
-            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+ offsetX, SizeBoardCase));
+            int offsetScore = 45;
+            ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+offsetX+offsetScore, SizeBoardCase));
 
-            int offsetY = 2;
+            int offsetPuyo= 2;
             foreach(var p in NextPuyos)
             {
                 IPuyoData master = PuyoDataFactory.Instance.Get(p.Item1);
                 IPuyoData slave = PuyoDataFactory.Instance.Get(p.Item2);
 
-                spriteBatch.Draw(slave.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+30, offsetY * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
-                spriteBatch.Draw(master.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+30, (offsetY+1) * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
+                spriteBatch.Draw(slave.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+60, offsetPuyo * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
+                spriteBatch.Draw(master.Texture, new Vector2(Grid.Columns * SizeBoardCase + offsetX+60, (offsetPuyo + 1) * SizeBoardCase), origin: new Vector2(0, 0), scale: Scale);
 
-                offsetY += 3;
+                offsetPuyo += 3;
             }
         }
     }

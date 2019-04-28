@@ -123,12 +123,12 @@ namespace PuyoPuyo
             if (game2Player)
             {
                 graphics.PreferredBackBufferHeight = 900;
-                graphics.PreferredBackBufferWidth = 1500;
+                graphics.PreferredBackBufferWidth = 1300;
             }
             else
             {
                 graphics.PreferredBackBufferHeight = 900;
-                graphics.PreferredBackBufferWidth = 600;
+                graphics.PreferredBackBufferWidth = 640;
             }
 
             graphics.ApplyChanges();

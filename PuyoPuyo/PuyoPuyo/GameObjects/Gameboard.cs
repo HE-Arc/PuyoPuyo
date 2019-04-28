@@ -370,13 +370,13 @@ namespace PuyoPuyo.GameObjects
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont Font)
         {
-            int X = 0;
+            int X = 50;
             int Y = 0;
 
             // Row first
             for (int y = 2; y < Grid.Rows; y++)
             {
-                X = 0;
+                X = 50;
                 Y += SizeBoardCase;
                 for (int x = 0; x < Grid.Columns; x++)
                 {
@@ -391,7 +391,7 @@ namespace PuyoPuyo.GameObjects
                 }
             }
 
-            int offsetX = 35;
+            int offsetX = 85;
             ScoreManager.Draw(spriteBatch, Font, new Vector2(Grid.Columns*SizeBoardCase+ offsetX, SizeBoardCase));
 
             int offsetY = 2;

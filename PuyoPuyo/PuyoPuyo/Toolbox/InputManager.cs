@@ -211,12 +211,12 @@ namespace PuyoPuyo.Toolbox
                 inputs.Add(Input.Pause);
             }
 
-            if (gState.IsButtonDown(Buttons.LeftTrigger))
+            if (gState.IsButtonDown(Buttons.LeftShoulder)) 
             {
                 inputs.Add(Input.CounterclockwiseRotation);
             }
 
-            if (gState.IsButtonDown(Buttons.RightTrigger))
+            if (gState.IsButtonDown(Buttons.RightShoulder))
             {
                 inputs.Add(Input.ClockwiseRotation);
             }

@@ -69,18 +69,7 @@ namespace PuyoPuyo.screen
 
 
                 // Reset game
-                gbPlayer1 = null;
-                gbPlayer1 = new Gameboard(columns, rows, 50, 0);
-                gbPlayer1.Resume();
-
-                if (InputManager.Instance.NbPlayer >= 2)
-                {
-                    FindScreen<GameoverScreen>().setScorePlayer2(gbPlayer2.ScoreManager.Score);
-
-                    gbPlayer2 = null;
-                    gbPlayer2 = new Gameboard(columns, rows, 700, 0);
-                    gbPlayer2.Resume();
-                }
+                ResetBoard();
 
                 // Reset size of windows
                 _game.setSize(false);
@@ -91,6 +80,22 @@ namespace PuyoPuyo.screen
             catch (Exception e)
             {
                 Console.Error.WriteLine("[Gameboard] : " + e.Message);
+            }
+        }
+
+        public void ResetBoard()
+        {
+            gbPlayer1 = null;
+            gbPlayer1 = new Gameboard(columns, rows, 50, 0);
+            gbPlayer1.Resume();
+
+            if (InputManager.Instance.NbPlayer >= 2)
+            {
+                FindScreen<GameoverScreen>().setScorePlayer2(gbPlayer2.ScoreManager.Score);
+
+                gbPlayer2 = null;
+                gbPlayer2 = new Gameboard(columns, rows, 700, 0);
+                gbPlayer2.Resume();
             }
         }
 
@@ -158,6 +163,7 @@ namespace PuyoPuyo.screen
                             gbPlayer2.Right();
                             break;
                         case Input.Pause:
+                            Show<PauseScreen>();
                             break;
                         case Input.Validate:
                             break;

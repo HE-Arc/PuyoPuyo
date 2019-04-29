@@ -261,8 +261,11 @@ namespace PuyoPuyo.GameObjects
                 // Calcul fallAcceleration in function of the Score value
                 if (ScoreManager.Score != 0)
                 {
+                    //Console.WriteLine("Score : " + ScoreManager.Score);
                     //fallAcceleration = (int)Math.Log10(Convert.ToDouble(ScoreManager.Score)) * 10; FIRST FUNCTION
-                    fallAcceleration = (int)(2694530 + (14.93574 - 2694530) / (1 + Math.Pow(ScoreManager.Score / 141280700000,0.6469458))); // SECOND FUNCTION
+                    //fallAcceleration = Convert.ToInt32((2694530 + (14.93574 - 2694530) / (1 + Math.Pow(ScoreManager.Score / 141280700000, 0.6469458)))); // SECOND FUNCTION
+                    fallAcceleration = Convert.ToInt32(0.399812 * Math.Pow(ScoreManager.Score, 0.5734216));
+                    //Console.WriteLine("fallAcc : " + fallAcceleration);
                     // 0 -> 0
                     // 1000 -> 50
                     // 10000 -> 80

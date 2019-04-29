@@ -22,7 +22,6 @@ namespace PuyoPuyo.screen
 
         private readonly IServiceProvider _serviceProvider;
         private SpriteBatch _spriteBatch;
-        private Texture2D Background;
         private readonly Main _game;
         protected SpriteFont Font { get; private set; }
 

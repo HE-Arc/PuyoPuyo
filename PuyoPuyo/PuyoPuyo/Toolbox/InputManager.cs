@@ -45,9 +45,11 @@ namespace PuyoPuyo.Toolbox
         {
             foreach (Input item in Enum.GetValues(typeof(Input)))
             {
-                InputTimer inputTimer = new InputTimer();
-                inputsUsable1.Add(item, inputTimer);
-                inputsUsable2.Add(item, inputTimer);
+                InputTimer inputTimer1 = new InputTimer();
+                inputsUsable1.Add(item, inputTimer1);
+
+                InputTimer inputTimer2 = new InputTimer();
+                inputsUsable2.Add(item, inputTimer2);
             }
         }
 

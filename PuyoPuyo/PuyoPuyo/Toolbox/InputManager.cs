@@ -20,7 +20,8 @@ namespace PuyoPuyo.Toolbox
         private KeyboardState kState;
         private GamePadState gState;
         private Dictionary<PlayerIndex, PlayerIndex> playersGamePad = new Dictionary<PlayerIndex, PlayerIndex>(); // reference each gamepad use by player
-        private Dictionary<Input, InputTimer> inputsUsable = new Dictionary<Input, InputTimer>(); // list of timer to avoid to use an action many times at one human input
+        private Dictionary<Input, InputTimer> inputsUsable1 = new Dictionary<Input, InputTimer>(); // list of timer to avoid to use an action many times at one human input
+        private Dictionary<Input, InputTimer> inputsUsable2 = new Dictionary<Input, InputTimer>(); // list of timer to avoid to use an action many times at one human input
 
         public float DeadzoneSticks = 0.25f; // avoid to move without will
 
@@ -45,7 +46,8 @@ namespace PuyoPuyo.Toolbox
             foreach (Input item in Enum.GetValues(typeof(Input)))
             {
                 InputTimer inputTimer = new InputTimer();
-                inputsUsable.Add(item, inputTimer);
+                inputsUsable1.Add(item, inputTimer);
+                inputsUsable2.Add(item, inputTimer);
             }
         }
 
@@ -225,6 +227,8 @@ namespace PuyoPuyo.Toolbox
         /// <returns></returns>
         public List<Input> Perform(PlayerIndex player)
         {
+            Dictionary<Input, InputTimer> inputsUsable = (player == PlayerIndex.One) ? inputsUsable1 : inputsUsable2;
+
             List<Input> inputs = new List<Input>();
             bool gamePadConnected = false;
 
@@ -287,12 +291,12 @@ namespace PuyoPuyo.Toolbox
 
             for (int i = inputs.Count - 1; i >= 0; --i)
             {
-                if (inputsUsable[inputs[i]].Usable)
+                if (inputsUsable1[inputs[i]].Usable)
                 {
-                    inputsUsable[inputs[i]].Usable = false;
+                    inputsUsable1[inputs[i]].Usable = false;
 
 
-                    inputsUsable[inputs[i]].Timer.Start();
+                    inputsUsable1[inputs[i]].Timer.Start();
                 }
                 else
                 {

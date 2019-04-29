@@ -10,9 +10,6 @@ namespace PuyoPuyo.screen
     {
         private readonly Main _main;
 
-        private int scorePlayer1;
-        private int scorePlayer2;
-
         private MenuItem menuScorePlayer1;
         private MenuItem menuScorePlayer2;
 
@@ -80,16 +77,15 @@ namespace PuyoPuyo.screen
             _spriteBatch.End();
         }
 
-        public void setScorePlayer1(int scorePlayer1)
+        public void setScorePlayer1(string scorePlayer1)
         {
-            this.scorePlayer1 = scorePlayer1;
-            menuScorePlayer1.Text = "Score Player 1 : " + this.scorePlayer1;
+            menuScorePlayer1.Text = "Score Player 1 : " + scorePlayer1;
         }
 
-        public void setScorePlayer2(int scorePlayer2)
+        public void setScorePlayer2(string scorePlayer2)
         {
-            this.scorePlayer2 = scorePlayer2;
-            menuScorePlayer2.Text = "Score Player 2 : " + this.scorePlayer2;
+ 
+            menuScorePlayer2.Text = scorePlayer2 != "" ? "Score Player 2 : " + scorePlayer2 : "";
         }
 
         public void ReturnToHome()

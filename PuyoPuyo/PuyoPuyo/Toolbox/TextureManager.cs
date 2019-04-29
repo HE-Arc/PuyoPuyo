@@ -74,6 +74,7 @@ namespace PuyoPuyo.Toolbox
             textures.Add("PuyoBlue", Load<Texture2D>("B", "puyos/"));
             textures.Add("PuyoYellow", Load<Texture2D>("Y", "puyos/"));
             textures.Add("PuyoPurple", Load<Texture2D>("P", "puyos/"));
+            textures.Add("InGameBg", Load<Texture2D>("ingame_bg", "bg/"));
         }
 
         public T TryGet<T>(string textureName)

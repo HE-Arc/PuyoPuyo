@@ -32,7 +32,7 @@ namespace PuyoPuyo.screen
 
         private void Quit()
         {
-            FindScreen<GameScreen>().ResetBoard();
+            FindScreen<GameScreen>().ResetBoard(false);
             InputManager.Instance.Reset();
             _main.setSize(false);
             Show<MainMenuScreen>();

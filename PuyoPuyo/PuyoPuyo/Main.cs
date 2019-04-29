@@ -27,7 +27,7 @@ namespace PuyoPuyo
             
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferHeight = 900;
-            graphics.PreferredBackBufferWidth = 640;
+            graphics.PreferredBackBufferWidth = 700;
             Content.RootDirectory = "Content";
 
             // Init screen management
@@ -123,12 +123,12 @@ namespace PuyoPuyo
             if (game2Player)
             {
                 graphics.PreferredBackBufferHeight = 900;
-                graphics.PreferredBackBufferWidth = 1300;
+                graphics.PreferredBackBufferWidth = 1400;
             }
             else
             {
                 graphics.PreferredBackBufferHeight = 900;
-                graphics.PreferredBackBufferWidth = 640;
+                graphics.PreferredBackBufferWidth = 700;
             }
 
             graphics.ApplyChanges();

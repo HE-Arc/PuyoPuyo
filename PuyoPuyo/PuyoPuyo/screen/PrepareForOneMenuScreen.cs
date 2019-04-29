@@ -97,6 +97,16 @@ namespace PuyoPuyo.screen
         {
             InputManager.Instance.NbPlayer = 1;
             _main.setSize(false);
+
+            MenuItems.Clear();
+            indexMenu = 0;
+
+            AddMenuItem("Keyboard", PlayerKeyboard);
+            AddMenuItem("GamePad", PlayerGamePad);
+            AddMenuItem("Back", Show<MainMenuScreen>);
+
+            SetTitle("Player 1");
+
             Show<GameScreen>();
         }
     }
